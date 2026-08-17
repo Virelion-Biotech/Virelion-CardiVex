@@ -51,23 +51,43 @@ Cardiac digital surrogate
 
 ## Repository layout
 
-- `cardivex/` — core scenario, variation, defense, realism, and audit logic.
-- `schemas/` — machine-readable scenario definitions.
+- `cardivex/` — core scenario, variation, multimodal state, defense, realism, benchmark, adapter, and audit logic.
+- `schemas/` — machine-readable scenario and cardiac-state definitions.
 - `examples/` — example scenario objects.
-- `docs/` — architecture, scenario specification, and validation rules.
-- `tests/` — unit tests for core deterministic behavior.
+- `docs/` — architecture, scenario specification, validation rules, and multimodal design.
+- `tests/` — deterministic unit tests for the core benchmark layer.
 
-## What the first implementation supports
+## Current implementation
 
 - Typed scenario objects with evidence tiers and uncertainty.
 - Bounded phenotype-level scenario variation with deterministic seeds.
 - Temporal interpolation of abstract cardiac response states.
+- A normalized `CardiacState` contract spanning imaging, functional, and omics features.
+- Modality adapters that normalize already-processed measurements into the common contract.
+- Baseline abnormality scoring.
+- Nearest-known-state distance as a transparent OOD baseline.
+- Multimodal recovery scoring with modality-specific and overall rescue estimates.
 - Realism scoring that penalizes uncertainty and extrapolation.
-- Baseline-distance abnormality scoring.
-- Nearest-known-state distance as a simple OOD baseline.
-- Recovery/rescue scoring relative to baseline.
 - Hash-based audit records for reproducibility.
-- Automated tests on Python 3.10–3.12.
+- Benchmark leakage checks for held-out scenarios.
+- Automated tests and a Python 3.10–3.12 GitHub Actions matrix.
+
+## Multimodal state layer
+
+The common state representation keeps modalities separate while providing a merged namespace for benchmark evaluation:
+
+```text
+              CardiacState
+            /      |       \
+       imaging  functional   omics
+            \      |       /
+             \     |      /
+              domain scores
+                   |
+             benchmark layer
+```
+
+See [`docs/MULTIMODAL.md`](docs/MULTIMODAL.md) for the contract and adapter philosophy.
 
 ## Scenario philosophy
 
@@ -94,4 +114,4 @@ pip install -e '.[test]'
 pytest
 ```
 
-The project is intentionally built so later imaging, functional, transcriptomic, and ML modules can consume the same scenario and audit contracts rather than inventing incompatible representations.
+The project is intentionally modular so future imaging, functional, transcriptomic, and ML implementations can consume the same scenario, cardiac-state, benchmark, and audit contracts instead of inventing incompatible representations.
