@@ -1,0 +1,133 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+title: CardiVex Scenario
+description: Structured representation of a cardiac challenge state for defensive computational evaluation.
+type: object
+required:
+  - scenario_id
+  - version
+  - name
+  - target_model
+  - evidence_tier
+  - confidence
+  - phenotype_domains
+  - temporal_profile
+  - provenance
+properties:
+  scenario_id:
+    type: string
+    pattern: '^CVX-[0-9]{4,}$'
+  version:
+    type: string
+    pattern: '^[0-9]+\\.[0-9]+\\.[0-9]+$'
+  name:
+    type: string
+    minLength: 3
+  description:
+    type: string
+  target_model:
+    type: string
+  evidence_tier:
+    type: string
+    enum:
+      - observed
+      - characterized_proxy
+      - validated_model
+      - extrapolated
+  confidence:
+    type: string
+    enum:
+      - high
+      - moderate
+      - exploratory
+  phenotype_domains:
+    type: object
+    additionalProperties:
+      type: object
+      required: [value]
+      properties:
+        value:
+          type: number
+          minimum: 0
+          maximum: 1
+        uncertainty:
+          type: number
+          minimum: 0
+          maximum: 1
+        evidence_status:
+          type: string
+          enum: [observed, proxy, modeled, extrapolated]
+  temporal_profile:
+    type: array
+    minItems: 2
+    items:
+      type: object
+      required: [state, relative_time]
+      properties:
+        state:
+          type: string
+        relative_time:
+          type: number
+          minimum: 0
+        duration:
+          type: number
+          minimum: 0
+  severity_profile:
+    type: object
+    additionalProperties:
+      type: number
+      minimum: 0
+      maximum: 1
+  interaction_profile:
+    type: array
+    items:
+      type: object
+      required: [domains, relationship]
+      properties:
+        domains:
+          type: array
+          minItems: 2
+          items:
+            type: string
+        relationship:
+          type: string
+  variation_space:
+    type: object
+    properties:
+      enabled:
+        type: boolean
+      max_deviation:
+        type: number
+        minimum: 0
+        maximum: 1
+      allowed_domains:
+        type: array
+        items:
+          type: string
+  validation_targets:
+    type: array
+    items:
+      type: string
+  ood_status:
+    type: string
+    enum: [train, validation, test, held_out_novel]
+  provenance:
+    type: object
+    required: [sources, transformations]
+    properties:
+      sources:
+        type: array
+        items:
+          type: string
+      transformations:
+        type: array
+        items:
+          type: string
+  audit:
+    type: object
+    properties:
+      created_by:
+        type: string
+      created_at:
+        type: string
+      parent_scenario:
+        type: string
