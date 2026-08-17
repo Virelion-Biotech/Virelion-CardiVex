@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import math
 import random
-from typing import Mapping
+from typing import Mapping, Sequence
 
 from .models import Confidence, DomainValue, EvidenceTier, Scenario, ScenarioState
 from .phenotypes import EmpiricalPhenotypeProfile
@@ -14,10 +15,54 @@ class ScenarioBuildConfig:
     max_delta: float = 0.25
     hold_out_novel: bool = True
     seed: int | None = 0
+    use_correlation: bool = True
 
 
 def _clip(x: float) -> float:
     return max(0.0, min(1.0, x))
+
+
+def _cholesky(matrix: Sequence[Sequence[float]]) -> list[list[float]] | None:
+    """Return a Cholesky factor for a small correlation matrix, if PSD enough."""
+    n = len(matrix)
+    lower = [[0.0] * n for _ in range(n)]
+    for i in range(n):
+        if len(matrix[i]) != n:
+            return None
+        for j in range(i + 1):
+            value = float(matrix[i][j])
+            if not math.isfinite(value):
+                return None
+            total = value - sum(lower[i][k] * lower[j][k] for k in range(j))
+            if i == j:
+                if total <= 1e-10:
+                    return None
+                lower[i][j] = math.sqrt(total)
+            else:
+                lower[i][j] = total / lower[j][j]
+    return lower
+
+
+def _correlated_z(
+    rng: random.Random,
+    domains: Sequence[str],
+    correlation: Mapping[str, Mapping[str, float]] | None,
+) -> dict[str, float]:
+    independent = {domain: rng.gauss(0.0, 1.0) for domain in domains}
+    if not correlation or len(domains) < 2:
+        return independent
+    matrix = [
+        [float(correlation.get(a, {}).get(b, 1.0 if a == b else 0.0)) for b in domains]
+        for a in domains
+    ]
+    factor = _cholesky(matrix)
+    if factor is None:
+        return independent
+    base = [independent[d] for d in domains]
+    return {
+        domain: sum(factor[i][j] * base[j] for j in range(i + 1))
+        for i, domain in enumerate(domains)
+    }
 
 
 def build_challenge_scenario(
@@ -27,11 +72,13 @@ def build_challenge_scenario(
     name: str,
     target_model: str,
     config: ScenarioBuildConfig | None = None,
+    correlation_matrix: Mapping[str, Mapping[str, float]] | None = None,
 ) -> Scenario:
     """Construct an evidence-linked downstream phenotype challenge scenario.
 
-    Generated scenarios remain explicitly extrapolated until an external
-    validation procedure upgrades their evidence tier.
+    When a validated empirical correlation matrix is supplied, domain deviations
+    are sampled jointly rather than independently. Generated scenarios remain
+    explicitly extrapolated until independently validated.
     """
     config = config or ScenarioBuildConfig()
     if not scenario_id.startswith("CVX-"):
@@ -42,10 +89,17 @@ def build_challenge_scenario(
         raise ValueError("deviation_scale must be non-negative")
 
     rng = random.Random(config.seed)
+    domains_order = tuple(sorted(profile.domains))
+    z_scores = _correlated_z(
+        rng,
+        domains_order,
+        correlation_matrix if config.use_correlation else None,
+    )
     domains: dict[str, DomainValue] = {}
-    for domain, stats in profile.domains.items():
+    for domain in domains_order:
+        stats = profile.domains[domain]
         sigma = min(config.max_delta, stats.std * config.deviation_scale)
-        delta = rng.uniform(-sigma, sigma) if sigma > 0 else 0.0
+        delta = max(-sigma, min(sigma, z_scores[domain] * sigma)) if sigma > 0 else 0.0
         value = _clip(stats.mean + delta)
         uncertainty = _clip((stats.std if stats.count > 1 else 0.2) + abs(delta) * 0.25)
         domains[domain] = DomainValue(value=value, uncertainty=uncertainty, evidence_status="extrapolated")
@@ -64,9 +118,17 @@ def build_challenge_scenario(
             for name, value in domains.items()
         },
     )
+    transformations = [
+        "empirical_profile_fit",
+        f"bounded_sampling(seed={config.seed},scale={config.deviation_scale},max_delta={config.max_delta})",
+    ]
+    if correlation_matrix and config.use_correlation:
+        transformations.append("correlation_aware_sampling")
+    else:
+        transformations.append("independent_sampling_fallback")
     return Scenario(
         scenario_id=scenario_id,
-        version="0.2.1",
+        version="0.3.0",
         name=name,
         description="Evidence-linked phenotype challenge generated from an empirical downstream-state profile.",
         target_model=target_model,
@@ -75,14 +137,16 @@ def build_challenge_scenario(
         phenotype_domains=domains,
         temporal_profile=(baseline, challenge, recovery),
         severity_profile={"challenge": max((v.value for v in domains.values()), default=0.0)},
-        variation_space={"enabled": True, "max_deviation": config.max_delta, "allowed_domains": sorted(domains)},
+        variation_space={
+            "enabled": True,
+            "max_deviation": config.max_delta,
+            "allowed_domains": sorted(domains),
+            "correlation_aware": bool(correlation_matrix and config.use_correlation),
+        },
         validation_targets=("domain_profile_agreement", "multimodal_state_consistency", "temporal_response_consistency"),
         ood_status="held_out_novel" if config.hold_out_novel else "test",
         provenance_sources=tuple(profile.source_dataset_ids),
-        provenance_transformations=(
-            "empirical_profile_fit",
-            f"bounded_sampling(seed={config.seed},scale={config.deviation_scale},max_delta={config.max_delta})",
-        ),
+        provenance_transformations=tuple(transformations),
     )
 
 
