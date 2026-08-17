@@ -1,0 +1,35 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+title: CardiVex Benchmark Run
+ type: object
+properties:
+  name:
+    type: string
+  manifest:
+    type: object
+    properties:
+      name: {type: string}
+      version: {type: string}
+      ids:
+        type: array
+        items: {type: string}
+    required: [name, version, ids]
+  split:
+    type: object
+    properties:
+      train: {type: array, items: {type: string}}
+      validation: {type: array, items: {type: string}}
+      test: {type: array, items: {type: string}}
+      held_out_novel: {type: array, items: {type: string}}
+    required: [train, validation, test, held_out_novel]
+  results:
+    type: array
+    items:
+      type: object
+      properties:
+        scenario_id: {type: string}
+        status: {type: string}
+        issues: {type: array, items: {type: string}}
+      required: [scenario_id, status]
+  audit:
+    type: object
+required: [name, manifest, split, results, audit]
