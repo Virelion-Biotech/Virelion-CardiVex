@@ -51,7 +51,7 @@ Cardiac digital surrogate
 
 ## Repository layout
 
-- `cardivex/` — core scenario, variation, multimodal state, defense, realism, benchmark, adapter, and audit logic.
+- `cardivex/` — scenario, translation, multimodal state, defense, attribution, realism, benchmark, pipeline, and audit logic.
 - `schemas/` — machine-readable scenario and cardiac-state definitions.
 - `examples/` — example scenario objects.
 - `docs/` — architecture, scenario specification, validation rules, and multimodal design.
@@ -64,9 +64,12 @@ Cardiac digital surrogate
 - Temporal interpolation of abstract cardiac response states.
 - A normalized `CardiacState` contract spanning imaging, functional, and omics features.
 - Modality adapters that normalize already-processed measurements into the common contract.
+- An explicit scenario-to-multimodal translation layer with versioned, inspectable coefficients.
 - Baseline abnormality scoring.
 - Nearest-known-state distance as a transparent OOD baseline.
+- Domain attribution ranked by deviation from baseline.
 - Multimodal recovery scoring with modality-specific and overall rescue estimates.
+- A single end-to-end assessment pipeline for scenario → state → detection → attribution → recovery.
 - Realism scoring that penalizes uncertainty and extrapolation.
 - Hash-based audit records for reproducibility.
 - Benchmark leakage checks for held-out scenarios.
@@ -88,6 +91,29 @@ The common state representation keeps modalities separate while providing a merg
 ```
 
 See [`docs/MULTIMODAL.md`](docs/MULTIMODAL.md) for the contract and adapter philosophy.
+
+## End-to-end API
+
+The main computational flow is exposed through `cardivex.pipeline`:
+
+```python
+from cardivex.pipeline import assess_scenario, run_end_to_end
+
+assessment = assess_scenario(
+    scenario,
+    baseline=healthy_state,
+    known_states=reference_states,
+)
+
+result = run_end_to_end(
+    scenario,
+    baseline=healthy_state,
+    known_states=reference_states,
+    treated_state=treated_state,
+)
+```
+
+The result keeps the full challenged multimodal state, detection/novelty scores, ranked domain attribution, and optional recovery estimates in one structured object.
 
 ## Scenario philosophy
 
@@ -114,4 +140,4 @@ pip install -e '.[test]'
 pytest
 ```
 
-The project is intentionally modular so future imaging, functional, transcriptomic, and ML implementations can consume the same scenario, cardiac-state, benchmark, and audit contracts instead of inventing incompatible representations.
+The project is intentionally modular so future imaging, functional, transcriptomic, and ML implementations can consume the same scenario, cardiac-state, benchmark, pipeline, and audit contracts instead of inventing incompatible representations.
