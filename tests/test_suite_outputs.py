@@ -6,8 +6,8 @@ from cardivex.serialization import dumps
 from cardivex.suite import build_run_audit, run_benchmark_suite
 
 
-def _scenario(scenario_id: str, status: str = "train") -> Scenario:
-    domain = {"inflammatory_activation": DomainValue(0.5)}
+def _scenario(scenario_id: str, status: str = "train", value: float = 0.5) -> Scenario:
+    domain = {"inflammatory_activation": DomainValue(value)}
     states = (
         ScenarioState("baseline", 0.0, {"inflammatory_activation": DomainValue(0.0)}),
         ScenarioState("challenge", 1.0, domain),
@@ -29,12 +29,16 @@ def _scenario(scenario_id: str, status: str = "train") -> Scenario:
 
 def test_benchmark_run_serializes_to_json():
     baseline = from_domain_scores({"inflammatory_activation": 0.0})
-    scenarios = [_scenario("CVX-7001"), _scenario("CVX-7002", "held_out_novel")]
+    scenarios = [
+        _scenario("CVX-7001", value=0.5),
+        _scenario("CVX-7002", "held_out_novel", value=0.8),
+    ]
     run = run_benchmark_suite(scenarios, baseline=baseline, known_states=[baseline])
     payload = run.to_dict()
     decoded = json.loads(dumps(payload))
     assert decoded["name"] == "cardivex-benchmark"
     assert len(decoded["results"]) == 2
+    assert decoded["results"][0]["score"] is not None
 
 
 def test_run_audit_has_input_digest():
