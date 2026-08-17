@@ -28,6 +28,21 @@ def test_correlation_matrix_is_symmetric_and_bounded():
     assert -1.0 <= matrix["contractile_impairment"]["inflammatory_activation"] <= 1.0
 
 
+def test_correlation_aware_sampling_is_recorded_in_provenance():
+    records = _records("challenge", "DS-CORR-A")
+    profile = fit_empirical_profile(records, condition="challenge")
+    matrix = domain_correlation_matrix(records, condition="challenge")
+    scenario = build_challenge_scenario(
+        profile,
+        scenario_id="CVX-9101",
+        name="correlation-aware integration challenge",
+        target_model="human_iPSC_derived_cardiac_tissue",
+        correlation_matrix=matrix,
+    )
+    assert "correlation_aware_sampling" in scenario.provenance_transformations
+    assert scenario.variation_space["correlation_aware"] is True
+
+
 def test_novel_profile_and_pipeline_assessment():
     a_records = _records("a", "DS-A")
     b_records = _records("b", "DS-B", shift=0.1)
