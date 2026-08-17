@@ -5,8 +5,8 @@ from hashlib import sha256
 import json
 from typing import Sequence
 
-from .calibration_runner import CalibrationArtifact
-from .longitudinal import LongitudinalGroup, validate_disjoint_longitudinal_groups
+from .calibration_runner import CalibrationArtifact, compute_artifact_id
+from .longitudinal import LongitudinalGroup
 from .models import Scenario
 from .surrogate_validation import SurrogateValidation, summarize_surrogate_validation, validate_scenario_against_group
 
@@ -46,6 +46,9 @@ def _run_id(artifact_id: str, scenario_ids: Sequence[str], group_ids: Sequence[s
 
 
 def _validate_artifact_integrity(artifact: CalibrationArtifact, held_out_groups: Sequence[LongitudinalGroup]) -> None:
+    if not artifact.artifact_id or compute_artifact_id(artifact) != artifact.artifact_id:
+        raise ValueError("calibration artifact integrity check failed")
+
     holdout_ids = {group.group_id for group in held_out_groups}
     declared_holdouts = set(artifact.held_out_group_ids)
     if not holdout_ids:
