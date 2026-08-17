@@ -1,0 +1,28 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+title: CardiVex Benchmark Manifest
+version: 1
+required:
+  - name
+  - version
+  - scenarios
+properties:
+  name:
+    type: string
+  version:
+    type: string
+  scenarios:
+    type: array
+    items:
+      type: object
+      required:
+        - scenario_id
+        - ood_status
+      properties:
+        scenario_id:
+          type: string
+        family:
+          type: string
+        ood_status:
+          enum: [train, validation, test, held_out_novel]
+        evidence_tier:
+          enum: [observed, characterized_proxy, validated_model, extrapolated]
