@@ -1,0 +1,18 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+title: CardiVex Assessment Score
+type: object
+properties:
+  overall_abnormality: {type: number, minimum: 0, maximum: 1}
+  overall_novelty: {type: number, minimum: 0, maximum: 1}
+  attribution_coverage: {type: number, minimum: 0, maximum: 1}
+  modality_scores:
+    type: array
+    items:
+      type: object
+      properties:
+        modality: {type: string}
+        abnormality: {type: number, minimum: 0, maximum: 1}
+        novelty: {type: number, minimum: 0, maximum: 1}
+        available: {type: boolean}
+      required: [modality, abnormality, novelty, available]
+required: [overall_abnormality, overall_novelty, attribution_coverage, modality_scores]
