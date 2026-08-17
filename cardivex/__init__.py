@@ -20,6 +20,11 @@ from .ingest import IngestRecord, ingest_processed_observation, require_modaliti
 from .loader import records_from_rows, load_csv
 from .dataset import DatasetBatch, assemble_batch, split_by_condition
 from .quality import QualityIssue, inspect_records, require_clean
+from .phenotypes import DomainDistribution, EmpiricalPhenotypeProfile, fit_empirical_profile, profile_distance
+from .scenario_builder import ScenarioBuildConfig, build_challenge_scenario, compose_novel_profile
+from .trajectory import bounded_trajectory, shift_timeline
+from .novelty import normalized_distance, novelty_margin, is_novel
+from .correlation import domain_correlation_matrix
 
 __all__ = [
     "Scenario", "ScenarioState", "EvidenceTier", "Confidence",
@@ -39,4 +44,9 @@ __all__ = [
     "IngestRecord", "ingest_processed_observation", "require_modalities",
     "records_from_rows", "load_csv", "DatasetBatch", "assemble_batch", "split_by_condition",
     "QualityIssue", "inspect_records", "require_clean",
+    "DomainDistribution", "EmpiricalPhenotypeProfile", "fit_empirical_profile", "profile_distance",
+    "ScenarioBuildConfig", "build_challenge_scenario", "compose_novel_profile",
+    "bounded_trajectory", "shift_timeline",
+    "normalized_distance", "novelty_margin", "is_novel",
+    "domain_correlation_matrix",
 ]
