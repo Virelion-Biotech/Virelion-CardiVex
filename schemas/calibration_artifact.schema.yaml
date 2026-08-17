@@ -1,0 +1,30 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$title: CardiVex Development Calibration Artifact
+$type: object
+required: [dataset_id, condition_calibrations, development_record_ids, held_out_group_ids, excluded_record_ids, source_dataset_ids, artifact_id]
+properties:
+  dataset_id: {type: string}
+  artifact_id: {type: string}
+  development_record_ids:
+    type: array
+    items: {type: string}
+    uniqueItems: true
+  held_out_group_ids:
+    type: array
+    items: {type: string}
+    uniqueItems: true
+  excluded_record_ids:
+    type: array
+    items: {type: string}
+    uniqueItems: true
+  source_dataset_ids:
+    type: array
+    items: {type: string}
+    uniqueItems: true
+  condition_calibrations:
+    type: array
+    items:
+      type: object
+      required: [condition, profile, correlation]
+  translation:
+    type: [object, 'null']
