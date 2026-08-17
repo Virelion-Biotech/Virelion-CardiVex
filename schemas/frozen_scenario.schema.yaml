@@ -1,0 +1,20 @@
+title: CardiVex Frozen Calibration Scenario
+ type: object
+required:
+  - scenario_id
+  - evidence_tier
+  - ood_status
+properties:
+  scenario_id:
+    type: string
+    pattern: '^CVX-'
+  evidence_tier:
+    type: string
+    enum: [observed, proxy, modeled, extrapolated]
+  ood_status:
+    type: string
+  variation_space:
+    type: object
+    properties:
+      frozen_calibration_artifact:
+        type: string
