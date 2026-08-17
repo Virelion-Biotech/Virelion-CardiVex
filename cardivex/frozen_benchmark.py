@@ -6,14 +6,14 @@ from typing import Sequence
 from .benchmark_factory import BenchmarkManifest, build_manifest
 from .calibration_runner import CalibrationArtifact, compute_artifact_id
 from .frozen_scenario import build_scenario_from_frozen_calibration
-from .models import Scenario
-from .surrogate_validation import validate_scenario_against_group
 from .longitudinal import LongitudinalGroup
+from .models import Scenario
+from .surrogate_validation import SurrogateValidation, validate_scenario_against_group
 
 
 @dataclass(frozen=True)
 class FrozenBenchmark:
-    """Benchmark suite whose generated scenarios all inherit one frozen calibration."""
+    """Benchmark suite whose generated scenarios inherit one frozen calibration."""
 
     manifest: BenchmarkManifest
     calibration_artifact_id: str
@@ -31,18 +31,28 @@ def build_frozen_benchmark(
     """Generate a deterministic challenge suite from one verified calibration artifact."""
     if compute_artifact_id(artifact) != artifact.artifact_id:
         raise ValueError("calibration artifact integrity check failed")
+    if not scenario_specs:
+        raise ValueError("at least one scenario specification is required")
+
     scenarios: list[Scenario] = []
     for index, (scenario_id, name) in enumerate(scenario_specs):
-        scenario = build_scenario_from_frozen_calibration(
-            artifact,
-            condition=condition,
-            scenario_id=scenario_id,
-            name=name,
-            target_model=target_model,
-            seed=seed + index,
+        scenarios.append(
+            build_scenario_from_frozen_calibration(
+                artifact,
+                condition=condition,
+                scenario_id=scenario_id,
+                name=name,
+                target_model=target_model,
+                config=None if seed + index == 0 else __import__(
+                    "cardivex.scenario_builder", fromlist=["ScenarioBuildConfig"]
+                ).ScenarioBuildConfig(seed=seed + index),
+            )
         )
-        scenarios.append(scenario)
-    manifest = build_manifest(scenarios, name="cardivex-frozen-challenge-suite", version="0.5.0")
+    manifest = build_manifest(
+        scenarios,
+        name="cardivex-frozen-challenge-suite",
+        version="0.5.0",
+    )
     return FrozenBenchmark(
         manifest=manifest,
         calibration_artifact_id=artifact.artifact_id,
@@ -52,20 +62,38 @@ def build_frozen_benchmark(
 
 def validate_frozen_benchmark_against_groups(
     benchmark: FrozenBenchmark,
+    artifact: CalibrationArtifact,
     held_out_groups: Sequence[LongitudinalGroup],
     *,
     time_tolerance: float = 0.0,
-) -> tuple[object, ...]:
+) -> tuple[SurrogateValidation, ...]:
     """Score every frozen scenario against held-out groups without refitting."""
-    results: list[object] = []
+    if compute_artifact_id(artifact) != artifact.artifact_id:
+        raise ValueError("calibration artifact integrity check failed")
+    if benchmark.calibration_artifact_id != artifact.artifact_id:
+        raise ValueError("benchmark and calibration artifact IDs do not match")
+    if not held_out_groups:
+        raise ValueError("at least one held-out group is required")
+
+    translation_profile = artifact.translation_profile
+    results: list[SurrogateValidation] = []
     for scenario in benchmark.manifest.scenarios:
+        markers = {
+            marker.split(":", 1)[1]
+            for marker in scenario.provenance_transformations
+            if marker.startswith("frozen_calibration:")
+        }
+        if artifact.artifact_id not in markers:
+            raise ValueError(
+                f"scenario {scenario.scenario_id} is not linked to calibration artifact {artifact.artifact_id}"
+            )
         for group in held_out_groups:
             results.append(
                 validate_scenario_against_group(
                     scenario,
                     group,
                     time_tolerance=time_tolerance,
-                    translation_profile=None,
+                    translation_profile=translation_profile,
                 )
             )
-    return tuple(results)
+    return tuple(sorted(results, key=lambda item: (item.scenario_id, item.group_id)))
