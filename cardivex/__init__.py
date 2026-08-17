@@ -27,8 +27,12 @@ from .quality import QualityIssue, inspect_records, require_clean
 from .phenotypes import DomainDistribution, EmpiricalPhenotypeProfile, fit_empirical_profile, profile_distance
 from .scenario_builder import ScenarioBuildConfig, build_challenge_scenario, compose_novel_profile
 from .trajectory import bounded_trajectory, shift_timeline
+from .temporal import TemporalPoint, EmpiricalTemporalProfile, fit_temporal_profile, materialize_trajectory
+from .longitudinal import LongitudinalGroup, LongitudinalValidation, group_longitudinal_records, validate_longitudinal_group, align_to_time_grid, longitudinal_domain_series, longitudinal_feature_series
+from .temporal_metrics import TrajectoryError, trajectory_error, temporal_shift_error
 from .novelty import normalized_distance, novelty_margin, is_novel
 from .correlation import domain_correlation_matrix
+from .translation_calibration import TranslationCalibrationResult, fit_translation_profile
 from .challenge_families import ChallengeFamily, FAMILIES, build_severity_shift, build_temporal_shift, build_combinatorial, family_is_novel
 from .benchmark_factory import BenchmarkManifest, build_manifest, audit_manifest, available_families
 from .calibration import CalibrationBand, weighted_mean, uncertainty_band, domain_uncertainty, scenario_calibration_error
@@ -50,7 +54,10 @@ __all__ = [
     "EvidenceRecord", "DatasetRecord", "EvidenceRegistry", "DatasetRegistry", "IngestRecord", "ingest_processed_observation", "require_modalities",
     "records_from_rows", "load_csv", "DatasetBatch", "assemble_batch", "split_by_condition", "QualityIssue", "inspect_records", "require_clean",
     "DomainDistribution", "EmpiricalPhenotypeProfile", "fit_empirical_profile", "profile_distance", "ScenarioBuildConfig", "build_challenge_scenario", "compose_novel_profile",
-    "bounded_trajectory", "shift_timeline", "normalized_distance", "novelty_margin", "is_novel", "domain_correlation_matrix",
+    "bounded_trajectory", "shift_timeline", "TemporalPoint", "EmpiricalTemporalProfile", "fit_temporal_profile", "materialize_trajectory",
+    "LongitudinalGroup", "LongitudinalValidation", "group_longitudinal_records", "validate_longitudinal_group", "align_to_time_grid", "longitudinal_domain_series", "longitudinal_feature_series",
+    "TrajectoryError", "trajectory_error", "temporal_shift_error", "normalized_distance", "novelty_margin", "is_novel", "domain_correlation_matrix",
+    "TranslationCalibrationResult", "fit_translation_profile",
     "ChallengeFamily", "FAMILIES", "build_severity_shift", "build_temporal_shift", "build_combinatorial", "family_is_novel",
     "BenchmarkManifest", "build_manifest", "audit_manifest", "available_families",
     "CalibrationBand", "weighted_mean", "uncertainty_band", "domain_uncertainty", "scenario_calibration_error",
