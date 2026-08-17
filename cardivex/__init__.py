@@ -23,6 +23,7 @@ from .model_api import ModelPrediction, CardiVexModel, validate_model_prediction
 from .temporal_surrogate import TemporalSurrogateSpec, TemporalSurrogate, fit_temporal_surrogate, evaluate_temporal_surrogate
 from .temporal_benchmark import TemporalBenchmark, benchmark_temporal_surrogate
 from .cardiac_state import PatientProfile, CardiacLatentState, CardiacObservation, generate_patient, healthy_baseline, apply_perturbation, observe_state, state_to_domains
+from .simulator import simulate_patient
 from .splits import BenchmarkSplit, make_split
 from .registry import EvidenceRecord, DatasetRecord, EvidenceRegistry, DatasetRegistry
 from .ingest import IngestRecord, ingest_processed_observation, require_modalities
@@ -69,7 +70,7 @@ __all__ = [
     "ModelSpec", "FoldResult", "CrossValidationResult", "cross_validate_centroid", "predict_with_model", "ModelRecord", "ModelRegistry",
     "ModelPrediction", "CardiVexModel", "validate_model_predictions",
     "TemporalSurrogateSpec", "TemporalSurrogate", "fit_temporal_surrogate", "evaluate_temporal_surrogate", "TemporalBenchmark", "benchmark_temporal_surrogate",
-    "PatientProfile", "CardiacLatentState", "CardiacObservation", "generate_patient", "healthy_baseline", "apply_perturbation", "observe_state", "state_to_domains",
+    "PatientProfile", "CardiacLatentState", "CardiacObservation", "generate_patient", "healthy_baseline", "apply_perturbation", "observe_state", "state_to_domains", "simulate_patient",
     "ExperimentResult", "run_centroid_experiment", "experiment_json", "BenchmarkSplit", "make_split",
     "EvidenceRecord", "DatasetRecord", "EvidenceRegistry", "DatasetRegistry", "IngestRecord", "ingest_processed_observation", "require_modalities",
     "records_from_rows", "load_csv", "DatasetBatch", "assemble_batch", "split_by_condition", "QualityIssue", "inspect_records", "require_clean",
