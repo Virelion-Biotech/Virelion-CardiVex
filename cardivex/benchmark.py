@@ -53,6 +53,7 @@ def evaluate_recovery(
     treated: CardiacState,
 ) -> RecoveryResult:
     """Compare modality-level recovery toward a common baseline."""
+
     def modality_score(name: str) -> float:
         b = baseline.merged_features()
         c = challenged.merged_features()
@@ -60,29 +61,36 @@ def evaluate_recovery(
         keys = {k for k in b | c | t if k.startswith(f"{name}:")}
         if not keys:
             return 0.0
-        return rescue_score(
-            {k: b.get(k, 0.0) for k in keys},
-            {k: c.get(k, 0.0) for k in keys},
-            {k: t.get(k, 0.0) for k in keys},
+        return max(
+            0.0,
+            rescue_score(
+                {k: b.get(k, 0.0) for k in keys},
+                {k: c.get(k, 0.0) for k in keys},
+                {k: t.get(k, 0.0) for k in keys},
+            ),
         )
 
-    structural = max(
-        0.0,
-        modality_score("imaging"),
+    structural = modality_score("imaging")
+    functional = modality_score("functional")
+    molecular = modality_score("omics")
+    modality_presence = (
+        bool(baseline.imaging or challenged.imaging or treated.imaging),
+        bool(baseline.functional or challenged.functional or treated.functional),
+        bool(baseline.omics or challenged.omics or treated.omics),
     )
-    functional = max(
-        0.0,
-        modality_score("functional"),
+    scores = [
+        score for score, present in zip(
+            (structural, functional, molecular), modality_presence
+        ) if present
+    ]
+    overall = (
+        sum(scores) / len(scores)
+        if scores
+        else rescue_score(baseline.domain_scores, challenged.domain_scores, treated.domain_scores)
     )
-    molecular = max(
-        0.0,
-        modality_score("omics"),
+    return RecoveryResult(
+        structural=structural,
+        functional=functional,
+        molecular=molecular,
+        overall=max(-1.0, min(1.0, overall)),
     )
-    available = [x for x in (structural, functional, molecular) if x > 0.0 or any(
-        key.startswith(prefix + ":") for key in baseline.merged_features()
-        for prefix in ("imaging", "functional", "omics")
-    )]
-    overall = sum(available) / len(available) if available else rescue_score(
-        baseline.domain_scores, challenged.domain_scores, treated.domain_scores
-    )
-    return RecoveryResult(structural, functional, molecular, max(-1.0, min(1.0, overall)))
