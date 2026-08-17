@@ -4,10 +4,10 @@ from dataclasses import asdict, dataclass
 from typing import Mapping, Sequence
 
 from .audit import build_audit_record
-from .evaluation import best_threshold, ood_evaluate
+from .evaluation import calibration_curve
 from .experiments import CrossValidationResult, cross_validate_centroid
 from .model_registry import ModelRecord
-from .modeling import CentroidModel, fit_centroid_model
+from .modeling import fit_centroid_model
 from .serialization import dumps
 
 
@@ -17,11 +17,23 @@ class ExperimentResult:
     model_record: ModelRecord
     cross_validation: CrossValidationResult
     calibration_threshold: float
-    held_out_ood: Mapping[str, float]
+    calibration_balanced_accuracy: float
+    held_out_metrics: Mapping[str, float]
     audit: Mapping[str, object]
 
     def to_dict(self) -> dict[str, object]:
         return asdict(self)
+
+
+def _binary_metrics(scores: Sequence[float], labels: Sequence[int], threshold: float) -> dict[str, float]:
+    predicted = [float(score) >= threshold for score in scores]
+    positives = sum(1 for label in labels if int(label) == 1)
+    negatives = len(labels) - positives
+    tp = sum(p and int(y) == 1 for p, y in zip(predicted, labels))
+    fp = sum(p and int(y) == 0 for p, y in zip(predicted, labels))
+    tpr = tp / positives if positives else 0.0
+    fpr = fp / negatives if negatives else 0.0
+    return {"tpr": tpr, "fpr": fpr, "threshold": threshold}
 
 
 def run_centroid_experiment(
@@ -40,7 +52,7 @@ def run_centroid_experiment(
     model_version: str = "1.0.0",
     seed: int | None = 0,
 ) -> ExperimentResult:
-    """Run the transparent baseline with frozen calibration and held-out OOD evaluation."""
+    """Run the transparent baseline with frozen calibration and held-out scoring."""
     if not experiment_id.strip():
         raise ValueError("experiment_id cannot be empty")
     if len(calibration_scores) != len(calibration_labels) or not calibration_scores:
@@ -54,9 +66,11 @@ def run_centroid_experiment(
         states, labels, k=k, feature_names=feature_names,
         model_name=model_name, model_version=model_version,
     )
-    threshold = best_threshold(calibration_scores, calibration_labels)
-    ood = ood_evaluate(held_out_scores, held_out_labels, threshold=threshold)
-    model: CentroidModel = fit_centroid_model(states, labels, feature_names=feature_names)
+    calibration = calibration_curve(calibration_scores, [bool(x) for x in calibration_labels])
+    chosen = max(calibration, key=lambda r: (r.balanced_accuracy, r.sensitivity, -r.threshold))
+    held_out = _binary_metrics(held_out_scores, held_out_labels, chosen.threshold)
+
+    fit_centroid_model(states, labels, feature_names=feature_names)
     record = ModelRecord(
         model_id=f"MODEL-{experiment_id}",
         name=model_name,
@@ -71,7 +85,7 @@ def run_centroid_experiment(
         scenario_version="1.0.0",
         model_version=model_version,
         feature_pipeline_version=record.feature_contract,
-        config={"k": k, "threshold": threshold, "model_name": model_name},
+        config={"k": k, "threshold": chosen.threshold, "model_name": model_name},
         seed=seed,
         input_payload={
             "states": states,
@@ -87,8 +101,9 @@ def run_centroid_experiment(
         experiment_id=experiment_id,
         model_record=record,
         cross_validation=cv,
-        calibration_threshold=threshold,
-        held_out_ood={"tpr": ood.tpr, "fpr": ood.fpr, "threshold": ood.threshold},
+        calibration_threshold=chosen.threshold,
+        calibration_balanced_accuracy=chosen.balanced_accuracy,
+        held_out_metrics=held_out,
         audit=audit,
     )
 
