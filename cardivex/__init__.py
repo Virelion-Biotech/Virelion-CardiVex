@@ -29,6 +29,7 @@ from .data_plan import DatasetAnalysisPlan, build_analysis_plan
 from .calibration_runner import CalibrationArtifact, ConditionCalibration, build_development_calibration, calibration_json, compute_artifact_id
 from .frozen_scenario import build_scenario_from_frozen_calibration
 from .frozen_validation import FrozenValidationRun, run_frozen_validation, frozen_validation_json
+from .frozen_benchmark import FrozenBenchmark, build_frozen_benchmark, validate_frozen_benchmark_against_groups
 from .phenotypes import DomainDistribution, EmpiricalPhenotypeProfile, fit_empirical_profile, profile_distance
 from .scenario_builder import ScenarioBuildConfig, build_challenge_scenario, compose_novel_profile
 from .trajectory import bounded_trajectory, shift_timeline
@@ -64,6 +65,7 @@ __all__ = [
     "DatasetQualification", "qualify_records", "DatasetAnalysisPlan", "build_analysis_plan",
     "CalibrationArtifact", "ConditionCalibration", "build_development_calibration", "calibration_json", "compute_artifact_id",
     "build_scenario_from_frozen_calibration", "FrozenValidationRun", "run_frozen_validation", "frozen_validation_json",
+    "FrozenBenchmark", "build_frozen_benchmark", "validate_frozen_benchmark_against_groups",
     "DomainDistribution", "EmpiricalPhenotypeProfile", "fit_empirical_profile", "profile_distance", "ScenarioBuildConfig", "build_challenge_scenario", "compose_novel_profile",
     "bounded_trajectory", "shift_timeline", "TemporalPoint", "EmpiricalTemporalProfile", "fit_temporal_profile", "materialize_trajectory",
     "LongitudinalGroup", "LongitudinalValidation", "group_longitudinal_records", "validate_disjoint_longitudinal_groups", "validate_longitudinal_group", "align_to_time_grid", "longitudinal_domain_series", "longitudinal_feature_series",
