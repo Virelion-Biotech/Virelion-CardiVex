@@ -30,6 +30,8 @@ from .benchmark_factory import BenchmarkManifest, build_manifest, audit_manifest
 from .calibration import CalibrationBand, weighted_mean, uncertainty_band, domain_uncertainty, scenario_calibration_error
 from .benchmark_report import BenchmarkSummary, summarize_manifest, compare_scenario_to_observation, summarize_observation_uncertainty
 from .suite import BenchmarkRun, ScenarioResult, run_benchmark_suite, build_run_audit, report_summary
+from .scoring import ModalityDetectionScore, AssessmentScore, score_modalities, score_assessment, score_recovery
+from .serialization import to_jsonable, dumps, write_json
 
 __all__ = [
     "Scenario", "ScenarioState", "EvidenceTier", "Confidence", "generate_variations", "interpolate_timeline", "realism_score",
@@ -48,4 +50,6 @@ __all__ = [
     "CalibrationBand", "weighted_mean", "uncertainty_band", "domain_uncertainty", "scenario_calibration_error",
     "BenchmarkSummary", "summarize_manifest", "compare_scenario_to_observation", "summarize_observation_uncertainty",
     "BenchmarkRun", "ScenarioResult", "run_benchmark_suite", "build_run_audit", "report_summary",
+    "ModalityDetectionScore", "AssessmentScore", "score_modalities", "score_assessment", "score_recovery",
+    "to_jsonable", "dumps", "write_json",
 ]
