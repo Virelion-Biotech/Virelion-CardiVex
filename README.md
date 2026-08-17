@@ -9,72 +9,88 @@ CardiVex is a computational challenge and evaluation platform for human cardiac 
 ## Platform
 
 ```text
-Scenario evidence
-      |
-      v
-Scenario registry
-      |
-      v
-Scenario translation
-      |
-      v
+Evidence / datasets
+       |
+       v
+Empirical phenotype profiles
+       |
+       v
+Scenario + challenge families
+       |
+       v
+Benchmark manifest + leakage audit
+       |
+       v
 Cardiac digital surrogate
-      |
-      +-------------------+
-      |                   |
+       |
+       +-------------------+
+       |                   |
  observed/proxy     bounded synthetic
-      |                   |
-      +---------+---------+
-                |
-                v
-       multimodal state
-                |
-      +---------+----------+
-      |                    |
-      v                    v
- detection            novelty / OOD
-      |                    |
-      +---------+----------+
-                |
-                v
-       mechanism attribution
-                |
-                v
+       |                   |
+       +---------+---------+
+                 |
+                 v
+        multimodal state
+                 |
+      +----------+-----------+
+      |                      |
+      v                      v
+ detection              novelty / OOD
+      |                      |
+      +----------+-----------+
+                 |
+                 v
+        mechanism attribution
+                 |
+                 v
         countermeasure test
-                |
-                v
+                 |
+                 v
           rescue scoring
-                |
-                v
-        audit + provenance
+                 |
+                 v
+      calibration + uncertainty
+                 |
+                 v
+       audit + reproducibility
 ```
-
-## Repository layout
-
-- `cardivex/` — scenario, translation, multimodal state, defense, attribution, realism, benchmark, evaluation, pipeline, and audit logic.
-- `schemas/` — machine-readable scenario and cardiac-state definitions.
-- `examples/` — scenario and evaluation fixtures.
-- `docs/` — architecture, scenario specification, multimodal design, and evaluation methodology.
-- `tests/` — deterministic unit tests for the benchmark layer.
 
 ## Current implementation
 
-- Typed scenario objects with evidence tiers and uncertainty.
-- Bounded phenotype-level scenario variation with deterministic seeds.
-- Temporal interpolation of abstract cardiac response states.
-- A normalized `CardiacState` contract spanning imaging, functional, and omics features.
-- Modality adapters for already-processed measurements.
+- Typed scenarios with evidence tiers, uncertainty, provenance, and temporal states.
+- Dataset/evidence registries and processed-observation ingestion.
+- Dataset loaders, condition grouping, and quality gates.
+- Empirical phenotype distributions with domain-level uncertainty.
+- Evidence-linked scenario construction from empirical downstream states.
+- Challenge families: familiar, severity-shift, temporal-shift, combinatorial, and held-out novel.
+- Correlation estimation across observed phenotype domains.
+- Benchmark manifests, split isolation, leakage detection, and novelty audits.
+- A normalized `CardiacState` contract spanning imaging, functional, and omics measurements.
 - Transparent scenario-to-multimodal translation profiles.
-- End-to-end detection and domain-attribution pipeline.
-- Baseline abnormality scoring.
-- Nearest-known-state distance as an interpretable OOD baseline.
-- Threshold calibration with sensitivity, specificity, and balanced accuracy.
-- Held-out OOD evaluation with true-positive and false-positive rates.
-- Multimodal recovery scoring with modality-specific and overall rescue estimates.
-- Realism scoring that penalizes uncertainty and extrapolation.
-- Hash-based audit records for reproducibility.
-- Benchmark leakage checks for held-out scenarios.
+- End-to-end detection, OOD, and domain-attribution baselines.
+- Threshold calibration and uncertainty reporting.
+- Countermeasure/recovery scoring.
+- End-to-end benchmark suite execution with structured per-scenario results.
+- Hash-based audit records and reproducibility metadata.
 - Automated tests and a Python 3.10–3.12 GitHub Actions matrix.
+
+## End-to-end benchmark
+
+```python
+from cardivex.suite import run_benchmark_suite, build_run_audit
+
+run = run_benchmark_suite(
+    scenarios,
+    baseline=healthy_state,
+    known_states=reference_states,
+)
+
+audit = build_run_audit(run, run_id="RUN-001", seed=42)
+```
+
+The suite refuses to proceed when scenario definitions fail validation, when held-out scenarios directly leak development vectors, or when the held-out set fails the configured novelty audit.
+
+See [`docs/END_TO_END_BENCHMARK.md`](docs/END_TO_END_BENCHMARK.md).
 
 ## Evaluation discipline
 
@@ -95,26 +111,9 @@ final test
 
 Thresholds selected during calibration should be frozen before final test evaluation. Exact held-out scenario definitions and transformed feature representations must remain isolated from training.
 
-See [`docs/EVALUATION.md`](docs/EVALUATION.md) for the evaluation methodology.
-
-## Multimodal state layer
-
-```text
-              CardiacState
-            /      |       \
-       imaging  functional   omics
-            \      |       /
-             \     |      /
-              domain scores
-                   |
-             benchmark layer
-```
-
-See [`docs/MULTIMODAL.md`](docs/MULTIMODAL.md) for the state contract and adapter philosophy.
-
 ## Scenario philosophy
 
-CardiVex separates **scenario realism** from **scenario certainty**. A scenario can be deliberately unfamiliar while still being grounded in measured host-response evidence. Every scenario records where its features came from and which transformations were applied.
+CardiVex separates **scenario realism** from **scenario certainty**. A challenge can be deliberately unfamiliar while still being grounded in measured downstream host-response evidence. Generated states retain the source datasets and transformations used to construct them.
 
 The challenge engine works at the level of measurable host-response phenotypes and temporal behavior. It does not encode procedural instructions for creating, modifying, optimizing, or deploying a biological agent.
 
@@ -128,7 +127,7 @@ observed reference
        -> held-out novel scenario
 ```
 
-Claims become more exploratory as a scenario moves rightward. Held-out scenarios are kept separate from training inputs to prevent leakage.
+Claims become more exploratory as a scenario moves rightward. Held-out scenarios are kept separate from development inputs to prevent leakage.
 
 ## Development
 
