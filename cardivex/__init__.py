@@ -8,7 +8,10 @@ from .audit import build_audit_record
 from .validation import validate_scenario, detect_direct_leakage
 from .features import CardiacState, ModalityVector, from_domain_scores
 from .adapters import imaging_features, functional_features, omics_features, normalize_features
+from .translation import TranslationProfile, default_translation_profile, scenario_to_multimodal
+from .attribution import DomainAttribution, attribute_domains
 from .benchmark import DetectionResult, RecoveryResult, detect_state, evaluate_recovery
+from .pipeline import ChallengeAssessment, EndToEndResult, assess_scenario, run_end_to_end
 
 __all__ = [
     "Scenario",
@@ -31,8 +34,17 @@ __all__ = [
     "functional_features",
     "omics_features",
     "normalize_features",
+    "TranslationProfile",
+    "default_translation_profile",
+    "scenario_to_multimodal",
+    "DomainAttribution",
+    "attribute_domains",
     "DetectionResult",
     "RecoveryResult",
     "detect_state",
     "evaluate_recovery",
+    "ChallengeAssessment",
+    "EndToEndResult",
+    "assess_scenario",
+    "run_end_to_end",
 ]
