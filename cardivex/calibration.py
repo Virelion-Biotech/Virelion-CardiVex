@@ -39,22 +39,15 @@ def uncertainty_band(values: Sequence[float], *, z: float = 1.96) -> Calibration
         centered = [(float(v) - mean) ** 2 for v in values]
         sd = sqrt(sum(centered) / (len(values) - 1))
         half = z * sd / sqrt(len(values))
-    return CalibrationBand(mean, max(0.0, mean - half), min(1.0, mean + half), len(values))
+    return CalibrationBand(round(mean, 12), round(max(0.0, mean - half), 12), round(min(1.0, mean + half), 12), len(values))
 
 
-def domain_uncertainty(
-    domain_scores: Iterable[Mapping[str, float]],
-) -> dict[str, CalibrationBand]:
+def domain_uncertainty(domain_scores: Iterable[Mapping[str, float]]) -> dict[str, CalibrationBand]:
     rows = list(domain_scores)
     if not rows:
         raise ValueError("domain_scores cannot be empty")
     domains = sorted(set().union(*(row.keys() for row in rows)))
-    return {
-        domain: uncertainty_band(
-            [float(row.get(domain, 0.0)) for row in rows]
-        )
-        for domain in domains
-    }
+    return {domain: uncertainty_band([float(row.get(domain, 0.0)) for row in rows]) for domain in domains}
 
 
 def scenario_calibration_error(
@@ -64,10 +57,7 @@ def scenario_calibration_error(
     keys = sorted(set(predicted) | set(observed))
     if not keys:
         raise ValueError("predicted and observed cannot both be empty")
-    errors = {
-        key: abs(float(predicted.get(key, 0.0)) - float(observed.get(key, 0.0)))
-        for key in keys
-    }
-    errors["mae"] = sum(errors.values()) / len(keys)
+    errors = {key: round(abs(float(predicted.get(key, 0.0)) - float(observed.get(key, 0.0))), 12) for key in keys}
+    errors["mae"] = round(sum(errors.values()) / len(keys), 12)
     errors["max_error"] = max(errors.values())
     return errors
