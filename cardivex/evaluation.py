@@ -68,6 +68,11 @@ def calibration_curve(
 
 
 def best_threshold(results: Sequence[CalibrationResult]) -> CalibrationResult:
+    """Choose the threshold maximizing balanced accuracy, then sensitivity.
+
+    Lower thresholds win a complete metric tie because the primary defensive
+    objective is to avoid missing abnormal states.
+    """
     if not results:
         raise ValueError("results cannot be empty")
     return max(results, key=lambda r: (r.balanced_accuracy, r.sensitivity, -r.threshold))
@@ -78,14 +83,31 @@ def ood_evaluate(
     novel_states: Sequence[Mapping[str, float]],
     *,
     threshold: float,
+    reference_states: Sequence[Mapping[str, float]] | None = None,
 ) -> OODResult:
-    """Evaluate a nearest-known-state OOD baseline at a fixed threshold."""
+    """Evaluate nearest-reference OOD detection without self-distance leakage.
+
+    When ``reference_states`` is omitted, known states are scored leave-one-out.
+    For a production benchmark, a separate development/reference set should be
+    supplied explicitly and kept isolated from the scored known-test set.
+    """
     if not known_states or not novel_states:
         raise ValueError("known_states and novel_states must both be non-empty")
     if not 0.0 <= threshold <= 1.0:
         raise ValueError("threshold must be in [0, 1]")
-    known_scores = [nearest_state_distance(state, list(known_states)) for state in known_states]
-    novel_scores = [nearest_state_distance(state, list(known_states)) for state in novel_states]
+
+    references = list(reference_states) if reference_states is not None else None
+    if references is not None and not references:
+        raise ValueError("reference_states cannot be empty when provided")
+
+    known_scores: list[float] = []
+    for index, state in enumerate(known_states):
+        refs = references if references is not None else list(known_states[:index]) + list(known_states[index + 1:])
+        if not refs:
+            raise ValueError("at least two known states are required for leave-one-out OOD evaluation")
+        known_scores.append(nearest_state_distance(state, refs))
+
+    novel_scores = [nearest_state_distance(state, references or list(known_states)) for state in novel_states]
     tpr = sum(score >= threshold for score in novel_scores) / len(novel_scores)
     fpr = sum(score >= threshold for score in known_scores) / len(known_scores)
     return OODResult(threshold, tpr, fpr, len(known_states), len(novel_states))
