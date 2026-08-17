@@ -1,3 +1,5 @@
+import pytest
+
 from cardivex.benchmark_factory import build_manifest
 from cardivex.benchmark_report import compare_scenario_to_observation, summarize_manifest, summarize_observation_uncertainty
 from cardivex.models import Confidence, DomainValue, EvidenceTier, Scenario, ScenarioState
@@ -19,6 +21,7 @@ def make_scenario(scenario_id: str, value: float, ood_status: str = "train") -> 
         ),
         ood_status=ood_status,
         provenance_sources=("DS-TEST",),
+        provenance_transformations=("observed_measurement",) if ood_status == "held_out_novel" else (),
     )
 
 
@@ -34,11 +37,11 @@ def test_summary_counts_development_and_holdout():
 def test_scenario_observation_error_is_transparent():
     scenario = make_scenario("CVX-3", 0.4)
     errors = compare_scenario_to_observation(scenario, {"a": 0.6})
-    assert errors["mae"] == 0.2
-    assert errors["max_error"] == 0.2
+    assert errors["mae"] == pytest.approx(0.2)
+    assert errors["max_error"] == pytest.approx(0.2)
 
 
 def test_observation_uncertainty_summary_contains_bounds():
     summary = summarize_observation_uncertainty([{"a": 0.2}, {"a": 0.4}])
-    assert summary["a"]["mean"] == 0.30000000000000004
+    assert summary["a"]["mean"] == pytest.approx(0.3)
     assert summary["a"]["lower"] <= summary["a"]["mean"] <= summary["a"]["upper"]
