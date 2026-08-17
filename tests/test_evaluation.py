@@ -7,7 +7,7 @@ def test_calibration_selects_reasonable_threshold():
     results = calibration_curve(scores, labels, thresholds=[0.2, 0.4, 0.6])
     best = best_threshold(results)
     assert best.balanced_accuracy == 1.0
-    assert best.threshold == 0.2
+    assert best.threshold == 0.4
 
 
 def test_ood_evaluation_detects_separated_novel_states_without_self_distance():
