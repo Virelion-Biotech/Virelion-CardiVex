@@ -1,5 +1,5 @@
 title: CardiVex Frozen Benchmark
- type: object
+type: object
 required:
   - calibration_artifact_id
   - scenario_ids
