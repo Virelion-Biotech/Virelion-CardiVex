@@ -13,6 +13,8 @@ from .attribution import DomainAttribution, attribute_domains
 from .benchmark import DetectionResult, RecoveryResult, detect_state, evaluate_recovery
 from .pipeline import ChallengeAssessment, EndToEndResult, assess_scenario, run_end_to_end
 from .evaluation import CalibrationResult, OODResult, calibration_curve, best_threshold, ood_evaluate, state_abnormality_scores
+from .modeling import Prediction, CentroidModel, fit_centroid_model, accuracy
+from .splits import BenchmarkSplit, make_split
 
 __all__ = [
     "Scenario", "ScenarioState", "EvidenceTier", "Confidence",
@@ -26,4 +28,6 @@ __all__ = [
     "detect_state", "evaluate_recovery", "ChallengeAssessment", "EndToEndResult",
     "assess_scenario", "run_end_to_end", "CalibrationResult", "OODResult",
     "calibration_curve", "best_threshold", "ood_evaluate", "state_abnormality_scores",
+    "Prediction", "CentroidModel", "fit_centroid_model", "accuracy",
+    "BenchmarkSplit", "make_split",
 ]
