@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Mapping, Sequence
 
-from .features import ModalityVector
+from .features import CardiacState, ModalityVector
 from .ingest import IngestRecord
 
 
@@ -82,7 +82,7 @@ def ingest_gse234907_physiology(
                 dataset_id="GSE234907",
                 condition=observation.condition,
                 time=observation.time,
-                state=__import__("cardivex.features", fromlist=["CardiacState"]).CardiacState(
+                state=CardiacState(
                     functional=ModalityVector("functional", normalized),
                     domain_scores=dict(domain_scores or {}),
                     time=observation.time,
