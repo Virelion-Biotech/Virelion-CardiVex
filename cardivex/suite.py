@@ -8,6 +8,7 @@ from .benchmark_factory import BenchmarkManifest, audit_manifest, build_manifest
 from .benchmark_report import summarize_manifest
 from .features import CardiacState
 from .pipeline import ChallengeAssessment, assess_scenario
+from .scoring import AssessmentScore, score_assessment
 from .splits import BenchmarkSplit, make_split
 from .validation import validate_scenario
 
@@ -17,11 +18,11 @@ class ScenarioResult:
     scenario_id: str
     status: str
     assessment: ChallengeAssessment | None
+    score: AssessmentScore | None
     issues: tuple[str, ...] = ()
 
     def to_dict(self) -> dict[str, object]:
-        payload = asdict(self)
-        return payload
+        return asdict(self)
 
 
 @dataclass(frozen=True)
@@ -60,6 +61,7 @@ def run_benchmark_suite(
     version: str = "0.1.0",
     abnormal_threshold: float = 0.20,
     novelty_threshold: float = 0.35,
+    attribution_threshold: float = 0.05,
 ) -> BenchmarkRun:
     """Execute the transparent benchmark baseline over a validated scenario suite.
 
@@ -88,9 +90,15 @@ def run_benchmark_suite(
                 abnormal_threshold=abnormal_threshold,
                 novelty_threshold=novelty_threshold,
             )
-            results.append(ScenarioResult(scenario.scenario_id, "ok", assessment))
+            score = score_assessment(
+                assessment,
+                baseline=baseline,
+                known_states=known_states,
+                attribution_threshold=attribution_threshold,
+            )
+            results.append(ScenarioResult(scenario.scenario_id, "ok", assessment, score))
         except Exception as exc:  # preserve per-scenario diagnostics
-            results.append(ScenarioResult(scenario.scenario_id, "error", None, (str(exc),)))
+            results.append(ScenarioResult(scenario.scenario_id, "error", None, None, (str(exc),)))
 
     return BenchmarkRun(name=name, manifest=manifest, split=split, results=tuple(results), audit=audit)
 
