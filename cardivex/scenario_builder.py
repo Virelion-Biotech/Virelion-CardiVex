@@ -28,7 +28,11 @@ def build_challenge_scenario(
     target_model: str,
     config: ScenarioBuildConfig | None = None,
 ) -> Scenario:
-    """Construct an evidence-linked downstream phenotype challenge scenario."""
+    """Construct an evidence-linked downstream phenotype challenge scenario.
+
+    Generated scenarios remain explicitly extrapolated until an external
+    validation procedure upgrades their evidence tier.
+    """
     config = config or ScenarioBuildConfig()
     if not scenario_id.startswith("CVX-"):
         raise ValueError("scenario_id must start with CVX-")
@@ -44,7 +48,7 @@ def build_challenge_scenario(
         delta = rng.uniform(-sigma, sigma) if sigma > 0 else 0.0
         value = _clip(stats.mean + delta)
         uncertainty = _clip((stats.std if stats.count > 1 else 0.2) + abs(delta) * 0.25)
-        domains[domain] = DomainValue(value=value, uncertainty=uncertainty, evidence_status="modeled")
+        domains[domain] = DomainValue(value=value, uncertainty=uncertainty, evidence_status="extrapolated")
 
     baseline = ScenarioState(
         state="baseline_reference",
@@ -56,17 +60,17 @@ def build_challenge_scenario(
         state="recovery_reference",
         relative_time=2.0,
         domains={
-            name: DomainValue(value.value * 0.5, uncertainty=value.uncertainty, evidence_status="modeled")
+            name: DomainValue(value.value * 0.5, uncertainty=value.uncertainty, evidence_status="extrapolated")
             for name, value in domains.items()
         },
     )
     return Scenario(
         scenario_id=scenario_id,
-        version="0.2.0",
+        version="0.2.1",
         name=name,
         description="Evidence-linked phenotype challenge generated from an empirical downstream-state profile.",
         target_model=target_model,
-        evidence_tier=EvidenceTier.VALIDATED_MODEL if profile.sample_count >= 5 else EvidenceTier.EXTRAPOLATED,
+        evidence_tier=EvidenceTier.EXTRAPOLATED,
         confidence=Confidence.MODERATE if profile.sample_count >= 5 else Confidence.EXPLORATORY,
         phenotype_domains=domains,
         temporal_profile=(baseline, challenge, recovery),
