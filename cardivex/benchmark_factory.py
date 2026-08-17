@@ -19,6 +19,19 @@ class BenchmarkManifest:
         return tuple(s.scenario_id for s in self.scenarios)
 
 
+def _scenario_family(scenario: Scenario) -> str:
+    if scenario.ood_status == "held_out_novel":
+        return "held_out_novel"
+    transformations = " ".join(scenario.provenance_transformations).lower()
+    if "temporal" in transformations:
+        return "temporal_shift"
+    if "severity" in transformations:
+        return "severity_shift"
+    if "combinatorial" in transformations or "novel_profile" in transformations:
+        return "combinatorial"
+    return "familiar"
+
+
 def build_manifest(
     scenarios: Iterable[Scenario],
     *,
@@ -34,10 +47,7 @@ def build_manifest(
     issues = [issue for scenario in items for issue in validate_scenario(scenario)]
     if issues:
         raise ValueError("manifest contains invalid scenarios: " + ", ".join(i.code for i in issues))
-    family_names = tuple(sorted({
-        "held_out_novel" if s.ood_status == "held_out_novel" else "familiar"
-        for s in items
-    }))
+    family_names = tuple(sorted({_scenario_family(s) for s in items}))
     return BenchmarkManifest(name=name, version=version, scenarios=items, family_names=family_names)
 
 
