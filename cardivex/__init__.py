@@ -27,6 +27,8 @@ from .novelty import normalized_distance, novelty_margin, is_novel
 from .correlation import domain_correlation_matrix
 from .challenge_families import ChallengeFamily, FAMILIES, build_severity_shift, build_temporal_shift, build_combinatorial, family_is_novel
 from .benchmark_factory import BenchmarkManifest, build_manifest, audit_manifest, available_families
+from .calibration import CalibrationBand, weighted_mean, uncertainty_band, domain_uncertainty, scenario_calibration_error
+from .benchmark_report import BenchmarkSummary, summarize_manifest, compare_scenario_to_observation, summarize_observation_uncertainty
 
 __all__ = [
     "Scenario", "ScenarioState", "EvidenceTier", "Confidence", "generate_variations", "interpolate_timeline", "realism_score",
@@ -42,4 +44,6 @@ __all__ = [
     "bounded_trajectory", "shift_timeline", "normalized_distance", "novelty_margin", "is_novel", "domain_correlation_matrix",
     "ChallengeFamily", "FAMILIES", "build_severity_shift", "build_temporal_shift", "build_combinatorial", "family_is_novel",
     "BenchmarkManifest", "build_manifest", "audit_manifest", "available_families",
+    "CalibrationBand", "weighted_mean", "uncertainty_band", "domain_uncertainty", "scenario_calibration_error",
+    "BenchmarkSummary", "summarize_manifest", "compare_scenario_to_observation", "summarize_observation_uncertainty",
 ]
