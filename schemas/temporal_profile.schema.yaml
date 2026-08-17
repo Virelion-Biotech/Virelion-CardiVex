@@ -1,0 +1,34 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$title: CardiVex Empirical Temporal Profile
+$type: object
+required: [condition, points, source_dataset_ids]
+properties:
+  condition:
+    type: string
+  source_dataset_ids:
+    type: array
+    items: {type: string}
+    uniqueItems: true
+  points:
+    type: array
+    minItems: 2
+    items:
+      type: object
+      required: [relative_time, count, domains]
+      properties:
+        relative_time:
+          type: number
+          minimum: 0
+        count:
+          type: integer
+          minimum: 1
+        domains:
+          type: object
+          additionalProperties:
+            type: object
+            required: [value, uncertainty, evidence_status]
+            properties:
+              value: {type: number, minimum: 0, maximum: 1}
+              uncertainty: {type: number, minimum: 0, maximum: 1}
+              evidence_status:
+                enum: [observed, proxy, modeled, extrapolated]
