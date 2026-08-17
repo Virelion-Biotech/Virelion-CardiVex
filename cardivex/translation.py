@@ -57,6 +57,7 @@ def scenario_to_multimodal(
     time: float = 0.0,
 ) -> CardiacState:
     """Project a scenario's domain scores into the shared multimodal contract."""
+    using_default = profile is None
     profile = profile or default_translation_profile()
     domains = scenario.domain_vector()
     return CardiacState(
@@ -68,6 +69,6 @@ def scenario_to_multimodal(
         metadata={
             "scenario_id": scenario.scenario_id,
             "scenario_version": scenario.version,
-            "translation_profile": "default-v0.1.0" if profile is not None else "unknown",
+            "translation_profile": "default-v0.1.0" if using_default else "custom",
         },
     )
