@@ -29,6 +29,7 @@ from .challenge_families import ChallengeFamily, FAMILIES, build_severity_shift,
 from .benchmark_factory import BenchmarkManifest, build_manifest, audit_manifest, available_families
 from .calibration import CalibrationBand, weighted_mean, uncertainty_band, domain_uncertainty, scenario_calibration_error
 from .benchmark_report import BenchmarkSummary, summarize_manifest, compare_scenario_to_observation, summarize_observation_uncertainty
+from .suite import BenchmarkRun, ScenarioResult, run_benchmark_suite, build_run_audit, report_summary
 
 __all__ = [
     "Scenario", "ScenarioState", "EvidenceTier", "Confidence", "generate_variations", "interpolate_timeline", "realism_score",
@@ -46,4 +47,5 @@ __all__ = [
     "BenchmarkManifest", "build_manifest", "audit_manifest", "available_families",
     "CalibrationBand", "weighted_mean", "uncertainty_band", "domain_uncertainty", "scenario_calibration_error",
     "BenchmarkSummary", "summarize_manifest", "compare_scenario_to_observation", "summarize_observation_uncertainty",
+    "BenchmarkRun", "ScenarioResult", "run_benchmark_suite", "build_run_audit", "report_summary",
 ]
