@@ -11,6 +11,7 @@ class ModelRecord:
     version: str
     feature_contract: str
     training_split: str
+    training_sample_count: int | None = None
     notes: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
@@ -24,6 +25,8 @@ class ModelRecord:
             raise ValueError("feature_contract cannot be empty")
         if not self.training_split.strip():
             raise ValueError("training_split cannot be empty")
+        if self.training_sample_count is not None and self.training_sample_count < 1:
+            raise ValueError("training_sample_count must be positive when provided")
 
 
 class ModelRegistry:
