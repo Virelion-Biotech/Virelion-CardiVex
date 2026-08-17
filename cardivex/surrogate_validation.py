@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Iterable, Sequence
+from typing import Iterable
 
 from .longitudinal import LongitudinalGroup, longitudinal_domain_series
 from .models import Scenario
@@ -37,20 +37,17 @@ def _scenario_series(scenario: Scenario) -> dict[str, tuple[tuple[float, float],
     }
 
 
-def _nearest_observed_value(series: Sequence[tuple[float, float]], time: float) -> float | None:
-    if not series:
-        return None
-    point = min(series, key=lambda item: abs(float(item[0]) - float(time)))
-    return float(point[1])
-
-
 def validate_scenario_against_group(
     scenario: Scenario,
     group: LongitudinalGroup,
     *,
     time_tolerance: float = 0.0,
 ) -> SurrogateValidation:
-    """Compare a generated scenario trajectory with one held-out observed unit."""
+    """Compare a generated scenario trajectory with one held-out observed unit.
+
+    Only observed points within the declared tolerance are compared. No implicit
+    nearest-time interpolation is performed.
+    """
     if time_tolerance < 0:
         raise ValueError("time_tolerance must be non-negative")
     predicted = _scenario_series(scenario)
@@ -62,12 +59,9 @@ def validate_scenario_against_group(
         matched = 0
         for time, value in predicted[domain]:
             candidates = [point for point in observed[domain] if abs(float(point[0]) - time) <= time_tolerance]
-            if candidates:
-                observed_value = min(candidates, key=lambda point: abs(float(point[0]) - time))[1]
-            else:
-                observed_value = _nearest_observed_value(observed[domain], time)
-                if observed_value is None:
-                    continue
+            if not candidates:
+                continue
+            observed_value = min(candidates, key=lambda point: abs(float(point[0]) - time))[1]
             errors.append(abs(float(value) - float(observed_value)))
             matched += 1
         if matched:
