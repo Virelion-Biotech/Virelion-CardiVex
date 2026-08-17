@@ -30,6 +30,7 @@ from .trajectory import bounded_trajectory, shift_timeline
 from .temporal import TemporalPoint, EmpiricalTemporalProfile, fit_temporal_profile, materialize_trajectory
 from .longitudinal import LongitudinalGroup, LongitudinalValidation, group_longitudinal_records, validate_longitudinal_group, align_to_time_grid, longitudinal_domain_series, longitudinal_feature_series
 from .temporal_metrics import TrajectoryError, trajectory_error, temporal_shift_error
+from .surrogate_validation import SurrogateValidation, validate_scenario_against_group, summarize_surrogate_validation
 from .novelty import normalized_distance, novelty_margin, is_novel
 from .correlation import domain_correlation_matrix
 from .translation_calibration import TranslationCalibrationResult, fit_translation_profile
@@ -56,8 +57,8 @@ __all__ = [
     "DomainDistribution", "EmpiricalPhenotypeProfile", "fit_empirical_profile", "profile_distance", "ScenarioBuildConfig", "build_challenge_scenario", "compose_novel_profile",
     "bounded_trajectory", "shift_timeline", "TemporalPoint", "EmpiricalTemporalProfile", "fit_temporal_profile", "materialize_trajectory",
     "LongitudinalGroup", "LongitudinalValidation", "group_longitudinal_records", "validate_longitudinal_group", "align_to_time_grid", "longitudinal_domain_series", "longitudinal_feature_series",
-    "TrajectoryError", "trajectory_error", "temporal_shift_error", "normalized_distance", "novelty_margin", "is_novel", "domain_correlation_matrix",
-    "TranslationCalibrationResult", "fit_translation_profile",
+    "TrajectoryError", "trajectory_error", "temporal_shift_error", "SurrogateValidation", "validate_scenario_against_group", "summarize_surrogate_validation",
+    "normalized_distance", "novelty_margin", "is_novel", "domain_correlation_matrix", "TranslationCalibrationResult", "fit_translation_profile",
     "ChallengeFamily", "FAMILIES", "build_severity_shift", "build_temporal_shift", "build_combinatorial", "family_is_novel",
     "BenchmarkManifest", "build_manifest", "audit_manifest", "available_families",
     "CalibrationBand", "weighted_mean", "uncertainty_band", "domain_uncertainty", "scenario_calibration_error",
