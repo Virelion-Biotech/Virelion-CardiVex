@@ -63,6 +63,16 @@ def group_longitudinal_records(
     return tuple(groups)
 
 
+def validate_disjoint_longitudinal_groups(
+    development: Sequence[LongitudinalGroup],
+    held_out: Sequence[LongitudinalGroup],
+) -> tuple[str, ...]:
+    """Return experimental-unit IDs appearing in both development and held-out groups."""
+    development_ids = {group.group_id for group in development}
+    held_out_ids = {group.group_id for group in held_out}
+    return tuple(sorted(development_ids & held_out_ids))
+
+
 def validate_longitudinal_group(
     group: LongitudinalGroup,
     *,
