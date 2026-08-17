@@ -1,17 +1,12 @@
 # Virelion-CardiVex
 
-CardiVex is a computational platform for evaluating human cardiac models under realistic, non-operational biological challenge scenarios.
+CardiVex is a computational challenge and evaluation platform for human cardiac models. It represents realistic, non-operational biological challenge states and evaluates whether analysis systems can detect abnormality, characterize affected biological systems, recognize unfamiliar states, quantify recovery, and reproduce every conclusion.
 
-The platform is designed around six defensive questions:
+## Core question
 
-1. Can an abnormal cardiac state be detected?
-2. Can the system distinguish abnormality from normal biological variability?
-3. Can affected cellular and functional systems be characterized?
-4. Can genuinely unfamiliar states be recognized as out-of-distribution rather than forced into a known class?
-5. Can candidate interventions be evaluated by their ability to move the tissue state toward baseline?
-6. Can every result be reproduced, traced, and audited?
+> Can a human cardiac digital surrogate and defensive analysis system remain effective when a challenge produces an unusual or previously unseen phenotype?
 
-## Architecture
+## Platform
 
 ```text
 Scenario evidence
@@ -27,43 +22,76 @@ Cardiac digital surrogate
       |
       +-------------------+
       |                   |
-      v                   v
-Observed/proxy      Synthetic variation
+ observed/proxy     bounded synthetic
       |                   |
       +---------+---------+
+                |
                 v
-       Multimodal phenotype
-      /         |           \
- imaging      omics       function
-      \         |           /
+       multimodal state
+                |
+      +---------+----------+
+      |                    |
+      v                    v
+ detection            novelty / OOD
+      |                    |
+      +---------+----------+
+                |
                 v
-     Detection + characterization
-          /              \
-         v                v
-    known-state        OOD detection
-         \                /
-          +-------+------+
-                  v
-          Countermeasure test
-                  |
-                  v
-          Recovery assessment
-                  |
-                  v
-           Audit + provenance
+       mechanism attribution
+                |
+                v
+        countermeasure test
+                |
+                v
+          rescue scoring
+                |
+                v
+        audit + provenance
 ```
 
 ## Repository layout
 
-- `docs/ARCHITECTURE.md` — system architecture and design principles
-- `docs/SCENARIO_SPEC.md` — scenario representation and validation rules
-- `schemas/scenario.schema.yaml` — machine-readable scenario schema
-- `examples/CVX-0001.yaml` — initial synthetic scenario example
+- `cardivex/` — core scenario, variation, defense, realism, and audit logic.
+- `schemas/` — machine-readable scenario definitions.
+- `examples/` — example scenario objects.
+- `docs/` — architecture, scenario specification, and validation rules.
+- `tests/` — unit tests for core deterministic behavior.
 
-## Core design rule
+## What the first implementation supports
 
-CardiVex represents realistic **host-response and phenotype states** rather than operational instructions for producing or deploying biological agents. Scenario realism is established through evidence, characterized proxies, validated computational mappings, and explicitly labeled extrapolation.
+- Typed scenario objects with evidence tiers and uncertainty.
+- Bounded phenotype-level scenario variation with deterministic seeds.
+- Temporal interpolation of abstract cardiac response states.
+- Realism scoring that penalizes uncertainty and extrapolation.
+- Baseline-distance abnormality scoring.
+- Nearest-known-state distance as a simple OOD baseline.
+- Recovery/rescue scoring relative to baseline.
+- Hash-based audit records for reproducibility.
+- Automated tests on Python 3.10–3.12.
 
-## Status
+## Scenario philosophy
 
-Early architecture stage. The current repository establishes the scenario specification and provenance foundation before model implementation begins.
+CardiVex separates **scenario realism** from **scenario certainty**. A scenario can be deliberately unfamiliar while still being grounded in measured host-response evidence. Every scenario records where its features came from and which transformations were applied.
+
+The challenge engine works at the level of measurable host-response phenotypes and temporal behavior. It does not encode procedural instructions for creating, modifying, optimizing, or deploying a biological agent.
+
+## Validation ladder
+
+```text
+observed reference
+       -> characterized proxy
+       -> validated computational representation
+       -> bounded synthetic variation
+       -> held-out novel scenario
+```
+
+Claims become more exploratory as a scenario moves rightward. Held-out scenarios are kept separate from training inputs to prevent leakage.
+
+## Development
+
+```bash
+pip install -e '.[test]'
+pytest
+```
+
+The project is intentionally built so later imaging, functional, transcriptomic, and ML modules can consume the same scenario and audit contracts rather than inventing incompatible representations.
