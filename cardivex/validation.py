@@ -22,8 +22,11 @@ def validate_scenario(scenario: Scenario) -> list[ValidationIssue]:
 
     if not scenario.provenance_sources:
         issues.append(ValidationIssue("MISSING_PROVENANCE", "scenario has no provenance sources"))
-    if not scenario.provenance_transformations:
-        issues.append(ValidationIssue("MISSING_TRANSFORM_TRACE", "scenario has no transformation lineage"))
+
+    # Transformation lineage is mandatory for derived/synthetic states, but
+    # observed scenarios may legitimately have no transformation step.
+    if scenario.evidence_tier.value != "observed" and not scenario.provenance_transformations:
+        issues.append(ValidationIssue("MISSING_TRANSFORM_TRACE", "derived scenario has no transformation lineage"))
 
     if scenario.evidence_tier.value == "extrapolated" and scenario.confidence.value == "high":
         issues.append(ValidationIssue("OVERCONFIDENT_EXTRAPOLATION", "extrapolated scenarios cannot be marked high confidence"))
