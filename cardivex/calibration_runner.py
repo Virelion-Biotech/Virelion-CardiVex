@@ -41,27 +41,41 @@ class CalibrationArtifact:
         return self.translation.profile if self.translation is not None else None
 
     def to_dict(self) -> dict[str, object]:
-        return {
-            "dataset_id": self.dataset_id,
-            "condition_calibrations": [
-                {
-                    "condition": item.condition,
-                    "profile": asdict(item.profile),
-                    "correlation": {
-                        str(domain): dict(values)
-                        for domain, values in item.correlation.items()
-                    },
-                    "temporal": asdict(item.temporal) if item.temporal else None,
-                }
-                for item in self.condition_calibrations
-            ],
-            "translation": asdict(self.translation) if self.translation else None,
-            "development_record_ids": self.development_record_ids,
-            "held_out_group_ids": self.held_out_group_ids,
-            "excluded_record_ids": self.excluded_record_ids,
-            "source_dataset_ids": self.source_dataset_ids,
-            "artifact_id": self.artifact_id,
-        }
+        return _artifact_payload(self) | {"artifact_id": self.artifact_id}
+
+
+def _artifact_payload(artifact: CalibrationArtifact) -> dict[str, object]:
+    return {
+        "dataset_id": artifact.dataset_id,
+        "condition_calibrations": [
+            {
+                "condition": item.condition,
+                "profile": asdict(item.profile),
+                "correlation": {
+                    str(domain): dict(values)
+                    for domain, values in item.correlation.items()
+                },
+                "temporal": asdict(item.temporal) if item.temporal else None,
+            }
+            for item in artifact.condition_calibrations
+        ],
+        "translation": asdict(artifact.translation) if artifact.translation else None,
+        "development_record_ids": artifact.development_record_ids,
+        "held_out_group_ids": artifact.held_out_group_ids,
+        "excluded_record_ids": artifact.excluded_record_ids,
+        "source_dataset_ids": artifact.source_dataset_ids,
+    }
+
+
+def compute_artifact_id(artifact: CalibrationArtifact) -> str:
+    """Hash the complete frozen calibration content, excluding the stored digest."""
+    encoded = json.dumps(
+        _artifact_payload(artifact),
+        sort_keys=True,
+        separators=(",", ":"),
+        default=str,
+    ).encode("utf-8")
+    return sha256(encoded).hexdigest()[:16]
 
 
 def _artifact_id(
@@ -69,15 +83,23 @@ def _artifact_id(
     development_record_ids: Sequence[str],
     held_out_group_ids: Sequence[str],
     conditions: Sequence[str],
+    calibrations: Sequence[ConditionCalibration],
+    translation: TranslationCalibrationResult | None,
 ) -> str:
-    payload = {
-        "dataset_id": dataset_id,
-        "development_record_ids": sorted(development_record_ids),
-        "held_out_group_ids": sorted(held_out_group_ids),
-        "conditions": sorted(conditions),
-    }
-    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
-    return sha256(encoded).hexdigest()[:16]
+    provisional = CalibrationArtifact(
+        dataset_id=dataset_id,
+        condition_calibrations=tuple(calibrations),
+        translation=translation,
+        development_record_ids=tuple(sorted(development_record_ids)),
+        held_out_group_ids=tuple(sorted(held_out_group_ids)),
+        excluded_record_ids=(),
+        source_dataset_ids=(dataset_id,),
+        artifact_id="",
+    )
+    # Conditions are represented inside condition_calibrations; the explicit
+    # parameter is retained to make the call-site intent clear.
+    _ = conditions
+    return compute_artifact_id(provisional)
 
 
 def build_development_calibration(
@@ -155,13 +177,7 @@ def build_development_calibration(
         )
 
     development_ids = tuple(record.observation_id for record in development)
-    artifact_id = _artifact_id(
-        plan.dataset_id,
-        development_ids,
-        tuple(sorted(candidate_holdouts)),
-        selected_conditions,
-    )
-    return CalibrationArtifact(
+    provisional = CalibrationArtifact(
         dataset_id=plan.dataset_id,
         condition_calibrations=tuple(calibrations),
         translation=translation,
@@ -169,6 +185,17 @@ def build_development_calibration(
         held_out_group_ids=tuple(sorted(candidate_holdouts)),
         excluded_record_ids=tuple(sorted(excluded_ids)),
         source_dataset_ids=(plan.dataset_id,),
+        artifact_id="",
+    )
+    artifact_id = compute_artifact_id(provisional)
+    return CalibrationArtifact(
+        dataset_id=provisional.dataset_id,
+        condition_calibrations=provisional.condition_calibrations,
+        translation=provisional.translation,
+        development_record_ids=provisional.development_record_ids,
+        held_out_group_ids=provisional.held_out_group_ids,
+        excluded_record_ids=provisional.excluded_record_ids,
+        source_dataset_ids=provisional.source_dataset_ids,
         artifact_id=artifact_id,
     )
 
