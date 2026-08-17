@@ -92,10 +92,11 @@ def score_count_modules(
     metadata: Sequence[GEOSampleMetadata],
     config: ModuleScoreConfig,
 ) -> tuple[IngestRecord, ...]:
-    """Convert real GEO counts into descriptive CardiVex downstream phenotype scores.
+    """Convert processed GEO counts into descriptive downstream phenotype scores.
 
-    This adapter intentionally does not infer causality. Gene-module scores are
-    normalized within the supplied cohort only after expression normalization.
+    This adapter intentionally does not infer causality. RNA-derived scores are
+    represented as the omics modality only; imaging and functional measurements
+    remain absent rather than being fabricated as empty vectors.
     """
     if tuple(item.sample_id for item in metadata) != matrix.sample_ids:
         raise ValueError("metadata sample IDs must match count-matrix columns exactly")
@@ -110,7 +111,7 @@ def score_count_modules(
     # phenotype contracts comparable without asserting an absolute biological scale.
     domains = tuple(sorted(config.domain_gene_sets))
     centers = {domain: sum(row[domain] for row in raw) / len(raw) for domain in domains}
-    scales = {}
+    scales: dict[str, float] = {}
     for domain in domains:
         variance = sum((row[domain] - centers[domain]) ** 2 for row in raw) / max(1, len(raw) - 1)
         scales[domain] = sqrt(variance) or 1.0
@@ -123,9 +124,17 @@ def score_count_modules(
         }
         state = CardiacState(
             domain_scores=scores,
-            imaging=ModalityVector(features={}),
-            functional=ModalityVector(features={}),
-            omics=ModalityVector(features={"rna_module_features": float(len(domains))}),
+            omics=ModalityVector(
+                name="omics",
+                values={"rna_module_features": float(len(domains))},
+            ),
+            time=meta.elapsed_hours,
+            metadata={
+                "subject_id": meta.subject_id,
+                "sample_id": meta.sample_id,
+                "condition_code": meta.condition_code,
+                "dataset_id": "GSE144424",
+            },
         )
         records.append(
             IngestRecord(
@@ -134,8 +143,8 @@ def score_count_modules(
                 condition=meta.condition,
                 time=meta.elapsed_hours,
                 state=state,
-                source="GEO:GSE144424",
-                provenance=(f"subject:{meta.subject_id}", f"GSM:{meta.sample_id}", "platform:GPL20301"),
+                available_modalities=("omics",),
+                source_ref=f"GEO:GSE144424:{meta.sample_id}",
             )
         )
     return tuple(records)
