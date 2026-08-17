@@ -1,0 +1,19 @@
+name: "CardiVex baseline evaluation fixture"
+description: >-
+  Small synthetic benchmark fixture for exercising abnormality and OOD
+  evaluation. Values are illustrative and are not presented as biological
+  measurements.
+known_states:
+  - id: known-1
+    vector: {a: 0.10, b: 0.10, c: 0.15}
+  - id: known-2
+    vector: {a: 0.20, b: 0.15, c: 0.20}
+novel_states:
+  - id: novel-1
+    vector: {a: 0.85, b: 0.80, c: 0.90}
+  - id: novel-2
+    vector: {a: 0.75, b: 0.88, c: 0.82}
+calibration:
+  scores: [0.04, 0.10, 0.16, 0.64, 0.78, 0.91]
+  labels: [false, false, false, true, true, true]
+  thresholds: [0.20, 0.40, 0.60, 0.80]
