@@ -15,6 +15,7 @@ from .pipeline import ChallengeAssessment, EndToEndResult, assess_scenario, run_
 from .evaluation import CalibrationResult, OODResult, calibration_curve, best_threshold, ood_evaluate, state_abnormality_scores
 from .modeling import Prediction, CentroidModel, fit_centroid_model, accuracy
 from .splits import BenchmarkSplit, make_split
+from .registry import EvidenceRecord, DatasetRecord, EvidenceRegistry, DatasetRegistry
 
 __all__ = [
     "Scenario", "ScenarioState", "EvidenceTier", "Confidence",
@@ -30,4 +31,5 @@ __all__ = [
     "calibration_curve", "best_threshold", "ood_evaluate", "state_abnormality_scores",
     "Prediction", "CentroidModel", "fit_centroid_model", "accuracy",
     "BenchmarkSplit", "make_split",
+    "EvidenceRecord", "DatasetRecord", "EvidenceRegistry", "DatasetRegistry",
 ]
