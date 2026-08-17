@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import asdict, is_dataclass
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 
 
 def to_jsonable(value: Any) -> Any:
