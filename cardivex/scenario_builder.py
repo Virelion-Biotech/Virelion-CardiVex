@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import replace
+from dataclasses import dataclass
 import random
 from typing import Mapping
 
@@ -28,16 +28,15 @@ def build_challenge_scenario(
     target_model: str,
     config: ScenarioBuildConfig | None = None,
 ) -> Scenario:
-    """Construct an evidence-linked phenotype scenario from an empirical profile.
-
-    This operates only on measured downstream phenotype distributions. It does
-    not represent initiating-agent construction, optimization, or deployment.
-    """
+    """Construct an evidence-linked downstream phenotype challenge scenario."""
     config = config or ScenarioBuildConfig()
     if not scenario_id.startswith("CVX-"):
         raise ValueError("scenario_id must start with CVX-")
-    if config.max_delta < 0 or config.max_delta > 1:
+    if not 0.0 <= config.max_delta <= 1.0:
         raise ValueError("max_delta must be in [0, 1]")
+    if config.deviation_scale < 0:
+        raise ValueError("deviation_scale must be non-negative")
+
     rng = random.Random(config.seed)
     domains: dict[str, DomainValue] = {}
     for domain, stats in profile.domains.items():
@@ -52,15 +51,14 @@ def build_challenge_scenario(
         relative_time=0.0,
         domains={name: DomainValue(0.0, evidence_status="modeled") for name in domains},
     )
-    challenge = ScenarioState(
-        state="challenge_state",
-        relative_time=1.0,
-        domains=domains,
-    )
+    challenge = ScenarioState(state="challenge_state", relative_time=1.0, domains=domains)
     recovery = ScenarioState(
         state="recovery_reference",
         relative_time=2.0,
-        domains={name: DomainValue(value.value * 0.5, uncertainty=value.uncertainty, evidence_status="modeled") for name, value in domains.items()},
+        domains={
+            name: DomainValue(value.value * 0.5, uncertainty=value.uncertainty, evidence_status="modeled")
+            for name, value in domains.items()
+        },
     )
     return Scenario(
         scenario_id=scenario_id,
@@ -92,12 +90,19 @@ def compose_novel_profile(
     """Create a bounded new combination of domain means from known profiles."""
     if not weights:
         raise ValueError("weights cannot be empty")
+    unknown = set(weights) - set(profiles)
+    if unknown:
+        raise KeyError(f"unknown profiles: {sorted(unknown)}")
     total = sum(float(v) for v in weights.values())
     if total <= 0:
         raise ValueError("weights must sum to a positive value")
     normalized = {key: float(value) / total for key, value in weights.items()}
     domains = set().union(*(profiles[key].domains for key in normalized))
-    return {
-        domain: _clip(sum(normalized[key] * profiles[key].domains.get(domain, type("S", (), {"mean": 0.0})) .mean for key in normalized))
-        for domain in domains
-    }
+    result: dict[str, float] = {}
+    for domain in domains:
+        value = sum(
+            normalized[key] * (profiles[key].domains[domain].mean if domain in profiles[key].domains else 0.0)
+            for key in normalized
+        )
+        result[domain] = _clip(value)
+    return result
