@@ -39,9 +39,9 @@ def _group(with_modalities=False):
                 condition="challenge",
                 time=float(idx),
                 domain_scores={"inflammatory_activation": value},
-                imaging={"inflammatory_signal": value} if with_modalities else None,
-                functional={"contractile_signal": 1.0 - value} if with_modalities else None,
-                omics={"inflammatory_signature": value} if with_modalities else None,
+                imaging={"structural_disorganization": value, "viability_burden": value} if with_modalities else None,
+                functional={"contractile_impairment": value, "electrophysiologic_instability": value} if with_modalities else None,
+                omics={"inflammatory_signature": value, "metabolic_signature": value} if with_modalities else None,
                 source_ref="fixture",
             )
         )
