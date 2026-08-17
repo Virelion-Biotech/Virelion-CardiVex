@@ -77,6 +77,8 @@ Cardiac digital surrogate
 - End-to-end benchmark suite execution with structured per-scenario results.
 - Deterministic JSON serialization for benchmark artifacts.
 - Hash-based audit records and reproducibility metadata.
+- A transparent longitudinal predictive surrogate with experimental-unit leakage checks.
+- Held-out temporal benchmarking against a persistence baseline.
 - Automated tests and a Python 3.10–3.12 GitHub Actions matrix.
 
 ## End-to-end benchmark
@@ -97,7 +99,7 @@ write_json({"run": run, "audit": audit}, "artifacts/run.json")
 
 The suite refuses to proceed when scenario definitions fail validation, when held-out scenarios directly leak development vectors, or when the held-out set fails the configured novelty audit.
 
-See [`docs/END_TO_END_BENCHMARK.md`](docs/END_TO_END_BENCHMARK.md) and [`docs/SCORING_AND_OUTPUTS.md`](docs/SCORING_AND_OUTPUTS.md).
+See [`docs/END_TO_END_BENCHMARK.md`](docs/END_TO_END_BENCHMARK.md), [`docs/SCORING_AND_OUTPUTS.md`](docs/SCORING_AND_OUTPUTS.md), and [`docs/TEMPORAL_BENCHMARK.md`](docs/TEMPORAL_BENCHMARK.md).
 
 ## Evaluation discipline
 
