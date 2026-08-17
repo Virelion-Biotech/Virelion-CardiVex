@@ -1,0 +1,90 @@
+scenario_id: CVX-0001
+version: 0.1.0
+name: "Multidomain acute cardiac stress"
+description: >-
+  Example challenge representation combining inflammatory, vascular,
+  metabolic, and functional cardiac stress. This file is a schema example,
+  not a biological-agent construction recipe.
+target_model: "human_iPSC_derived_cardiac_tissue"
+evidence_tier: extrapolated
+confidence: exploratory
+phenotype_domains:
+  inflammatory_activation:
+    value: 0.72
+    uncertainty: 0.15
+    evidence_status: modeled
+  endothelial_vascular_dysfunction:
+    value: 0.68
+    uncertainty: 0.15
+    evidence_status: modeled
+  metabolic_stress:
+    value: 0.55
+    uncertainty: 0.20
+    evidence_status: modeled
+  mitochondrial_dysfunction:
+    value: 0.61
+    uncertainty: 0.18
+    evidence_status: modeled
+  structural_disorganization:
+    value: 0.32
+    uncertainty: 0.20
+    evidence_status: modeled
+  contractile_impairment:
+    value: 0.66
+    uncertainty: 0.16
+    evidence_status: modeled
+temporal_profile:
+  - state: baseline
+    relative_time: 0
+    duration: 1
+  - state: onset
+    relative_time: 1
+    duration: 1
+  - state: acute
+    relative_time: 2
+    duration: 2
+  - state: evolving
+    relative_time: 4
+    duration: 3
+severity_profile:
+  early: 0.45
+  peak: 0.75
+  recovery: 0.35
+interaction_profile:
+  - domains:
+      - inflammatory_activation
+      - endothelial_vascular_dysfunction
+    relationship: "positive association"
+  - domains:
+      - metabolic_stress
+      - mitochondrial_dysfunction
+    relationship: "positive association"
+  - domains:
+      - mitochondrial_dysfunction
+      - contractile_impairment
+    relationship: "functional coupling"
+variation_space:
+  enabled: true
+  max_deviation: 0.10
+  allowed_domains:
+    - inflammatory_activation
+    - endothelial_vascular_dysfunction
+    - metabolic_stress
+    - mitochondrial_dysfunction
+validation_targets:
+  - "multimodal anomaly score"
+  - "contractile function endpoint"
+  - "cell viability endpoint"
+  - "inflammatory feature panel"
+ood_status: test
+provenance:
+  sources:
+    - "example-only synthetic specification"
+  transformations:
+    - "bounded domain normalization"
+    - "temporal abstraction"
+    - "synthetic interaction definition"
+audit:
+  created_by: "CardiVex"
+  created_at: "2026-08-17"
+  parent_scenario: null
