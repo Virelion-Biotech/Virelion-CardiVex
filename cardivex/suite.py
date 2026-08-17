@@ -40,6 +40,7 @@ class BenchmarkRun:
                 "name": self.manifest.name,
                 "version": self.manifest.version,
                 "ids": self.manifest.ids(),
+                "families": self.manifest.family_names,
             },
             "split": {
                 "train": tuple(s.scenario_id for s in self.split.train),
@@ -52,22 +53,30 @@ class BenchmarkRun:
         }
 
 
+def _validate_reference_states(known_states: Sequence[CardiacState], reference_split: str) -> None:
+    if reference_split not in {"development", "calibration", "validation"}:
+        raise ValueError("reference_split must be development, calibration, or validation")
+    forbidden = {"test", "held_out_novel", "final_test"}
+    for state in known_states:
+        declared = state.metadata.get("benchmark_split")
+        if declared in forbidden:
+            raise ValueError(f"reference state declares forbidden benchmark split: {declared}")
+
+
 def run_benchmark_suite(
     scenarios: Iterable,
     *,
     baseline: CardiacState,
     known_states: Sequence[CardiacState] = (),
+    reference_split: str = "development",
     name: str = "cardivex-benchmark",
     version: str = "0.1.0",
     abnormal_threshold: float = 0.20,
     novelty_threshold: float = 0.35,
     attribution_threshold: float = 0.05,
 ) -> BenchmarkRun:
-    """Execute the transparent benchmark baseline over a validated scenario suite.
-
-    This runner evaluates downstream phenotype states only. It does not construct
-    initiating biological agents or operational challenge procedures.
-    """
+    """Execute the transparent benchmark baseline over a validated scenario suite."""
+    _validate_reference_states(known_states, reference_split)
     items = tuple(scenarios)
     manifest = build_manifest(items, name=name, version=version)
     split = make_split(items)
@@ -79,6 +88,7 @@ def run_benchmark_suite(
     audit = audit_manifest(train, split.held_out_novel, novelty_threshold=novelty_threshold)
     if not audit["clean"]:
         raise ValueError("benchmark suite failed leakage or novelty audit")
+    audit["reference_split"] = reference_split
 
     results: list[ScenarioResult] = []
     for scenario in items:
@@ -97,7 +107,7 @@ def run_benchmark_suite(
                 attribution_threshold=attribution_threshold,
             )
             results.append(ScenarioResult(scenario.scenario_id, "ok", assessment, score))
-        except Exception as exc:  # preserve per-scenario diagnostics
+        except Exception as exc:
             results.append(ScenarioResult(scenario.scenario_id, "error", None, None, (str(exc),)))
 
     return BenchmarkRun(name=name, manifest=manifest, split=split, results=tuple(results), audit=audit)
