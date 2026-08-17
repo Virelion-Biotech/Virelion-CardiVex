@@ -19,7 +19,7 @@ datasets:
     notes:
       - "Metadata-only example; no experimental measurements are supplied."
 
- evidence:
+evidence:
   - evidence_id: EV-0001
     source_type: example
     source_ref: "synthetic://cardivex/example-001"
