@@ -31,6 +31,8 @@ from .temporal import TemporalPoint, EmpiricalTemporalProfile, fit_temporal_prof
 from .longitudinal import LongitudinalGroup, LongitudinalValidation, group_longitudinal_records, validate_disjoint_longitudinal_groups, validate_longitudinal_group, align_to_time_grid, longitudinal_domain_series, longitudinal_feature_series
 from .temporal_metrics import TrajectoryError, trajectory_error, temporal_shift_error
 from .surrogate_validation import ModalityValidation, SurrogateValidation, validate_scenario_against_group, summarize_surrogate_validation
+from .surrogate_runner import SurrogateValidationRun, run_surrogate_validation, surrogate_validation_json
+from .validated_benchmark import ValidatedBenchmarkRun, run_validated_benchmark, validated_benchmark_json
 from .novelty import normalized_distance, novelty_margin, is_novel
 from .correlation import domain_correlation_matrix
 from .translation_calibration import TranslationCalibrationResult, fit_translation_profile
@@ -58,6 +60,7 @@ __all__ = [
     "bounded_trajectory", "shift_timeline", "TemporalPoint", "EmpiricalTemporalProfile", "fit_temporal_profile", "materialize_trajectory",
     "LongitudinalGroup", "LongitudinalValidation", "group_longitudinal_records", "validate_disjoint_longitudinal_groups", "validate_longitudinal_group", "align_to_time_grid", "longitudinal_domain_series", "longitudinal_feature_series",
     "TrajectoryError", "trajectory_error", "temporal_shift_error", "ModalityValidation", "SurrogateValidation", "validate_scenario_against_group", "summarize_surrogate_validation",
+    "SurrogateValidationRun", "run_surrogate_validation", "surrogate_validation_json", "ValidatedBenchmarkRun", "run_validated_benchmark", "validated_benchmark_json",
     "normalized_distance", "novelty_margin", "is_novel", "domain_correlation_matrix", "TranslationCalibrationResult", "fit_translation_profile",
     "ChallengeFamily", "FAMILIES", "build_severity_shift", "build_temporal_shift", "build_combinatorial", "family_is_novel",
     "BenchmarkManifest", "build_manifest", "audit_manifest", "available_families",
