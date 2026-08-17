@@ -28,7 +28,7 @@ from .phenotypes import DomainDistribution, EmpiricalPhenotypeProfile, fit_empir
 from .scenario_builder import ScenarioBuildConfig, build_challenge_scenario, compose_novel_profile
 from .trajectory import bounded_trajectory, shift_timeline
 from .temporal import TemporalPoint, EmpiricalTemporalProfile, fit_temporal_profile, materialize_trajectory
-from .longitudinal import LongitudinalGroup, LongitudinalValidation, group_longitudinal_records, validate_longitudinal_group, align_to_time_grid, longitudinal_domain_series, longitudinal_feature_series
+from .longitudinal import LongitudinalGroup, LongitudinalValidation, group_longitudinal_records, validate_disjoint_longitudinal_groups, validate_longitudinal_group, align_to_time_grid, longitudinal_domain_series, longitudinal_feature_series
 from .temporal_metrics import TrajectoryError, trajectory_error, temporal_shift_error
 from .surrogate_validation import SurrogateValidation, validate_scenario_against_group, summarize_surrogate_validation
 from .novelty import normalized_distance, novelty_margin, is_novel
@@ -56,7 +56,7 @@ __all__ = [
     "records_from_rows", "load_csv", "DatasetBatch", "assemble_batch", "split_by_condition", "QualityIssue", "inspect_records", "require_clean",
     "DomainDistribution", "EmpiricalPhenotypeProfile", "fit_empirical_profile", "profile_distance", "ScenarioBuildConfig", "build_challenge_scenario", "compose_novel_profile",
     "bounded_trajectory", "shift_timeline", "TemporalPoint", "EmpiricalTemporalProfile", "fit_temporal_profile", "materialize_trajectory",
-    "LongitudinalGroup", "LongitudinalValidation", "group_longitudinal_records", "validate_longitudinal_group", "align_to_time_grid", "longitudinal_domain_series", "longitudinal_feature_series",
+    "LongitudinalGroup", "LongitudinalValidation", "group_longitudinal_records", "validate_disjoint_longitudinal_groups", "validate_longitudinal_group", "align_to_time_grid", "longitudinal_domain_series", "longitudinal_feature_series",
     "TrajectoryError", "trajectory_error", "temporal_shift_error", "SurrogateValidation", "validate_scenario_against_group", "summarize_surrogate_validation",
     "normalized_distance", "novelty_margin", "is_novel", "domain_correlation_matrix", "TranslationCalibrationResult", "fit_translation_profile",
     "ChallengeFamily", "FAMILIES", "build_severity_shift", "build_temporal_shift", "build_combinatorial", "family_is_novel",
