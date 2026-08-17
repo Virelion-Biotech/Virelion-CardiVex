@@ -1,0 +1,20 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+title: CardiVex Experiment Result
+type: object
+properties:
+  experiment_id: {type: string}
+  model_record:
+    type: object
+    required: [model_id, name, version, feature_contract, training_split]
+  cross_validation:
+    type: object
+    required: [model, folds, mean_accuracy, mean_balanced_accuracy, mean_macro_f1]
+  calibration_threshold: {type: number, minimum: 0, maximum: 1}
+  calibration_balanced_accuracy: {type: number, minimum: 0, maximum: 1}
+  held_out_metrics:
+    type: object
+    additionalProperties: {type: number}
+  audit:
+    type: object
+    required: [run_id, input_digest]
+required: [experiment_id, model_record, cross_validation, calibration_threshold, held_out_metrics, audit]
