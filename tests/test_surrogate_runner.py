@@ -6,7 +6,7 @@ from cardivex.models import Confidence, DomainValue, EvidenceTier, Scenario, Sce
 from cardivex.surrogate_runner import run_surrogate_validation, surrogate_validation_json
 
 
-def _scenario(sid="S1"):
+def _scenario(sid="CVX-S1"):
     return Scenario(
         scenario_id=sid,
         version="0.4.0",
@@ -16,8 +16,8 @@ def _scenario(sid="S1"):
         confidence=Confidence.MODERATE,
         phenotype_domains={"inflammatory_activation": DomainValue(0.4, evidence_status="extrapolated")},
         temporal_profile=(
-            ScenarioState("t0", 0.0, {"inflammatory_activation": DomainValue(0.0, evidence_status="modeled")}),
-            ScenarioState("t1", 1.0, {"inflammatory_activation": DomainValue(0.4, evidence_status="extrapolated")}),
+            ScenarioState("t0", 0.0, {"inflammatory_activation": DomainValue(0.0, evidence_status="modeled")} ),
+            ScenarioState("t1", 1.0, {"inflammatory_activation": DomainValue(0.4, evidence_status="extrapolated")} ),
         ),
         provenance_sources=("DS-DEV",),
         provenance_transformations=("fixture",),
@@ -25,7 +25,7 @@ def _scenario(sid="S1"):
     )
 
 
-def _group(group_id, dataset_id="DS-HOLD" ):
+def _group(group_id, dataset_id="DS-HOLD"):
     rows = []
     for i, value in enumerate((0.0, 0.35)):
         row = ingest_processed_observation(
