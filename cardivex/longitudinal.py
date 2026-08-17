@@ -5,7 +5,7 @@ from math import isfinite
 from typing import Iterable, Mapping, Sequence
 
 from .ingest import IngestRecord
-from .models import CardiacState
+from .features import CardiacState
 
 
 @dataclass(frozen=True)
