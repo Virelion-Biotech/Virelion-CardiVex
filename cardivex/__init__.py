@@ -26,6 +26,7 @@ from .dataset import DatasetBatch, assemble_batch, split_by_condition
 from .quality import QualityIssue, inspect_records, require_clean
 from .dataset_qualification import DatasetQualification, qualify_records
 from .data_plan import DatasetAnalysisPlan, build_analysis_plan
+from .geo_metadata import GEOSampleMetadata, parse_gse144424_sample_title
 from .calibration_runner import CalibrationArtifact, ConditionCalibration, build_development_calibration, calibration_json, compute_artifact_id
 from .frozen_scenario import build_scenario_from_frozen_calibration
 from .frozen_validation import FrozenValidationRun, run_frozen_validation, frozen_validation_json
@@ -63,6 +64,7 @@ __all__ = [
     "EvidenceRecord", "DatasetRecord", "EvidenceRegistry", "DatasetRegistry", "IngestRecord", "ingest_processed_observation", "require_modalities",
     "records_from_rows", "load_csv", "DatasetBatch", "assemble_batch", "split_by_condition", "QualityIssue", "inspect_records", "require_clean",
     "DatasetQualification", "qualify_records", "DatasetAnalysisPlan", "build_analysis_plan",
+    "GEOSampleMetadata", "parse_gse144424_sample_title",
     "CalibrationArtifact", "ConditionCalibration", "build_development_calibration", "calibration_json", "compute_artifact_id",
     "build_scenario_from_frozen_calibration", "FrozenValidationRun", "run_frozen_validation", "frozen_validation_json",
     "FrozenBenchmark", "build_frozen_benchmark", "validate_frozen_benchmark_against_groups",
