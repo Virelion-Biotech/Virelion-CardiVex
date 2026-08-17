@@ -1,0 +1,32 @@
+datasets:
+  - dataset_id: DS-0001
+    name: "Synthetic cardiac benchmark metadata"
+    species: human
+    model: human_iPSC_derived_cardiac_tissue
+    assay_types:
+      - imaging
+      - functional
+      - omics
+    condition_labels:
+      - baseline
+      - challenge_proxy
+    source_ref: "example-only"
+    version: 1.0.0
+    sample_count: 24
+    processed_feature_contract: cardivex-v1
+    evidence_ids:
+      - EV-0001
+    notes:
+      - "Metadata-only example; no experimental measurements are supplied."
+
+ evidence:
+  - evidence_id: EV-0001
+    source_type: example
+    source_ref: "synthetic://cardivex/example-001"
+    description: "Synthetic evidence record used to demonstrate registry wiring."
+    modality: multimodal
+    population: human_iPSC_derived_cardiac_tissue
+    timepoint: "relative"
+    quality_score: 0.0
+    notes:
+      - "Not evidence for biological realism; replace with reviewed sources before use."
