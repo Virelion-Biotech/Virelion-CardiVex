@@ -1,6 +1,6 @@
 $schema: "https://json-schema.org/draft/2020-12/schema"
 title: CardiVex Calibration Report
- type: object
+type: object
 properties:
   scenario_id:
     type: string
@@ -17,4 +17,5 @@ properties:
         lower: {type: number}
         upper: {type: number}
         count: {type: integer, minimum: 1}
+      required: [mean, lower, upper, count]
 required: [scenario_id, metrics, uncertainty]
