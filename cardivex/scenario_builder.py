@@ -7,6 +7,7 @@ from typing import Mapping, Sequence
 
 from .models import Confidence, DomainValue, EvidenceTier, Scenario, ScenarioState
 from .phenotypes import EmpiricalPhenotypeProfile
+from .temporal import EmpiricalTemporalProfile, materialize_trajectory
 
 
 @dataclass(frozen=True)
@@ -16,6 +17,8 @@ class ScenarioBuildConfig:
     hold_out_novel: bool = True
     seed: int | None = 0
     use_correlation: bool = True
+    temporal_severity_scale: float = 1.0
+    temporal_time_scale: float = 1.0
 
 
 def _clip(x: float) -> float:
@@ -73,12 +76,15 @@ def build_challenge_scenario(
     target_model: str,
     config: ScenarioBuildConfig | None = None,
     correlation_matrix: Mapping[str, Mapping[str, float]] | None = None,
+    temporal_profile: EmpiricalTemporalProfile | None = None,
 ) -> Scenario:
     """Construct an evidence-linked downstream phenotype challenge scenario.
 
     When a validated empirical correlation matrix is supplied, domain deviations
-    are sampled jointly rather than independently. Generated scenarios remain
-    explicitly extrapolated until independently validated.
+    are sampled jointly rather than independently. When an empirical temporal
+    profile is supplied, its observed trajectory is used as the scenario's
+    temporal shape; otherwise a simple fallback trajectory is retained.
+    Generated scenarios remain explicitly extrapolated until independently validated.
     """
     config = config or ScenarioBuildConfig()
     if not scenario_id.startswith("CVX-"):
@@ -87,6 +93,10 @@ def build_challenge_scenario(
         raise ValueError("max_delta must be in [0, 1]")
     if config.deviation_scale < 0:
         raise ValueError("deviation_scale must be non-negative")
+    if config.temporal_severity_scale < 0:
+        raise ValueError("temporal_severity_scale must be non-negative")
+    if config.temporal_time_scale <= 0:
+        raise ValueError("temporal_time_scale must be positive")
 
     rng = random.Random(config.seed)
     domains_order = tuple(sorted(profile.domains))
@@ -104,20 +114,6 @@ def build_challenge_scenario(
         uncertainty = _clip((stats.std if stats.count > 1 else 0.2) + abs(delta) * 0.25)
         domains[domain] = DomainValue(value=value, uncertainty=uncertainty, evidence_status="extrapolated")
 
-    baseline = ScenarioState(
-        state="baseline_reference",
-        relative_time=0.0,
-        domains={name: DomainValue(0.0, evidence_status="modeled") for name in domains},
-    )
-    challenge = ScenarioState(state="challenge_state", relative_time=1.0, domains=domains)
-    recovery = ScenarioState(
-        state="recovery_reference",
-        relative_time=2.0,
-        domains={
-            name: DomainValue(value.value * 0.5, uncertainty=value.uncertainty, evidence_status="extrapolated")
-            for name, value in domains.items()
-        },
-    )
     transformations = [
         "empirical_profile_fit",
         f"bounded_sampling(seed={config.seed},scale={config.deviation_scale},max_delta={config.max_delta})",
@@ -126,26 +122,59 @@ def build_challenge_scenario(
         transformations.append("correlation_aware_sampling")
     else:
         transformations.append("independent_sampling_fallback")
+
+    if temporal_profile is not None:
+        trajectory = materialize_trajectory(
+            temporal_profile,
+            severity_scale=config.temporal_severity_scale,
+            time_scale=config.temporal_time_scale,
+            evidence_status="extrapolated",
+        )
+        transformations.extend([
+            "empirical_temporal_profile_fit",
+            f"temporal_materialization(severity_scale={config.temporal_severity_scale},time_scale={config.temporal_time_scale})",
+        ])
+    else:
+        baseline = ScenarioState(
+            state="baseline_reference",
+            relative_time=0.0,
+            domains={name: DomainValue(0.0, evidence_status="modeled") for name in domains},
+        )
+        challenge = ScenarioState(state="challenge_state", relative_time=1.0, domains=domains)
+        recovery = ScenarioState(
+            state="recovery_reference",
+            relative_time=2.0,
+            domains={
+                name: DomainValue(value.value * 0.5, uncertainty=value.uncertainty, evidence_status="extrapolated")
+                for name, value in domains.items()
+            },
+        )
+        trajectory = (baseline, challenge, recovery)
+        transformations.append("abstract_temporal_fallback")
+
     return Scenario(
         scenario_id=scenario_id,
-        version="0.3.0",
+        version="0.4.0",
         name=name,
         description="Evidence-linked phenotype challenge generated from an empirical downstream-state profile.",
         target_model=target_model,
         evidence_tier=EvidenceTier.EXTRAPOLATED,
         confidence=Confidence.MODERATE if profile.sample_count >= 5 else Confidence.EXPLORATORY,
         phenotype_domains=domains,
-        temporal_profile=(baseline, challenge, recovery),
+        temporal_profile=trajectory,
         severity_profile={"challenge": max((v.value for v in domains.values()), default=0.0)},
         variation_space={
             "enabled": True,
             "max_deviation": config.max_delta,
             "allowed_domains": sorted(domains),
             "correlation_aware": bool(correlation_matrix and config.use_correlation),
+            "temporal_empirical": temporal_profile is not None,
+            "temporal_severity_scale": config.temporal_severity_scale,
+            "temporal_time_scale": config.temporal_time_scale,
         },
         validation_targets=("domain_profile_agreement", "multimodal_state_consistency", "temporal_response_consistency"),
         ood_status="held_out_novel" if config.hold_out_novel else "test",
-        provenance_sources=tuple(profile.source_dataset_ids),
+        provenance_sources=tuple(sorted(set(profile.source_dataset_ids).union(temporal_profile.source_dataset_ids if temporal_profile else ()))),
         provenance_transformations=tuple(transformations),
     )
 
