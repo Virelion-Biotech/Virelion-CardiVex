@@ -16,6 +16,7 @@ from .evaluation import CalibrationResult, OODResult, calibration_curve, best_th
 from .modeling import Prediction, CentroidModel, fit_centroid_model, accuracy
 from .model_evaluation import ClassificationReport, classification_report
 from .experiments import ModelSpec, FoldResult, CrossValidationResult, cross_validate_centroid, predict_with_model
+from .experiment_runner import ExperimentResult, run_centroid_experiment, experiment_json
 from .model_registry import ModelRecord, ModelRegistry
 from .splits import BenchmarkSplit, make_split
 from .registry import EvidenceRecord, DatasetRecord, EvidenceRegistry, DatasetRegistry
@@ -45,7 +46,7 @@ __all__ = [
     "assess_scenario", "run_end_to_end", "CalibrationResult", "OODResult", "calibration_curve", "best_threshold", "ood_evaluate", "state_abnormality_scores",
     "Prediction", "CentroidModel", "fit_centroid_model", "accuracy", "ClassificationReport", "classification_report",
     "ModelSpec", "FoldResult", "CrossValidationResult", "cross_validate_centroid", "predict_with_model", "ModelRecord", "ModelRegistry",
-    "BenchmarkSplit", "make_split",
+    "ExperimentResult", "run_centroid_experiment", "experiment_json", "BenchmarkSplit", "make_split",
     "EvidenceRecord", "DatasetRecord", "EvidenceRegistry", "DatasetRegistry", "IngestRecord", "ingest_processed_observation", "require_modalities",
     "records_from_rows", "load_csv", "DatasetBatch", "assemble_batch", "split_by_condition", "QualityIssue", "inspect_records", "require_clean",
     "DomainDistribution", "EmpiricalPhenotypeProfile", "fit_empirical_profile", "profile_distance", "ScenarioBuildConfig", "build_challenge_scenario", "compose_novel_profile",
