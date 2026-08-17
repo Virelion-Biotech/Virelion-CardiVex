@@ -24,6 +24,7 @@ from .ingest import IngestRecord, ingest_processed_observation, require_modaliti
 from .loader import records_from_rows, load_csv
 from .dataset import DatasetBatch, assemble_batch, split_by_condition
 from .quality import QualityIssue, inspect_records, require_clean
+from .dataset_qualification import DatasetQualification, qualify_records
 from .phenotypes import DomainDistribution, EmpiricalPhenotypeProfile, fit_empirical_profile, profile_distance
 from .scenario_builder import ScenarioBuildConfig, build_challenge_scenario, compose_novel_profile
 from .trajectory import bounded_trajectory, shift_timeline
@@ -56,6 +57,7 @@ __all__ = [
     "ExperimentResult", "run_centroid_experiment", "experiment_json", "BenchmarkSplit", "make_split",
     "EvidenceRecord", "DatasetRecord", "EvidenceRegistry", "DatasetRegistry", "IngestRecord", "ingest_processed_observation", "require_modalities",
     "records_from_rows", "load_csv", "DatasetBatch", "assemble_batch", "split_by_condition", "QualityIssue", "inspect_records", "require_clean",
+    "DatasetQualification", "qualify_records",
     "DomainDistribution", "EmpiricalPhenotypeProfile", "fit_empirical_profile", "profile_distance", "ScenarioBuildConfig", "build_challenge_scenario", "compose_novel_profile",
     "bounded_trajectory", "shift_timeline", "TemporalPoint", "EmpiricalTemporalProfile", "fit_temporal_profile", "materialize_trajectory",
     "LongitudinalGroup", "LongitudinalValidation", "group_longitudinal_records", "validate_disjoint_longitudinal_groups", "validate_longitudinal_group", "align_to_time_grid", "longitudinal_domain_series", "longitudinal_feature_series",
