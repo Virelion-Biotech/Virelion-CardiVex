@@ -8,6 +8,7 @@ from .calibration_runner import CalibrationArtifact, compute_artifact_id
 from .frozen_scenario import build_scenario_from_frozen_calibration
 from .longitudinal import LongitudinalGroup
 from .models import Scenario
+from .scenario_builder import ScenarioBuildConfig
 from .surrogate_validation import SurrogateValidation, validate_scenario_against_group
 
 
@@ -43,9 +44,7 @@ def build_frozen_benchmark(
                 scenario_id=scenario_id,
                 name=name,
                 target_model=target_model,
-                config=None if seed + index == 0 else __import__(
-                    "cardivex.scenario_builder", fromlist=["ScenarioBuildConfig"]
-                ).ScenarioBuildConfig(seed=seed + index),
+                config=ScenarioBuildConfig(seed=seed + index),
             )
         )
     manifest = build_manifest(
