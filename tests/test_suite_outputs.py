@@ -31,7 +31,7 @@ def test_benchmark_run_serializes_to_json():
     baseline = from_domain_scores({"inflammatory_activation": 0.0})
     scenarios = [
         _scenario("CVX-7001", value=0.5),
-        _scenario("CVX-7002", "held_out_novel", value=0.8),
+        _scenario("CVX-7002", "held_out_novel", value=1.0),
     ]
     run = run_benchmark_suite(scenarios, baseline=baseline, known_states=[baseline])
     payload = run.to_dict()
