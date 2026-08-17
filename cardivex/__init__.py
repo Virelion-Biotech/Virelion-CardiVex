@@ -25,28 +25,21 @@ from .scenario_builder import ScenarioBuildConfig, build_challenge_scenario, com
 from .trajectory import bounded_trajectory, shift_timeline
 from .novelty import normalized_distance, novelty_margin, is_novel
 from .correlation import domain_correlation_matrix
+from .challenge_families import ChallengeFamily, FAMILIES, build_severity_shift, build_temporal_shift, build_combinatorial, family_is_novel
+from .benchmark_factory import BenchmarkManifest, build_manifest, audit_manifest, available_families
 
 __all__ = [
-    "Scenario", "ScenarioState", "EvidenceTier", "Confidence",
-    "generate_variations", "interpolate_timeline", "realism_score",
-    "abnormality_score", "nearest_state_distance", "rescue_score",
-    "build_audit_record", "validate_scenario", "detect_direct_leakage",
-    "CardiacState", "ModalityVector", "from_domain_scores",
-    "imaging_features", "functional_features", "omics_features", "normalize_features",
-    "TranslationProfile", "default_translation_profile", "scenario_to_multimodal",
-    "DomainAttribution", "attribute_domains", "DetectionResult", "RecoveryResult",
-    "detect_state", "evaluate_recovery", "ChallengeAssessment", "EndToEndResult",
-    "assess_scenario", "run_end_to_end", "CalibrationResult", "OODResult",
-    "calibration_curve", "best_threshold", "ood_evaluate", "state_abnormality_scores",
-    "Prediction", "CentroidModel", "fit_centroid_model", "accuracy",
-    "BenchmarkSplit", "make_split",
-    "EvidenceRecord", "DatasetRecord", "EvidenceRegistry", "DatasetRegistry",
-    "IngestRecord", "ingest_processed_observation", "require_modalities",
-    "records_from_rows", "load_csv", "DatasetBatch", "assemble_batch", "split_by_condition",
-    "QualityIssue", "inspect_records", "require_clean",
-    "DomainDistribution", "EmpiricalPhenotypeProfile", "fit_empirical_profile", "profile_distance",
-    "ScenarioBuildConfig", "build_challenge_scenario", "compose_novel_profile",
-    "bounded_trajectory", "shift_timeline",
-    "normalized_distance", "novelty_margin", "is_novel",
-    "domain_correlation_matrix",
+    "Scenario", "ScenarioState", "EvidenceTier", "Confidence", "generate_variations", "interpolate_timeline", "realism_score",
+    "abnormality_score", "nearest_state_distance", "rescue_score", "build_audit_record", "validate_scenario", "detect_direct_leakage",
+    "CardiacState", "ModalityVector", "from_domain_scores", "imaging_features", "functional_features", "omics_features", "normalize_features",
+    "TranslationProfile", "default_translation_profile", "scenario_to_multimodal", "DomainAttribution", "attribute_domains",
+    "DetectionResult", "RecoveryResult", "detect_state", "evaluate_recovery", "ChallengeAssessment", "EndToEndResult",
+    "assess_scenario", "run_end_to_end", "CalibrationResult", "OODResult", "calibration_curve", "best_threshold", "ood_evaluate", "state_abnormality_scores",
+    "Prediction", "CentroidModel", "fit_centroid_model", "accuracy", "BenchmarkSplit", "make_split",
+    "EvidenceRecord", "DatasetRecord", "EvidenceRegistry", "DatasetRegistry", "IngestRecord", "ingest_processed_observation", "require_modalities",
+    "records_from_rows", "load_csv", "DatasetBatch", "assemble_batch", "split_by_condition", "QualityIssue", "inspect_records", "require_clean",
+    "DomainDistribution", "EmpiricalPhenotypeProfile", "fit_empirical_profile", "profile_distance", "ScenarioBuildConfig", "build_challenge_scenario", "compose_novel_profile",
+    "bounded_trajectory", "shift_timeline", "normalized_distance", "novelty_margin", "is_novel", "domain_correlation_matrix",
+    "ChallengeFamily", "FAMILIES", "build_severity_shift", "build_temporal_shift", "build_combinatorial", "family_is_novel",
+    "BenchmarkManifest", "build_manifest", "audit_manifest", "available_families",
 ]
