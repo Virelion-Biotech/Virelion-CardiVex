@@ -16,6 +16,7 @@ from .evaluation import CalibrationResult, OODResult, calibration_curve, best_th
 from .modeling import Prediction, CentroidModel, fit_centroid_model, accuracy
 from .splits import BenchmarkSplit, make_split
 from .registry import EvidenceRecord, DatasetRecord, EvidenceRegistry, DatasetRegistry
+from .ingest import IngestRecord, ingest_processed_observation, require_modalities
 
 __all__ = [
     "Scenario", "ScenarioState", "EvidenceTier", "Confidence",
@@ -32,4 +33,5 @@ __all__ = [
     "Prediction", "CentroidModel", "fit_centroid_model", "accuracy",
     "BenchmarkSplit", "make_split",
     "EvidenceRecord", "DatasetRecord", "EvidenceRegistry", "DatasetRegistry",
+    "IngestRecord", "ingest_processed_observation", "require_modalities",
 ]
