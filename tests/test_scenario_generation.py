@@ -15,7 +15,7 @@ def _records():
     return rows
 
 
-def test_empirical_profile_and_builder_are_traceable():
+def test_empirical_profile_and_builder_are_traceable_and_explicitly_extrapolated():
     profile = fit_empirical_profile(_records(), condition="challenge_proxy")
     scenario = build_challenge_scenario(
         profile,
@@ -26,6 +26,7 @@ def test_empirical_profile_and_builder_are_traceable():
     )
     assert scenario.provenance_sources == ("DS-TEST",)
     assert scenario.provenance_transformations
+    assert scenario.evidence_tier.value == "extrapolated"
     assert scenario.ood_status == "held_out_novel"
     assert len(scenario.temporal_profile) == 3
 
