@@ -27,17 +27,19 @@ def test_read_and_score_geo_counts(tmp_path: Path):
     )
     assert [r.observation_id for r in records] == ["GSM1", "GSM2"]
     assert [r.time for r in records] == [0.0, 6.0]
-    assert all("subject:18499" in r.provenance for r in records)
+    assert [r.available_modalities for r in records] == [("omics",), ("omics",)]
+    assert records[0].state.metadata["subject_id"] == "18499"
+    assert records[0].source_ref == "GEO:GSE144424:GSM1"
 
 
 def test_metadata_column_order_must_match(tmp_path: Path):
     path = tmp_path / "counts.txt.gz"
     _write_counts(path)
     matrix = read_geo_counts(path)
-    metadata = parse_gse144424_metadata({
+    metadata = tuple(reversed(parse_gse144424_metadata({
         "GSM2": "18499_B_RNA-seq",
         "GSM1": "18499_A_RNA-seq",
-    })
+    })))
     with pytest.raises(ValueError, match="must match count-matrix columns"):
         score_count_modules(matrix, metadata, ModuleScoreConfig(domain_gene_sets={"stress": ("G1", "G2")}))
 
