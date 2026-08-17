@@ -20,6 +20,9 @@ def test_experiment_runner_returns_reproducible_metadata():
     )
     assert result.model_record.training_sample_count == 4
     assert result.cross_validation.mean_accuracy == 1.0
+    assert result.calibration_threshold == 0.15
+    assert result.held_out_metrics["tpr"] == 1.0
+    assert result.held_out_metrics["fpr"] == 0.0
     assert len(result.audit["input_digest"]) == 64
 
 
