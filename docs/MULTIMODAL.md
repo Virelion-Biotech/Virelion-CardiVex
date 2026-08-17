@@ -1,43 +1,54 @@
 # Multimodal Cardiac State Layer
 
-CardiVex uses one normalized state contract for downstream imaging, functional, and omics measurements. Each modality is kept separately named and then merged into a deterministic feature namespace.
+CardiVex uses one normalized `CardiacState` contract for downstream imaging, functional, and omics measurements. Each modality remains independently named and is merged into a deterministic feature namespace.
 
 ## State model
 
 ```text
-                 CardiacState
-              /       |       \
-          imaging  functional  omics
-              \       |       /
-               \      |      /
-                domain scores
+Scenario -> domain phenotype -> translation
                      |
-               benchmark layer
+        +------------+------------+
+        |            |            |
+      imaging     functional    omics
+        +------------+------------+
+                     |
+                CardiacState
+                     |
+          detection / novelty /
+             attribution
+                     |
+                  recovery
 ```
 
-### Imaging
+## Translation layer
 
-Examples of already processed features include morphology, organization, cellular architecture, and viability-derived measurements.
+`cardivex.translation` provides an explicit, inspectable mapping from scenario domain scores to normalized downstream feature groups. The default mapping is a **starter surrogate**, not an empirically validated biological model. Its coefficients should be calibrated against measured data before scientific conclusions are drawn.
 
-### Functional
+CardiVex preserves the translation profile version in downstream metadata so evidence-calibrated replacements can be introduced without changing the scenario contract.
 
-Examples include normalized contractility, beat regularity, recovery kinetics, or electrophysiologic summary measurements.
+## Feature namespaces
 
-### Omics
+- `imaging:<feature>`
+- `functional:<feature>`
+- `omics:<feature>`
+- `domain:<phenotype_domain>`
 
-Examples include normalized pathway/signature scores or other preprocessed molecular features.
+This prevents collisions between similarly named variables across modalities.
 
-The core package intentionally consumes **processed measurements**. Raw experimental acquisition and laboratory procedures belong in separate, validated data pipelines.
+## Defensive assessment
 
-## Why this matters
+`cardivex.pipeline.assess_scenario()` performs a deterministic end-to-end pass:
 
-A realistic challenge can affect multiple biological systems simultaneously. CardiVex therefore keeps detection, novelty, and recovery evaluation multimodal instead of reducing every scenario to one generic stress score.
+1. translate a scenario into a multimodal state;
+2. compare domain scores against baseline;
+3. compare against known reference states for a simple OOD distance;
+4. rank affected domains by deviation from baseline;
+5. return the full challenged state for downstream models.
 
-The first benchmark layer provides deterministic baselines:
+`run_end_to_end()` optionally adds recovery evaluation against a treated state.
 
-1. Distance from healthy baseline.
-2. Distance from the nearest known state.
-3. Modality-specific recovery toward baseline.
-4. An overall recovery score when multiple modalities are present.
+## Interpretation limits
 
-These are benchmark primitives, not final ML models. More advanced representation learning can later consume the same `CardiacState` contract without changing scenario definitions.
+The starter detector is a benchmark primitive, not a trained classifier. Attribution ranks deviations and does not establish causality. Recovery scores quantify movement toward a selected baseline and do not prove efficacy.
+
+Advanced representation learning, calibration, multimodal fusion, and empirically derived mappings can be added later without changing the scenario contract.
