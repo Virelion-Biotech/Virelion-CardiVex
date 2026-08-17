@@ -29,7 +29,7 @@ def _scenario() -> Scenario:
     )
 
 
-def _group():
+def _group(with_modalities=False):
     rows = []
     for idx, value in enumerate((0.0, 0.45, 0.2)):
         rows.append(
@@ -39,6 +39,9 @@ def _group():
                 condition="challenge",
                 time=float(idx),
                 domain_scores={"inflammatory_activation": value},
+                imaging={"inflammatory_signal": value} if with_modalities else None,
+                functional={"contractile_signal": 1.0 - value} if with_modalities else None,
+                omics={"inflammatory_signature": value} if with_modalities else None,
                 source_ref="fixture",
             )
         )
@@ -78,3 +81,15 @@ def test_surrogate_summary_is_group_level():
     summary = summarize_surrogate_validation([result])
     assert summary["groups"] == 1
     assert summary["mean_domain_mae"] == pytest.approx(result.domain_mae)
+
+
+def test_surrogate_validation_reports_missing_modalities_without_zero_credit():
+    result = validate_scenario_against_group(_scenario(), _group(with_modalities=False))
+    assert all(item.evaluated_features == 0 for item in result.modality_results)
+    assert result.multimodal_mae == 0.0
+
+
+def test_surrogate_validation_scores_available_modalities():
+    result = validate_scenario_against_group(_scenario(), _group(with_modalities=True))
+    assert all(item.evaluated_features > 0 for item in result.modality_results)
+    assert result.multimodal_mae >= 0.0
