@@ -31,7 +31,7 @@ def test_fit_translation_profile_uses_matched_observations():
     assert result.profile.functional["contractile_signal"]["contractile_impairment"] == pytest.approx(1.0)
 
 
-def test_translation_calibration_requires_matched_modality_data():
+def test_translation_calibration_requires_minimum_matched_observations_before_modality_validation():
     records = _records()[:3]
     for record in records:
         assert record.state.imaging is not None
@@ -54,5 +54,5 @@ def test_translation_calibration_requires_matched_modality_data():
         )
         for record in records
     ]
-    with pytest.raises(ValueError, match="multimodal"):
+    with pytest.raises(ValueError, match="matched observations"):
         fit_translation_profile(stripped)
