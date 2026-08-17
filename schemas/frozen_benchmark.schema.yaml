@@ -1,0 +1,16 @@
+title: CardiVex Frozen Benchmark
+ type: object
+required:
+  - calibration_artifact_id
+  - scenario_ids
+properties:
+  calibration_artifact_id:
+    type: string
+    minLength: 16
+  scenario_ids:
+    type: array
+    items:
+      type: string
+      pattern: '^CVX-'
+  manifest:
+    type: object
