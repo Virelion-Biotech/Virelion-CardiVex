@@ -1,5 +1,5 @@
 title: CardiVex Frozen Calibration Scenario
- type: object
+type: object
 required:
   - scenario_id
   - evidence_tier
