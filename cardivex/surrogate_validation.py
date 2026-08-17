@@ -108,6 +108,31 @@ def _modality_error(
     )
 
 
+def _aligned_observed(
+    predicted: Mapping[str, tuple[tuple[float, float], ...]],
+    observed: Mapping[str, tuple[tuple[float, float], ...]],
+    *,
+    tolerance: float,
+) -> tuple[dict[str, tuple[tuple[float, float], ...]], dict[str, tuple[tuple[float, float], ...]]]:
+    aligned_pred: dict[str, tuple[tuple[float, float], ...]] = {}
+    aligned_obs: dict[str, tuple[tuple[float, float], ...]] = {}
+    for domain in sorted(set(predicted) & set(observed)):
+        observed_points = observed[domain]
+        p_rows: list[tuple[float, float]] = []
+        o_rows: list[tuple[float, float]] = []
+        for time, value in predicted[domain]:
+            matches = [point for point in observed_points if abs(float(point[0]) - float(time)) <= tolerance]
+            if not matches:
+                continue
+            nearest = min(matches, key=lambda point: abs(float(point[0]) - float(time)))
+            p_rows.append((float(time), float(value)))
+            o_rows.append((float(time), float(nearest[1])))
+        if p_rows:
+            aligned_pred[domain] = tuple(p_rows)
+            aligned_obs[domain] = tuple(o_rows)
+    return aligned_pred, aligned_obs
+
+
 def validate_scenario_against_group(
     scenario: Scenario,
     group: LongitudinalGroup,
@@ -138,8 +163,9 @@ def validate_scenario_against_group(
     all_errors = tuple(errors)
     mae = sum(all_errors) / len(all_errors) if all_errors else 0.0
     max_error = max(all_errors, default=0.0)
-    temporal = trajectory_error(predicted, observed, time_tolerance=time_tolerance)
-    similarity = max(0.0, 1.0 - temporal.mae)
+    aligned_predicted, aligned_observed = _aligned_observed(predicted, observed, tolerance=time_tolerance)
+    temporal = trajectory_error(aligned_predicted, aligned_observed) if all(aligned_predicted.values()) else None
+    similarity = temporal.similarity if temporal is not None else 0.0
 
     profile = translation_profile or default_translation_profile()
     predicted_modalities: dict[str, dict[float, Mapping[str, float]]] = {"imaging": {}, "functional": {}, "omics": {}}
@@ -149,16 +175,8 @@ def validate_scenario_against_group(
             vector = getattr(translated, modality)
             if vector is not None:
                 predicted_modalities[modality][float(state.relative_time)] = dict(vector.values)
-    observed_modalities = {
-        name: values
-        for name, values in {
-            "imaging": {},
-            "functional": {},
-            "omics": {},
-        }.items()
-    }
-    features = group.records
-    for record in features:
+    observed_modalities: dict[str, dict[float, Mapping[str, float]]] = {"imaging": {}, "functional": {}, "omics": {}}
+    for record in group.records:
         for name in observed_modalities:
             vector = getattr(record.state, name)
             if vector is not None:
