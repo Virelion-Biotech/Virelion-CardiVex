@@ -43,6 +43,9 @@ Cardiac digital surrogate
         mechanism attribution
                  |
                  v
+          modality scoring
+                 |
+                 v
         countermeasure test
                  |
                  v
@@ -68,9 +71,11 @@ Cardiac digital surrogate
 - A normalized `CardiacState` contract spanning imaging, functional, and omics measurements.
 - Transparent scenario-to-multimodal translation profiles.
 - End-to-end detection, OOD, and domain-attribution baselines.
+- Modality-specific abnormality/novelty scoring and assessment summaries.
 - Threshold calibration and uncertainty reporting.
 - Countermeasure/recovery scoring.
 - End-to-end benchmark suite execution with structured per-scenario results.
+- Deterministic JSON serialization for benchmark artifacts.
 - Hash-based audit records and reproducibility metadata.
 - Automated tests and a Python 3.10–3.12 GitHub Actions matrix.
 
@@ -78,6 +83,7 @@ Cardiac digital surrogate
 
 ```python
 from cardivex.suite import run_benchmark_suite, build_run_audit
+from cardivex.serialization import write_json
 
 run = run_benchmark_suite(
     scenarios,
@@ -86,11 +92,12 @@ run = run_benchmark_suite(
 )
 
 audit = build_run_audit(run, run_id="RUN-001", seed=42)
+write_json({"run": run, "audit": audit}, "artifacts/run.json")
 ```
 
 The suite refuses to proceed when scenario definitions fail validation, when held-out scenarios directly leak development vectors, or when the held-out set fails the configured novelty audit.
 
-See [`docs/END_TO_END_BENCHMARK.md`](docs/END_TO_END_BENCHMARK.md).
+See [`docs/END_TO_END_BENCHMARK.md`](docs/END_TO_END_BENCHMARK.md) and [`docs/SCORING_AND_OUTPUTS.md`](docs/SCORING_AND_OUTPUTS.md).
 
 ## Evaluation discipline
 
