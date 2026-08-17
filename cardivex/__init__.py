@@ -17,6 +17,9 @@ from .modeling import Prediction, CentroidModel, fit_centroid_model, accuracy
 from .splits import BenchmarkSplit, make_split
 from .registry import EvidenceRecord, DatasetRecord, EvidenceRegistry, DatasetRegistry
 from .ingest import IngestRecord, ingest_processed_observation, require_modalities
+from .loader import records_from_rows, load_csv
+from .dataset import DatasetBatch, assemble_batch, split_by_condition
+from .quality import QualityIssue, inspect_records, require_clean
 
 __all__ = [
     "Scenario", "ScenarioState", "EvidenceTier", "Confidence",
@@ -34,4 +37,6 @@ __all__ = [
     "BenchmarkSplit", "make_split",
     "EvidenceRecord", "DatasetRecord", "EvidenceRegistry", "DatasetRegistry",
     "IngestRecord", "ingest_processed_observation", "require_modalities",
+    "records_from_rows", "load_csv", "DatasetBatch", "assemble_batch", "split_by_condition",
+    "QualityIssue", "inspect_records", "require_clean",
 ]
