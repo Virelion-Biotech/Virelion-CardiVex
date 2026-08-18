@@ -9,6 +9,7 @@ from .validation import validate_scenario, detect_direct_leakage
 from .features import CardiacState, ModalityVector, from_domain_scores
 from .adapters import imaging_features, functional_features, omics_features, normalize_features
 from .physiology import PhysiologicalFeatureConfig, GSE234907Observation, normalize_physiology, ingest_gse234907_physiology
+from .physiology_linkage import PhysiologyLink, PhysiologyLinkageAudit, audit_physiology_linkage, require_sample_level_ready, group_level_comparison_allowed, linkage_contract
 from .gse234907 import GSE234907Matrix, read_gse234907_heart_counts, score_gse234907_modules, class_groups
 from .gse234907_frozen import score_gse234907_with_frozen_transform
 from .external_validation import ExternalValidationResult, DirectionTransfer, ReferenceSimilarity, validate_external_effect, classify_transferability
@@ -68,6 +69,7 @@ __all__ = [
     "abnormality_score", "nearest_state_distance", "rescue_score", "build_audit_record", "validate_scenario", "detect_direct_leakage",
     "CardiacState", "ModalityVector", "from_domain_scores", "imaging_features", "functional_features", "omics_features", "normalize_features",
     "PhysiologicalFeatureConfig", "GSE234907Observation", "normalize_physiology", "ingest_gse234907_physiology",
+    "PhysiologyLink", "PhysiologyLinkageAudit", "audit_physiology_linkage", "require_sample_level_ready", "group_level_comparison_allowed", "linkage_contract",
     "GSE234907Matrix", "read_gse234907_heart_counts", "score_gse234907_modules", "class_groups", "score_gse234907_with_frozen_transform",
     "ExternalValidationResult", "DirectionTransfer", "ReferenceSimilarity", "validate_external_effect", "classify_transferability",
     "ExactPermutationResult", "exact_two_group_permutation", "rmse_to_reference",
