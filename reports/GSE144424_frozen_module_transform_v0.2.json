@@ -45,8 +45,8 @@
     "contractile_maturation": 0.34265313032174183,
     "extracellular_matrix_remodeling": 1.2833733325723107
   },
-  "artifact_id": "ba2f4c85542cfcb6",
-  "artifact_id_rule": "sha256 of the canonical FrozenModuleTransform payload using sorted keys and compact JSON; first 16 hex characters",
+  "artifact_id": "192a649117f0329d",
+  "artifact_id_rule": "sha256 of the canonical FrozenModuleTransform payload using sorted keys and compact JSON; first 16 hex characters; artifact_version=0.2.0",
   "mapping_correction": {
     "incorrect_previous_id": "ENSG00000147813",
     "incorrect_previous_symbol": "EGLN3",
