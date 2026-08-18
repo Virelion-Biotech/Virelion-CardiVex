@@ -74,9 +74,10 @@ def compute_artifact_id(
     minimum_genes: int,
     domain_gene_sets: Mapping[str, Sequence[str]],
     scaler: ModuleScoreScaler,
+    artifact_version: str = "0.2.0",
 ) -> str:
     payload = {
-        "artifact_version": "0.1.0",
+        "artifact_version": artifact_version,
         "dataset_id": dataset_id,
         "source_file": source_file,
         "source_sha256": source_sha256,
@@ -99,6 +100,7 @@ def freeze_module_transform(
     source_file: str,
     source_sha256: str,
     normalization: str = "log1p(CPM) then development-only z-standardization and 0.15 scaling around 0.5",
+    artifact_version: str = "0.2.0",
 ) -> FrozenModuleTransform:
     config_domains = {domain: tuple(genes) for domain, genes in config.domain_gene_sets.items()}
     artifact_id = compute_artifact_id(
@@ -109,9 +111,10 @@ def freeze_module_transform(
         minimum_genes=config.minimum_genes,
         domain_gene_sets=config_domains,
         scaler=scaler,
+        artifact_version=artifact_version,
     )
     return FrozenModuleTransform(
-        artifact_version="0.1.0",
+        artifact_version=artifact_version,
         dataset_id=dataset_id,
         source_file=source_file,
         source_sha256=source_sha256,
