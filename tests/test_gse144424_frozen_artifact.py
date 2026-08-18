@@ -6,7 +6,7 @@ from cardivex.frozen_modules import FrozenModuleTransform, compute_artifact_id, 
 from cardivex.geo_counts import ModuleScoreScaler
 
 
-ARTIFACT_ID = "ba2f4c85542cfcb6"
+ARTIFACT_ID = "192a649117f0329d"
 CENTERS = {
     "hypoxia_response": 5.943568072823221,
     "inflammatory_response": 2.031578586172451,
@@ -50,6 +50,7 @@ def test_corrected_gse144424_frozen_parameters_are_complete_and_stable():
         minimum_genes=3,
         domain_gene_sets=DOMAINS,
         scaler=scaler,
+        artifact_version="0.2.0",
     ) == ARTIFACT_ID
 
     artifact = FrozenModuleTransform(
