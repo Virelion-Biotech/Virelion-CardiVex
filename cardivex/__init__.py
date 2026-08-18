@@ -10,6 +10,7 @@ from .features import CardiacState, ModalityVector, from_domain_scores
 from .adapters import imaging_features, functional_features, omics_features, normalize_features
 from .physiology import PhysiologicalFeatureConfig, GSE234907Observation, normalize_physiology, ingest_gse234907_physiology
 from .gse234907 import GSE234907Matrix, read_gse234907_heart_counts, score_gse234907_modules, class_groups
+from .external_validation import ExternalValidationResult, DirectionTransfer, ReferenceSimilarity, validate_external_effect, classify_transferability
 from .translation import TranslationProfile, default_translation_profile, scenario_to_multimodal
 from .attribution import DomainAttribution, attribute_domains
 from .benchmark import DetectionResult, RecoveryResult, detect_state, evaluate_recovery
@@ -65,6 +66,7 @@ __all__ = [
     "CardiacState", "ModalityVector", "from_domain_scores", "imaging_features", "functional_features", "omics_features", "normalize_features",
     "PhysiologicalFeatureConfig", "GSE234907Observation", "normalize_physiology", "ingest_gse234907_physiology",
     "GSE234907Matrix", "read_gse234907_heart_counts", "score_gse234907_modules", "class_groups",
+    "ExternalValidationResult", "DirectionTransfer", "ReferenceSimilarity", "validate_external_effect", "classify_transferability",
     "TranslationProfile", "default_translation_profile", "scenario_to_multimodal", "DomainAttribution", "attribute_domains",
     "DetectionResult", "RecoveryResult", "detect_state", "evaluate_recovery", "ChallengeAssessment", "EndToEndResult",
     "assess_scenario", "run_end_to_end", "CalibrationResult", "OODResult", "calibration_curve", "best_threshold", "ood_evaluate", "state_abnormality_scores",
