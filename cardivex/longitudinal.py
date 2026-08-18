@@ -5,7 +5,7 @@ from math import isfinite
 from typing import Iterable, Mapping, Sequence
 
 from .ingest import IngestRecord
-from .features import CardiacState
+from .features import CardiacState, ModalityVector
 
 
 @dataclass(frozen=True)
@@ -71,6 +71,79 @@ def validate_disjoint_longitudinal_groups(
     development_ids = {group.group_id for group in development}
     held_out_ids = {group.group_id for group in held_out}
     return tuple(sorted(development_ids & held_out_ids))
+
+
+def collapse_subject_replicates(
+    records: Sequence[IngestRecord],
+    *,
+    group_field: str = "experimental_unit_id",
+) -> tuple[IngestRecord, ...]:
+    """Collapse repeated observations from one biological unit at the same time.
+
+    Domain and modality features are averaged, while provenance retains the
+    contributing observation IDs. This prevents technical/biological repeats
+    from receiving disproportionate weight in empirical calibration.
+    """
+    buckets: dict[tuple[str, str, float], list[IngestRecord]] = {}
+    for record in records:
+        group_id = _group_key(record, group_field)
+        buckets.setdefault((group_id, record.condition, float(record.time)), []).append(record)
+
+    collapsed: list[IngestRecord] = []
+    for (group_id, condition, time), rows in sorted(buckets.items()):
+        if len(rows) == 1:
+            collapsed.append(rows[0])
+            continue
+        domain_names = sorted(set().union(*(row.state.domain_scores.keys() for row in rows)))
+        domain_scores = {
+            name: sum(float(row.state.domain_scores.get(name, 0.0)) for row in rows) / len(rows)
+            for name in domain_names
+        }
+        modality_vectors: dict[str, ModalityVector] = {}
+        for modality_name in ("imaging", "functional", "omics"):
+            modalities = [getattr(row.state, modality_name) for row in rows]
+            present = [modality for modality in modalities if modality is not None]
+            if not present:
+                continue
+            keys = sorted(set().union(*(modality.values.keys() for modality in present)))
+            modality_vectors[modality_name] = ModalityVector(
+                name=modality_name,
+                values={
+                    key: sum(float(modality.values.get(key, 0.0)) for modality in present) / len(present)
+                    for key in keys
+                },
+            )
+        metadata = dict(rows[0].state.metadata)
+        metadata.update(
+            {
+                "collapsed_replicates": str(len(rows)),
+                "replicate_observation_ids": ",".join(sorted(row.observation_id for row in rows)),
+                group_field: group_id,
+            }
+        )
+        state = CardiacState(
+            imaging=modality_vectors.get("imaging"),
+            functional=modality_vectors.get("functional"),
+            omics=modality_vectors.get("omics"),
+            domain_scores=domain_scores,
+            time=time,
+            metadata=metadata,
+        )
+        available = tuple(
+            name for name in ("imaging", "functional", "omics") if name in modality_vectors
+        )
+        collapsed.append(
+            IngestRecord(
+                observation_id=f"{group_id}:{condition}:{time:g}",
+                dataset_id=rows[0].dataset_id,
+                condition=condition,
+                time=time,
+                state=state,
+                available_modalities=available,
+                source_ref=";".join(sorted(row.source_ref for row in rows if row.source_ref)),
+            )
+        )
+    return tuple(collapsed)
 
 
 def validate_longitudinal_group(
