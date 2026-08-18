@@ -6,19 +6,19 @@ from cardivex.frozen_modules import FrozenModuleTransform, compute_artifact_id, 
 from cardivex.geo_counts import ModuleScoreScaler
 
 
-ARTIFACT_ID = "a6b5fa9e36ddf650"
+ARTIFACT_ID = "ba2f4c85542cfcb6"
 CENTERS = {
-    "hypoxia_response": 5.94356807282322,
+    "hypoxia_response": 5.943568072823221,
     "inflammatory_response": 2.031578586172451,
-    "stress_response": 4.453042806259526,
+    "stress_response": 4.453042806259525,
     "contractile_maturation": 7.763700331112314,
-    "extracellular_matrix_remodeling": 5.885868277196325,
+    "extracellular_matrix_remodeling": 5.885868277196324,
 }
 SCALES = {
     "hypoxia_response": 0.5786549043876493,
     "inflammatory_response": 0.711188636036,
     "stress_response": 0.48815295451044377,
-    "contractile_maturation": 0.3426531303217419,
+    "contractile_maturation": 0.34265313032174183,
     "extracellular_matrix_remodeling": 1.2833733325723107,
 }
 DOMAINS = {
@@ -40,7 +40,7 @@ FIT_SAMPLE_IDS = (
 )
 
 
-def test_uploaded_gse144424_frozen_parameters_are_complete_and_stable():
+def test_corrected_gse144424_frozen_parameters_are_complete_and_stable():
     scaler = ModuleScoreScaler(centers=CENTERS, scales=SCALES, fit_sample_ids=FIT_SAMPLE_IDS)
     assert compute_artifact_id(
         dataset_id="GSE144424",
@@ -53,7 +53,7 @@ def test_uploaded_gse144424_frozen_parameters_are_complete_and_stable():
     ) == ARTIFACT_ID
 
     artifact = FrozenModuleTransform(
-        artifact_version="0.1.0",
+        artifact_version="0.2.0",
         dataset_id="GSE144424",
         source_file="GSE144424_Counts_RNA_MCW_NEB.txt.gz",
         source_sha256="cad9ac4c6514550ea9bfb2b491cc2934f6952894d7cbd17338d5054d03da6f7c",
