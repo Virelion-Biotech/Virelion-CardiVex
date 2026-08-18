@@ -6,23 +6,23 @@ from cardivex.frozen_modules import FrozenModuleTransform, compute_artifact_id, 
 from cardivex.geo_counts import ModuleScoreScaler
 
 
-ARTIFACT_ID = "dedc33a825f4e301"
+ARTIFACT_ID = "a6b5fa9e36ddf650"
 CENTERS = {
-    "hypoxia_response": 5.64568998198972,
+    "hypoxia_response": 5.94356807282322,
     "inflammatory_response": 2.031578586172451,
-    "stress_response": 4.453042806259525,
+    "stress_response": 4.453042806259526,
     "contractile_maturation": 7.763700331112314,
-    "extracellular_matrix_remodeling": 5.885868277196324,
+    "extracellular_matrix_remodeling": 5.885868277196325,
 }
 SCALES = {
-    "hypoxia_response": 0.4785714563680631,
+    "hypoxia_response": 0.5786549043876493,
     "inflammatory_response": 0.711188636036,
     "stress_response": 0.48815295451044377,
-    "contractile_maturation": 0.34265313032174183,
-    "extracellular_matrix_remodeling": 1.2833733325723105,
+    "contractile_maturation": 0.3426531303217419,
+    "extracellular_matrix_remodeling": 1.2833733325723107,
 }
 DOMAINS = {
-    "hypoxia_response": ("ENSG00000100644", "ENSG00000112715", "ENSG00000147813", "ENSG00000134333", "ENSG00000117394", "ENSG00000176171", "ENSG00000148926"),
+    "hypoxia_response": ("ENSG00000100644", "ENSG00000112715", "ENSG00000129521", "ENSG00000134333", "ENSG00000117394", "ENSG00000176171", "ENSG00000148926"),
     "inflammatory_response": ("ENSG00000136244", "ENSG00000169429", "ENSG00000108691", "ENSG00000100906", "ENSG00000118503", "ENSG00000073756", "ENSG00000090339"),
     "stress_response": ("ENSG00000175197", "ENSG00000128272", "ENSG00000044574", "ENSG00000100219", "ENSG00000116193", "ENSG00000100292"),
     "contractile_maturation": ("ENSG00000118194", "ENSG00000129991", "ENSG00000197616", "ENSG00000092054", "ENSG00000159251", "ENSG00000198626", "ENSG00000174437"),
