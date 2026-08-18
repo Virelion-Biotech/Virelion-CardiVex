@@ -17,7 +17,7 @@ def test_validate_external_effect_is_no_refit_and_reports_direction_transfer():
     )
     assert result.domains == DOMAINS
     assert result.direction_transfer["a"].classification == "consistent"
-    assert result.direction_transfer["b"].classification == "context_dependent"
+    assert result.direction_transfer["b"].classification == "discordant"
     assert result.direction_transfer["c"].classification == "consistent"
     assert result.reference_similarity["reference_transition"].pearson_r > 0.0
 
