@@ -1,0 +1,25 @@
+dataset: GSE144424
+name: cardiVex_gse144424_ensembl_modules_v1
+purpose: deterministic processed-count module scoring
+mapping_source: human Ensembl gene identifiers corresponding to the documented symbols
+modules:
+  hypoxia_response:
+    symbols: [HIF1A, VEGFA, EGLN3, LDHA, SLC2A1, BNIP3, ADM]
+    ensembl: [ENSG00000100644, ENSG00000112715, ENSG00000147813, ENSG00000134333, ENSG00000117394, ENSG00000176171, ENSG00000148926]
+  inflammatory_response:
+    symbols: [IL6, CXCL8, CCL2, NFKBIA, TNFAIP3, PTGS2, ICAM1]
+    ensembl: [ENSG00000136244, ENSG00000169429, ENSG00000108691, ENSG00000100906, ENSG00000118503, ENSG00000073756, ENSG00000090339]
+  stress_response:
+    symbols: [DDIT3, ATF4, HSPA5, XBP1, DNAJB9, HMOX1]
+    ensembl: [ENSG00000175197, ENSG00000128272, ENSG00000044574, ENSG00000100219, ENSG00000116193, ENSG00000100292]
+  contractile_maturation:
+    symbols: [TNNT2, TNNI3, MYH6, MYH7, ACTC1, RYR2, ATP2A2]
+    ensembl: [ENSG00000118194, ENSG00000129991, ENSG00000197616, ENSG00000092054, ENSG00000159251, ENSG00000198626, ENSG00000174437]
+  extracellular_matrix_remodeling:
+    symbols: [COL1A1, COL1A2, COL3A1, FN1, TGFB1, SERPINE1, MMP2]
+    ensembl: [ENSG00000108821, ENSG00000164692, ENSG00000168542, ENSG00000115414, ENSG00000105329, ENSG00000106366, ENSG00000087245]
+qc:
+  minimum_genes_per_module: 3
+  sample_normalization: log1p_CPM
+  calibration_normalization: development_only_z_then_0p15_scale
+  biological_unit: subject
