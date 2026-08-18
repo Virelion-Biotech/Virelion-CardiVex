@@ -1,0 +1,120 @@
+{
+  "report_version": "0.2.0",
+  "status": "no_refit_external_validation_complete_at_class_mean_level",
+  "reference": {
+    "dataset_id": "GSE144424",
+    "artifact": "reports/GSE144424_frozen_module_transform_v0.1.json",
+    "artifact_id": "b32575d33780657c",
+    "source_file": "GSE144424_Counts_RNA_MCW_NEB.txt.gz",
+    "source_sha256": "cad9ac4c6514550ea9bfb2b491cc2934f6952894d7cbd17338d5054d03da6f7c",
+    "fit_subjects": 12,
+    "fit_raw_sample_count": 64,
+    "held_out_subjects": ["19128", "18870", "18855"],
+    "held_out_raw_sample_count": 20,
+    "fit_gene_rows": 19081,
+    "normalization": "log1p(CPM) then development-only z-standardization and 0.15 scaling around 0.5"
+  },
+  "external": {
+    "dataset_id": "GSE234907",
+    "source_file": "GSE234907_Heart_counts.txt.gz",
+    "source_sha256": "ee2a2cf4279eefe68aa89aed0251eb192f48f97c48000539f848c9b255752e2c",
+    "sample_count": 6,
+    "classes": {"1021-2D": 3, "1021-3D": 3},
+    "contrast": "1021-3D minus 1021-2D",
+    "input_basis": "stored class-mean raw log-CPM module scores from reports/GSE234907_heart_counts_v0.1.json"
+  },
+  "frozen_transform": {
+    "centers": {
+      "hypoxia_response": 5.64568998198972,
+      "inflammatory_response": 2.031578586172451,
+      "stress_response": 4.453042806259525,
+      "contractile_maturation": 7.763700331112314,
+      "extracellular_matrix_remodeling": 5.885868277196324
+    },
+    "scales": {
+      "hypoxia_response": 0.4785714563680631,
+      "inflammatory_response": 0.711188636036,
+      "stress_response": 0.48815295451044377,
+      "contractile_maturation": 0.34265313032174183,
+      "extracellular_matrix_remodeling": 1.2833733325723107
+    },
+    "missing_gene_in_reference": ["ENSG00000116193"],
+    "missing_gene_symbol_in_reference": ["DNAJB9"],
+    "rule": "Only development-fitted centers/scales are applied; no GSE234907 fitting, centering, scaling, feature selection, or model fitting."
+  },
+  "external_transformed_class_means": {
+    "1021-2D": {
+      "hypoxia_response": 0.31158866053092504,
+      "inflammatory_response": 0.4302594617982188,
+      "stress_response": 0.337180663433146,
+      "contractile_maturation": 0.009627316761901816,
+      "extracellular_matrix_remodeling": 0.5713971147484295
+    },
+    "1021-3D": {
+      "hypoxia_response": 0.3811028200849972,
+      "inflammatory_response": 0.63386435099904,
+      "stress_response": 0.3908806785778377,
+      "contractile_maturation": 0.336631451180751,
+      "extracellular_matrix_remodeling": 0.6089338911299199
+    }
+  },
+  "external_transformed_effect_3D_minus_2D": {
+    "hypoxia_response": 0.06951415955407214,
+    "inflammatory_response": 0.20360488920082126,
+    "stress_response": 0.05370001514469169,
+    "contractile_maturation": 0.3270041344188492,
+    "extracellular_matrix_remodeling": 0.037536776381490444
+  },
+  "reference_condition_centers": {
+    "normoxia": {
+      "hypoxia_response": 0.4693781938740856,
+      "inflammatory_response": 0.46892591562878483,
+      "stress_response": 0.47954216837403935,
+      "contractile_maturation": 0.5813256355780652,
+      "extracellular_matrix_remodeling": 0.493198632462118
+    },
+    "hypoxia": {
+      "hypoxia_response": 0.6690291846877727,
+      "inflammatory_response": 0.5156065823412128,
+      "stress_response": 0.5230526455053033,
+      "contractile_maturation": 0.5224362036155897,
+      "extracellular_matrix_remodeling": 0.48700556167631986
+    },
+    "reoxygenation_1": {
+      "hypoxia_response": 0.4745493848447318,
+      "inflammatory_response": 0.5263050530568868,
+      "stress_response": 0.541032957290671,
+      "contractile_maturation": 0.47351729573669155,
+      "extracellular_matrix_remodeling": 0.5120169492224891
+    },
+    "reoxygenation_2": {
+      "hypoxia_response": 0.38704323659341044,
+      "inflammatory_response": 0.4858425910577739,
+      "stress_response": 0.45637222882998635,
+      "contractile_maturation": 0.4227208650696541,
+      "extracellular_matrix_remodeling": 0.5077788566390729
+    }
+  },
+  "distance_to_reference_conditions": {
+    "1021-2D": {
+      "normoxia": {"rmse": 0.27554070477612913, "max_abs": 0.5716983188161633},
+      "hypoxia": {"rmse": 0.2965438050878743, "max_abs": 0.512808886853688},
+      "reoxygenation_1": {"rmse": 0.243333773911967, "max_abs": 0.46388997897478973},
+      "reoxygenation_2": {"rmse": 0.19883815981202455, "max_abs": 0.4130935483077523}
+    },
+    "1021-3D": {
+      "normoxia": {"rmse": 0.152399463798035, "max_abs": 0.24469418439731416},
+      "hypoxia": {"rmse": 0.18096731399536822, "max_abs": 0.28792636460277554},
+      "reoxygenation_1": {"rmse": 0.11914495197895879, "max_abs": 0.15015227871283332},
+      "reoxygenation_2": {"rmse": 0.0936788143663361, "max_abs": 0.14802175994126615}
+    }
+  },
+  "interpretation": {
+    "closest_reference_state": "reoxygenation_2 for both 2D and 3D; 3D is substantially closer than 2D",
+    "threeD_rmse_to_reoxygenation_2": 0.0936788143663361,
+    "twoD_rmse_to_reoxygenation_2": 0.19883815981202455,
+    "largest_transformed_3D_minus_2D_domain": "contractile_maturation",
+    "finding": "Under the frozen GSE144424 transform, GSE234907 3D shifts toward the calibrated GSE144424 state manifold, with the smallest class-mean RMSE to the late reoxygenation state. The strongest 3D-vs-2D shift is contractile maturation, followed by inflammatory response.",
+    "caveat": "This report is a no-refit class-mean external validation because the repository currently stores GSE234907 class-mean raw module scores, not the six raw GSE234907 count matrix bytes. The frozen transformation itself is exact and external fitting is absent, but sample-level distances and uncertainty cannot be recalculated from this report alone."
+  }
+}
