@@ -43,8 +43,9 @@
     "inflammatory_response": 0.711188636036,
     "stress_response": 0.48815295451044377,
     "contractile_maturation": 0.34265313032174183,
-    "extracellular_matrix_remodeling": 1.2833733325723107
+    "extracellular_matrix_remodeling": 1.2833733325723105
   },
-  "artifact_id": "b32575d33780657c",
+  "artifact_id": "dedc33a825f4e301",
+  "artifact_id_rule": "sha256 of the canonical FrozenModuleTransform payload using sorted keys and compact JSON; first 16 hex characters",
   "fit_rule": "12 development subjects selected by the existing deterministic SHA256 subject split; all 64 raw samples from those subjects fit the module center/scale; held-out subjects 19128, 18870, 18855 were excluded before fitting."
 }
