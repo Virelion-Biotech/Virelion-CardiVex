@@ -1,0 +1,27 @@
+{
+  "report_version": "0.1.0",
+  "status": "physiology_source_available_linkage_unresolved",
+  "dataset_id": "GSE234907",
+  "rna": {
+    "source_file": "GSE234907_Heart_counts.txt.gz",
+    "sample_ids": ["S7_2", "S8_2", "S9_2", "S10_2", "S11_2", "S12_2"],
+    "classes": {"1021-2D": 3, "1021-3D": 3},
+    "source_sha256": "ee2a2cf4279eefe68aa89aed0251eb192f48f97c48000539f848c9b255752e2c"
+  },
+  "physiology_source": {
+    "paper": "Electro-metabolic coupling in multi-chambered vascularized human cardiac organoids",
+    "doi": "10.1038/s41551-023-01071-9",
+    "source_data_status": "publicly provided with paper",
+    "measurements_documented": ["oxygen uptake/interstitial oxygen", "extracellular field potential", "cardiac contraction"],
+    "measurement_resolution_documented": ">10 Hz",
+    "source_data_scope": "Source Data for Figs. 3, 5, 6-8 and Extended Data Figs. 1-8"
+  },
+  "linkage_audit": {
+    "sample_level_status": "blocked",
+    "reason": "The public paper/source-data description does not establish a one-to-one mapping from the six GEO RNA sample IDs S7_2-S12_2 to physiology experimental-unit IDs. Inferring pairing from 2D/3D class labels or sample ordering would be invalid.",
+    "group_level_status": "allowed_descriptively",
+    "required_for_sample_level_validation": "explicit one-to-one rna_sample_id -> physiology_unit_id mapping with provenance"
+  },
+  "implemented_guard": "cardivex.physiology_linkage.audit_physiology_linkage",
+  "policy": "No sample-level RNA-to-physiology correlation, regression, or prediction is permitted until explicit experimental-unit linkage is supplied."
+}
