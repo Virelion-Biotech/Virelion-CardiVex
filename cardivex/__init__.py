@@ -32,8 +32,8 @@ from .dataset import DatasetBatch, assemble_batch, split_by_condition
 from .quality import QualityIssue, inspect_records, require_clean
 from .dataset_qualification import DatasetQualification, qualify_records
 from .data_plan import DatasetAnalysisPlan, build_analysis_plan
-from .geo_metadata import GEOSampleMetadata, parse_gse144424_sample_title
-from .geo_counts import GEOCountMatrix, ModuleScoreConfig, read_geo_counts, score_count_modules, parse_gse144424_metadata
+from .geo_metadata import GEOSampleMetadata, parse_gse144424_sample_title, parse_gse144424_count_column
+from .geo_counts import GEOCountMatrix, ModuleScoreConfig, ModuleScoreScaler, read_geo_counts, fit_module_scaler, score_count_modules, parse_gse144424_metadata, parse_gse144424_count_metadata
 from .calibration_runner import CalibrationArtifact, ConditionCalibration, build_development_calibration, calibration_json, compute_artifact_id
 from .frozen_scenario import build_scenario_from_frozen_calibration
 from .frozen_validation import FrozenValidationRun, run_frozen_validation, frozen_validation_json
@@ -42,7 +42,7 @@ from .phenotypes import DomainDistribution, EmpiricalPhenotypeProfile, fit_empir
 from .scenario_builder import ScenarioBuildConfig, build_challenge_scenario, compose_novel_profile
 from .trajectory import bounded_trajectory, shift_timeline
 from .temporal import TemporalPoint, EmpiricalTemporalProfile, fit_temporal_profile, materialize_trajectory
-from .longitudinal import LongitudinalGroup, LongitudinalValidation, group_longitudinal_records, validate_disjoint_longitudinal_groups, validate_longitudinal_group, align_to_time_grid, longitudinal_domain_series, longitudinal_feature_series
+from .longitudinal import LongitudinalGroup, LongitudinalValidation, group_longitudinal_records, validate_disjoint_longitudinal_groups, validate_longitudinal_group, align_to_time_grid, longitudinal_domain_series, longitudinal_feature_series, collapse_subject_replicates
 from .temporal_metrics import TrajectoryError, trajectory_error, temporal_shift_error
 from .surrogate_validation import ModalityValidation, SurrogateValidation, validate_scenario_against_group, summarize_surrogate_validation
 from .surrogate_runner import SurrogateValidationRun, run_surrogate_validation, surrogate_validation_json
@@ -75,13 +75,13 @@ __all__ = [
     "EvidenceRecord", "DatasetRecord", "EvidenceRegistry", "DatasetRegistry", "IngestRecord", "ingest_processed_observation", "require_modalities",
     "records_from_rows", "load_csv", "DatasetBatch", "assemble_batch", "split_by_condition", "QualityIssue", "inspect_records", "require_clean",
     "DatasetQualification", "qualify_records", "DatasetAnalysisPlan", "build_analysis_plan",
-    "GEOSampleMetadata", "parse_gse144424_sample_title", "GEOCountMatrix", "ModuleScoreConfig", "read_geo_counts", "score_count_modules", "parse_gse144424_metadata",
+    "GEOSampleMetadata", "parse_gse144424_sample_title", "parse_gse144424_count_column", "GEOCountMatrix", "ModuleScoreConfig", "ModuleScoreScaler", "read_geo_counts", "fit_module_scaler", "score_count_modules", "parse_gse144424_metadata", "parse_gse144424_count_metadata",
     "CalibrationArtifact", "ConditionCalibration", "build_development_calibration", "calibration_json", "compute_artifact_id",
     "build_scenario_from_frozen_calibration", "FrozenValidationRun", "run_frozen_validation", "frozen_validation_json",
     "FrozenBenchmark", "build_frozen_benchmark", "validate_frozen_benchmark_against_groups",
     "DomainDistribution", "EmpiricalPhenotypeProfile", "fit_empirical_profile", "profile_distance", "ScenarioBuildConfig", "build_challenge_scenario", "compose_novel_profile",
     "bounded_trajectory", "shift_timeline", "TemporalPoint", "EmpiricalTemporalProfile", "fit_temporal_profile", "materialize_trajectory",
-    "LongitudinalGroup", "LongitudinalValidation", "group_longitudinal_records", "validate_disjoint_longitudinal_groups", "validate_longitudinal_group", "align_to_time_grid", "longitudinal_domain_series", "longitudinal_feature_series",
+    "LongitudinalGroup", "LongitudinalValidation", "group_longitudinal_records", "validate_disjoint_longitudinal_groups", "validate_longitudinal_group", "align_to_time_grid", "longitudinal_domain_series", "longitudinal_feature_series", "collapse_subject_replicates",
     "TrajectoryError", "trajectory_error", "temporal_shift_error", "ModalityValidation", "SurrogateValidation", "validate_scenario_against_group", "summarize_surrogate_validation",
     "SurrogateValidationRun", "run_surrogate_validation", "surrogate_validation_json", "ValidatedBenchmarkRun", "run_validated_benchmark", "validated_benchmark_json",
     "normalized_distance", "novelty_margin", "is_novel", "domain_correlation_matrix", "TranslationCalibrationResult", "fit_translation_profile",
