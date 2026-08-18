@@ -1,0 +1,46 @@
+from __future__ import annotations
+
+import pytest
+
+from cardivex.frozen_modules import FrozenModuleTransform, require_complete_frozen_transform
+
+
+ARTIFACT_ID = "b32575d33780657c"
+CENTERS = {
+    "hypoxia_response": 5.64568998198972,
+    "inflammatory_response": 2.031578586172451,
+    "stress_response": 4.453042806259525,
+    "contractile_maturation": 7.763700331112314,
+    "extracellular_matrix_remodeling": 5.885868277196324,
+}
+SCALES = {
+    "hypoxia_response": 0.4785714563680631,
+    "inflammatory_response": 0.711188636036,
+    "stress_response": 0.48815295451044377,
+    "contractile_maturation": 0.34265313032174183,
+    "extracellular_matrix_remodeling": 1.2833733325723107,
+}
+
+
+def test_uploaded_gse144424_frozen_parameters_are_complete_and_stable():
+    artifact = FrozenModuleTransform(
+        artifact_version="0.1.0",
+        dataset_id="GSE144424",
+        source_file="GSE144424_Counts_RNA_MCW_NEB.txt.gz",
+        source_sha256="cad9ac4c6514550ea9bfb2b491cc2934f6952894d7cbd17338d5054d03da6f7c",
+        normalization="log1p(CPM) then development-only z-standardization and 0.15 scaling around 0.5",
+        minimum_genes=3,
+        domain_gene_sets={
+            "hypoxia_response": ("ENSG00000100644", "ENSG00000112715", "ENSG00000147813", "ENSG00000134333", "ENSG00000117394", "ENSG00000176171", "ENSG00000148926"),
+            "inflammatory_response": ("ENSG00000136244", "ENSG00000169429", "ENSG00000108691", "ENSG00000100906", "ENSG00000118503", "ENSG00000073756", "ENSG00000090339"),
+            "stress_response": ("ENSG00000175197", "ENSG00000128272", "ENSG00000044574", "ENSG00000100219", "ENSG00000116193", "ENSG00000100292"),
+            "contractile_maturation": ("ENSG00000118194", "ENSG00000129991", "ENSG00000197616", "ENSG00000092054", "ENSG00000159251", "ENSG00000198626", "ENSG00000174437"),
+            "extracellular_matrix_remodeling": ("ENSG00000108821", "ENSG00000164692", "ENSG00000168542", "ENSG00000115414", "ENSG00000105329", "ENSG00000106366", "ENSG00000087245"),
+        },
+        centers=CENTERS,
+        scales=SCALES,
+        fit_sample_ids=("H18499_A", "H18499_B"),
+        artifact_id=ARTIFACT_ID,
+    )
+    require_complete_frozen_transform(artifact)
+    assert artifact.apply(({"hypoxia_response": 5.64568998198972, "inflammatory_response": 2.031578586172451, "stress_response": 4.453042806259525, "contractile_maturation": 7.763700331112314, "extracellular_matrix_remodeling": 5.885868277196324},))[0] == pytest.approx({domain: 0.5 for domain in CENTERS})
