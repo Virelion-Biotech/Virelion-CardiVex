@@ -24,7 +24,9 @@ def _fixture(path: Path) -> None:
         "3091\t10\t20\t30\t40\t50\t60",
         "7422\t20\t30\t40\t50\t60\t70",
         "3569\t10\t20\t30\t40\t50\t60",
-        "3576\t20\t30\t40\t50\t60\t70",
+        "1649\t20\t30\t40\t50\t60\t70",
+        "7139\t10\t20\t30\t40\t50\t60",
+        "1277\t20\t30\t40\t50\t60\t70",
         "Geneid\tHISAT2 annotation\tHISAT2 annotation\tHISAT2 annotation\tHISAT2 annotation\tHISAT2 annotation\tHISAT2 annotation",
     ]
     with gzip.open(path, "wt", encoding="utf-8") as handle:
