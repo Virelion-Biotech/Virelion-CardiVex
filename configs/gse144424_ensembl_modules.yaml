@@ -1,7 +1,7 @@
 dataset: GSE144424
-name: cardiVex_gse144424_ensembl_modules_v1
+name: cardiVex_gse144424_ensembl_modules_v2
 purpose: deterministic processed-count module scoring
-mapping_source: human Ensembl gene identifiers corresponding to the documented symbols
+mapping_source: human Ensembl gene identifiers verified against NCBI Gene / Ensembl
 modules:
   hypoxia_response:
     symbols: [HIF1A, VEGFA, EGLN3, LDHA, SLC2A1, BNIP3, ADM]
@@ -23,3 +23,6 @@ qc:
   sample_normalization: log1p_CPM
   calibration_normalization: development_only_z_then_0p15_scale
   biological_unit: subject
+  mapping_validation: verified_reference_identifiers
+notes:
+  - ENSG00000147813 is NAPRT, not EGLN3; EGLN3 is ENSG00000129521.
