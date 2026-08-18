@@ -1,0 +1,102 @@
+{
+  "report_version": "0.3.0",
+  "status": "no_refit_external_validation_complete_sample_level",
+  "reference": {
+    "dataset_id": "GSE144424",
+    "artifact": "reports/GSE144424_frozen_module_transform_v0.1.json",
+    "artifact_id": "a6b5fa9e36ddf650",
+    "source_sha256": "cad9ac4c6514550ea9bfb2b491cc2934f6952894d7cbd17338d5054d03da6f7c",
+    "fit_subject_count": 12,
+    "fit_raw_sample_count": 64,
+    "held_out_subjects": ["19128", "18870", "18855"],
+    "gene_rows": 19081,
+    "centers": {
+      "hypoxia_response": 5.94356807282322,
+      "inflammatory_response": 2.031578586172451,
+      "stress_response": 4.453042806259526,
+      "contractile_maturation": 7.763700331112314,
+      "extracellular_matrix_remodeling": 5.885868277196325
+    },
+    "scales": {
+      "hypoxia_response": 0.5786549043876493,
+      "inflammatory_response": 0.711188636036,
+      "stress_response": 0.48815295451044377,
+      "contractile_maturation": 0.3426531303217419,
+      "extracellular_matrix_remodeling": 1.2833733325723107
+    },
+    "mapping_correction": {
+      "gene": "EGLN3",
+      "previous_ensembl": "ENSG00000147813",
+      "corrected_ensembl": "ENSG00000129521"
+    }
+  },
+  "external": {
+    "dataset_id": "GSE234907",
+    "source_file": "GSE234907_Heart_counts.txt.gz",
+    "source_sha256": "ee2a2cf4279eefe68aa89aed0251eb192f48f97c48000539f848c9b255752e2c",
+    "sample_count": 6,
+    "classes": {"1021-2D": 3, "1021-3D": 3},
+    "gene_rows": 28395,
+    "gene_id_namespace": "NCBI/Entrez Gene IDs",
+    "sample_library_sizes": {
+      "S7_2": 29227943.0,
+      "S8_2": 30137721.0,
+      "S9_2": 29074898.0,
+      "S10_2": 23977104.0,
+      "S11_2": 26314054.0,
+      "S12_2": 24551533.0
+    },
+    "missing_external_genes": {"stress_response": ["4189"]}
+  },
+  "sample_level_transformed_scores": {
+    "S7_2": {"hypoxia_response": 0.283135, "inflammatory_response": 0.428067, "stress_response": 0.334132, "contractile_maturation": 0.006837, "extracellular_matrix_remodeling": 0.571605},
+    "S8_2": {"hypoxia_response": 0.286292, "inflammatory_response": 0.428430, "stress_response": 0.344039, "contractile_maturation": 0.010405, "extracellular_matrix_remodeling": 0.570192},
+    "S9_2": {"hypoxia_response": 0.290818, "inflammatory_response": 0.434282, "stress_response": 0.333370, "contractile_maturation": 0.011639, "extracellular_matrix_remodeling": 0.572395},
+    "S10_2": {"hypoxia_response": 0.367033, "inflammatory_response": 0.638457, "stress_response": 0.388923, "contractile_maturation": 0.342424, "extracellular_matrix_remodeling": 0.609946},
+    "S11_2": {"hypoxia_response": 0.366629, "inflammatory_response": 0.630982, "stress_response": 0.395113, "contractile_maturation": 0.336681, "extracellular_matrix_remodeling": 0.608768},
+    "S12_2": {"hypoxia_response": 0.365314, "inflammatory_response": 0.632153, "stress_response": 0.388606, "contractile_maturation": 0.330789, "extracellular_matrix_remodeling": 0.608087}
+  },
+  "class_means": {
+    "1021-2D": {"hypoxia_response": 0.2867481370, "inflammatory_response": 0.4302594618, "stress_response": 0.3371806634, "contractile_maturation": 0.0096273168, "extracellular_matrix_remodeling": 0.5713971147},
+    "1021-3D": {"hypoxia_response": 0.3663251834, "inflammatory_response": 0.6338643510, "stress_response": 0.3908806786, "contractile_maturation": 0.3366314512, "extracellular_matrix_remodeling": 0.6089338911}
+  },
+  "effect_3d_minus_2d": {
+    "hypoxia_response": 0.0795770464,
+    "inflammatory_response": 0.2036048892,
+    "stress_response": 0.0537000151,
+    "contractile_maturation": 0.3270041344,
+    "extracellular_matrix_remodeling": 0.0375367764
+  },
+  "welch_p_descriptive": {
+    "hypoxia_response": 0.0004451933,
+    "inflammatory_response": 3.965009409e-07,
+    "stress_response": 0.0005323238,
+    "contractile_maturation": 8.743676621e-06,
+    "extracellular_matrix_remodeling": 2.058917175e-06
+  },
+  "class_mean_distance_to_reference_rmse": {
+    "1021-2D": {"normoxia": 0.278606, "hypoxia": 0.302688, "reoxygenation_1": 0.246902, "reoxygenation_2": 0.201040},
+    "1021-3D": {"normoxia": 0.154267, "hypoxia": 0.185748, "reoxygenation_1": 0.121649, "reoxygenation_2": 0.094138}
+  },
+  "sample_nearest_reference": {
+    "S7_2": "reoxygenation_2",
+    "S8_2": "reoxygenation_2",
+    "S9_2": "reoxygenation_2",
+    "S10_2": "reoxygenation_2",
+    "S11_2": "reoxygenation_2",
+    "S12_2": "reoxygenation_2"
+  },
+  "interpretation": {
+    "finding": "After correcting the GSE144424 EGLN3 mapping and applying the resulting frozen transform without any refitting on GSE234907, every GSE234907 sample is closest to the late reoxygenation_2 reference state. The 3D class is substantially closer than the 2D class, and the largest 3D-vs-2D shift is contractile maturation, followed by inflammatory response.",
+    "closest_state": "reoxygenation_2",
+    "threeD_rmse_to_reoxygenation_2": 0.094138,
+    "twoD_rmse_to_reoxygenation_2": 0.201040,
+    "external_fit_performed": false,
+    "caveat": "The Welch p-values are descriptive only at n=3 per class. This report is intended as an external no-refit representation validation, not as definitive inferential evidence."
+  },
+  "reproducibility": {
+    "source_sha256_verified": true,
+    "artifact_id": "a6b5fa9e36ddf650",
+    "sample_level_scoring_implemented": true
+  }
+}
