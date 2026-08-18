@@ -12,6 +12,7 @@ from .physiology import PhysiologicalFeatureConfig, GSE234907Observation, normal
 from .gse234907 import GSE234907Matrix, read_gse234907_heart_counts, score_gse234907_modules, class_groups
 from .gse234907_frozen import score_gse234907_with_frozen_transform
 from .external_validation import ExternalValidationResult, DirectionTransfer, ReferenceSimilarity, validate_external_effect, classify_transferability
+from .external_validation_stats import ExactPermutationResult, exact_two_group_permutation, rmse_to_reference
 from .frozen_modules import FrozenModuleTransform, compute_artifact_id as compute_frozen_module_artifact_id, freeze_module_transform, frozen_module_transform_json, require_complete_frozen_transform
 from .translation import TranslationProfile, default_translation_profile, scenario_to_multimodal
 from .attribution import DomainAttribution, attribute_domains
@@ -69,6 +70,7 @@ __all__ = [
     "PhysiologicalFeatureConfig", "GSE234907Observation", "normalize_physiology", "ingest_gse234907_physiology",
     "GSE234907Matrix", "read_gse234907_heart_counts", "score_gse234907_modules", "class_groups", "score_gse234907_with_frozen_transform",
     "ExternalValidationResult", "DirectionTransfer", "ReferenceSimilarity", "validate_external_effect", "classify_transferability",
+    "ExactPermutationResult", "exact_two_group_permutation", "rmse_to_reference",
     "FrozenModuleTransform", "compute_frozen_module_artifact_id", "freeze_module_transform", "frozen_module_transform_json", "require_complete_frozen_transform",
     "TranslationProfile", "default_translation_profile", "scenario_to_multimodal", "DomainAttribution", "attribute_domains",
     "DetectionResult", "RecoveryResult", "detect_state", "evaluate_recovery", "ChallengeAssessment", "EndToEndResult",
