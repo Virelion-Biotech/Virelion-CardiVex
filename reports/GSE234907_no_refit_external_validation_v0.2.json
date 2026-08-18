@@ -4,7 +4,7 @@
   "reference": {
     "dataset_id": "GSE144424",
     "artifact": "reports/GSE144424_frozen_module_transform_v0.1.json",
-    "artifact_id": "b32575d33780657c",
+    "artifact_id": "dedc33a825f4e301",
     "source_file": "GSE144424_Counts_RNA_MCW_NEB.txt.gz",
     "source_sha256": "cad9ac4c6514550ea9bfb2b491cc2934f6952894d7cbd17338d5054d03da6f7c",
     "fit_subjects": 12,
@@ -36,7 +36,7 @@
       "inflammatory_response": 0.711188636036,
       "stress_response": 0.48815295451044377,
       "contractile_maturation": 0.34265313032174183,
-      "extracellular_matrix_remodeling": 1.2833733325723107
+      "extracellular_matrix_remodeling": 1.2833733325723105
     },
     "missing_gene_in_reference": ["ENSG00000116193"],
     "missing_gene_symbol_in_reference": ["DNAJB9"],
