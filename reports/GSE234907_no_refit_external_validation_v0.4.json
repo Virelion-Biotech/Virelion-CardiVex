@@ -1,0 +1,82 @@
+{
+  "report_version": "0.4.0",
+  "status": "sample_level_no_refit_external_validation_complete",
+  "reference": {
+    "dataset_id": "GSE144424",
+    "artifact": "reports/GSE144424_frozen_module_transform_v0.2.json",
+    "artifact_id": "ba2f4c85542cfcb6",
+    "source_sha256": "cad9ac4c6514550ea9bfb2b491cc2934f6952894d7cbd17338d5054d03da6f7c",
+    "fit_subjects": 12,
+    "fit_raw_sample_count": 64,
+    "held_out_subjects": ["19128", "18870", "18855"],
+    "normalization": "log1p(CPM) then development-only z-standardization and 0.15 scaling around 0.5",
+    "mapping_revision": "EGLN3 corrected to ENSG00000129521; prior ENSG00000147813 mapping was NAPRT."
+  },
+  "external": {
+    "dataset_id": "GSE234907",
+    "source_file": "GSE234907_Heart_counts.txt.gz",
+    "source_sha256": "ee2a2cf4279eefe68aa89aed0251eb192f48f97c48000539f848c9b255752e2c",
+    "sample_count": 6,
+    "classes": {"1021-2D": 3, "1021-3D": 3},
+    "contrast": "1021-3D minus 1021-2D",
+    "external_fit": "none"
+  },
+  "sample_scores": {
+    "S7_2": {"class": "1021-2D", "hypoxia_response": 0.283135, "inflammatory_response": 0.428067, "stress_response": 0.334132, "contractile_maturation": 0.006837, "extracellular_matrix_remodeling": 0.571605},
+    "S8_2": {"class": "1021-2D", "hypoxia_response": 0.286292, "inflammatory_response": 0.428430, "stress_response": 0.344039, "contractile_maturation": 0.010405, "extracellular_matrix_remodeling": 0.570192},
+    "S9_2": {"class": "1021-2D", "hypoxia_response": 0.290818, "inflammatory_response": 0.434282, "stress_response": 0.333370, "contractile_maturation": 0.011639, "extracellular_matrix_remodeling": 0.572395},
+    "S10_2": {"class": "1021-3D", "hypoxia_response": 0.367033, "inflammatory_response": 0.638457, "stress_response": 0.388923, "contractile_maturation": 0.342424, "extracellular_matrix_remodeling": 0.609946},
+    "S11_2": {"class": "1021-3D", "hypoxia_response": 0.366629, "inflammatory_response": 0.630982, "stress_response": 0.395113, "contractile_maturation": 0.336681, "extracellular_matrix_remodeling": 0.608768},
+    "S12_2": {"class": "1021-3D", "hypoxia_response": 0.365314, "inflammatory_response": 0.632153, "stress_response": 0.388606, "contractile_maturation": 0.330789, "extracellular_matrix_remodeling": 0.608087}
+  },
+  "class_effects": {
+    "hypoxia_response": {"mean_2d": 0.2867481370315665, "mean_3d": 0.36632518342992937, "difference_3d_minus_2d": 0.07957704639836288},
+    "inflammatory_response": {"mean_2d": 0.4302594617982188, "mean_3d": 0.6338643509990401, "difference_3d_minus_2d": 0.20360488920082137},
+    "stress_response": {"mean_2d": 0.33718066343314607, "mean_3d": 0.3908806785778378, "difference_3d_minus_2d": 0.05370001514469175},
+    "contractile_maturation": {"mean_2d": 0.009627316761901353, "mean_3d": 0.3366314511807516, "difference_3d_minus_2d": 0.32700413441885023},
+    "extracellular_matrix_remodeling": {"mean_2d": 0.5713971147484295, "mean_3d": 0.6089338911299199, "difference_3d_minus_2d": 0.037536776381490444}
+  },
+  "exact_small_n_statistics": {
+    "method": "exhaustive two-sided permutation test on class labels; no asymptotic approximation",
+    "permutations_per_dimension": 20,
+    "note": "For n=3 vs n=3, the smallest attainable two-sided exact p-value is 0.1.",
+    "hypoxia_response": {"p_value_two_sided": 0.1, "cliff_delta": 1.0},
+    "inflammatory_response": {"p_value_two_sided": 0.1, "cliff_delta": 1.0},
+    "stress_response": {"p_value_two_sided": 0.1, "cliff_delta": 1.0},
+    "contractile_maturation": {"p_value_two_sided": 0.1, "cliff_delta": 1.0},
+    "extracellular_matrix_remodeling": {"p_value_two_sided": 0.1, "cliff_delta": 1.0}
+  },
+  "reference_condition_centers_corrected": {
+    "normoxia": {"hypoxia_response": 0.44335441339947335, "inflammatory_response": 0.4966983218878836, "stress_response": 0.4923493984875095, "contractile_maturation": 0.5471290237696386, "extracellular_matrix_remodeling": 0.5076735578945772},
+    "hypoxia": {"hypoxia_response": 0.6492188851419062, "inflammatory_response": 0.5181974344415586, "stress_response": 0.523818578270635, "contractile_maturation": 0.5149233740515604, "extracellular_matrix_remodeling": 0.49974586256180054},
+    "reoxygenation_1": {"hypoxia_response": 0.4555298709368207, "inflammatory_response": 0.5301346537955132, "stress_response": 0.5229269280276725, "contractile_maturation": 0.4603701189898686, "extracellular_matrix_remodeling": 0.5280336658151217},
+    "reoxygenation_2": {"hypoxia_response": 0.38006085854370186, "inflammatory_response": 0.5012032732239056, "stress_response": 0.456975596814981, "contractile_maturation": 0.4170943443084988, "extracellular_matrix_remodeling": 0.5257140510456232}
+  },
+  "sample_level_distance_to_reoxygenation_2": {
+    "S7_2": 0.20012544517938766,
+    "S8_2": 0.19708754896954786,
+    "S9_2": 0.19712624181652968,
+    "S10_2": 0.0852177132900788,
+    "S11_2": 0.08272156490571626,
+    "S12_2": 0.08517476059754661
+  },
+  "class_distance_summary": {
+    "1021-2D_mean_rmse_to_reoxygenation_2": 0.19811307865515507,
+    "1021-3D_mean_rmse_to_reoxygenation_2": 0.08437134626444723,
+    "ratio_3d_to_2d": 0.42588229135062124,
+    "all_six_samples_nearest_reference_state": "reoxygenation_2"
+  },
+  "interpretation": {
+    "largest_external_dimension": "contractile_maturation",
+    "second_largest_external_dimension": "inflammatory_response",
+    "direction_consistency": "All five module effects are positive and all six individual samples are strictly separated by class in every module.",
+    "inferential_caution": "The exact two-sided p-value is 0.1 for every module because n=3 per class permits only 20 exhaustive relabelings. These data support a strong descriptive separation but not conventional small-p inferential claims.",
+    "manifold_finding": "The frozen GSE144424 representation places every GSE234907 sample nearest to the corrected late-reoxygenation state; the 3D class is much closer to that state than the 2D class.",
+    "no_refit_guarantee": "GSE234907 raw counts are transformed only with parameters fitted on GSE144424 development samples. No external centering, scaling, feature selection, model fitting, or threshold fitting is performed."
+  },
+  "provenance": {
+    "mapping_reference": "NCBI Gene / Ensembl",
+    "mapping_correction": "ENSG00000147813 is NAPRT; EGLN3 is ENSG00000129521.",
+    "external_source_sha256_verified": true
+  }
+}
