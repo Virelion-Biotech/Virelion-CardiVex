@@ -1,0 +1,22 @@
+{
+  "artifact_version": "0.1.0",
+  "status": "pending_frozen_fit",
+  "dataset_id": "GSE144424",
+  "source_file": "GSE144424_Counts_RNA_MCW_NEB.txt.gz",
+  "source_sha256": "cad9ac4c6514550ea9bfb2b491cc2934f6952894d7cbd17338d5054d03da6f7c",
+  "normalization": "log1p(CPM) then development-only z-standardization and 0.15 scaling around 0.5",
+  "minimum_genes": 3,
+  "module_symbols": {
+    "hypoxia_response": ["HIF1A", "VEGFA", "EGLN3", "LDHA", "SLC2A1", "BNIP3", "ADM"],
+    "inflammatory_response": ["IL6", "CXCL8", "CCL2", "NFKBIA", "TNFAIP3", "PTGS2", "ICAM1"],
+    "stress_response": ["DDIT3", "ATF4", "HSPA5", "XBP1", "DNAJB9", "HMOX1"],
+    "contractile_maturation": ["TNNT2", "TNNI3", "MYH6", "MYH7", "ACTC1", "RYR2", "ATP2A2"],
+    "extracellular_matrix_remodeling": ["COL1A1", "COL1A2", "COL3A1", "FN1", "TGFB1", "SERPINE1", "MMP2"]
+  },
+  "fit_sample_ids": null,
+  "centers": null,
+  "scales": null,
+  "artifact_id": null,
+  "blocking_reason": "The repository's GSE144424 report records the development split and transformed module results but does not persist the fitted gene-level module centers/scales. The source count matrix is not present in the repository or in the current upload. Filling these fields from downstream summaries would fabricate the frozen transform.",
+  "next_action": "Provide or ingest the exact GSE144424_Counts_RNA_MCW_NEB.txt.gz source, fit only on the recorded 64 development raw samples, freeze the resulting ModuleScoreScaler with freeze_module_transform(), and replace this manifest with the complete immutable artifact before any absolute no-refit GSE234907 scoring is allowed."
+}
