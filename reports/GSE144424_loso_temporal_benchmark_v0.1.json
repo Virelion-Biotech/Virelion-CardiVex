@@ -1,0 +1,43 @@
+{
+  "dataset": "GSE144424",
+  "benchmark": "leave_one_biological_subject_out_temporal_prediction",
+  "source_archive_sha256": "cad9ac4c6514550ea9bfb2b491cc2934f6952894d7cbd17338d5054d03da6f7c",
+  "biological_subject_count": 15,
+  "collapsed_subject_timepoint_count": 60,
+  "fold_count": 15,
+  "model": "multi-output ridge-style linear next-state predictor",
+  "feature_contract": "five RNA phenotype modules + normalized time delta",
+  "replicate_handling": "mean within biological subject x condition x time; replicate sample IDs retained in provenance",
+  "development_rule": "for each fold, one biological subject is held out completely before normalization, fitting, and prediction",
+  "aggregate": {
+    "temporal_model_mean_mae": 0.06347557082882915,
+    "carry_forward_mean_mae": 0.0736513948524697,
+    "mean_paired_improvement": 0.010175824023640534,
+    "relative_mae_reduction": 0.13815816369364508,
+    "folds_better_than_carry_forward": 11,
+    "bootstrap_95pct_ci_paired_improvement": [-0.00170418, 0.02108001],
+    "bootstrap_seed": 0,
+    "interpretation": "Promising but not definitive. The bootstrap interval spans zero, and this remains a single-dataset omics-only validation.",
+    "external_validation": false,
+    "clinical_validation": false
+  },
+  "folds": [
+    {"subject": "18499", "temporal_model_mae": 0.07187191016735657, "carry_forward_mae": 0.07984620611126081},
+    {"subject": "18505", "temporal_model_mae": 0.053963594879585915, "carry_forward_mae": 0.06635194394638913},
+    {"subject": "18511", "temporal_model_mae": 0.09405493274376926, "carry_forward_mae": 0.06881777161812579},
+    {"subject": "18520", "temporal_model_mae": 0.04802460025927161, "carry_forward_mae": 0.060779459939692346},
+    {"subject": "18852", "temporal_model_mae": 0.03239689519921451, "carry_forward_mae": 0.05274447874943047},
+    {"subject": "18855", "temporal_model_mae": 0.03651406652174756, "carry_forward_mae": 0.05633202496836864},
+    {"subject": "18858", "temporal_model_mae": 0.04821716197591339, "carry_forward_mae": 0.06413844915107593},
+    {"subject": "18870", "temporal_model_mae": 0.04649805007278755, "carry_forward_mae": 0.08442240744312181},
+    {"subject": "18912", "temporal_model_mae": 0.08347397828181531, "carry_forward_mae": 0.06893795836671351},
+    {"subject": "19098", "temporal_model_mae": 0.08803859291071661, "carry_forward_mae": 0.09258903820653716},
+    {"subject": "19101", "temporal_model_mae": 0.06013413767018967, "carry_forward_mae": 0.09508012820056408},
+    {"subject": "19108", "temporal_model_mae": 0.06845781708408422, "carry_forward_mae": 0.09780896257393445},
+    {"subject": "19116", "temporal_model_mae": 0.07207971774369498, "carry_forward_mae": 0.0693325836697453},
+    {"subject": "19128", "temporal_model_mae": 0.12253421248956507, "carry_forward_mae": 0.0813795620502658},
+    {"subject": "19160", "temporal_model_mae": 0.025873894432725034, "carry_forward_mae": 0.06620994779182003}
+  ],
+  "report_version": "0.1.0",
+  "status": "real_omics_loso_benchmark_complete"
+}
