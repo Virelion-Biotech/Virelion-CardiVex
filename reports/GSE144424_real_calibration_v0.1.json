@@ -1,0 +1,121 @@
+{
+  "calibration": {
+    "conditions": {
+      "hypoxia": {
+        "sample_unit_count": 12,
+        "domains": {
+          "hypoxia_response": {"mean": 0.6690291846877727, "std": 0.07701578763238061, "minimum": 0.5197161018442538, "maximum": 0.7569301626142941, "count": 12},
+          "inflammatory_response": {"mean": 0.5156065823412128, "std": 0.1540333679706313, "minimum": 0.3416876014082372, "maximum": 0.7900004924031198, "count": 12},
+          "stress_response": {"mean": 0.5230526455053033, "std": 0.11703109956381307, "minimum": 0.35576600896651545, "maximum": 0.7119398814238167, "count": 12},
+          "contractile_maturation": {"mean": 0.5224362036155897, "std": 0.12411066150555172, "minimum": 0.2823762414554154, "maximum": 0.6999376823700902, "count": 12},
+          "extracellular_matrix_remodeling": {"mean": 0.48700556167631986, "std": 0.15546620865686213, "minimum": 0.23890884973364768, "maximum": 0.7694168458908185, "count": 12}
+        }
+      },
+      "normoxia": {
+        "sample_unit_count": 12,
+        "domains": {
+          "hypoxia_response": {"mean": 0.4693781938740856, "std": 0.15636969130823055, "minimum": 0.24132353011824036, "maximum": 0.7535707715273675, "count": 12},
+          "inflammatory_response": {"mean": 0.46892591562878483, "std": 0.14821101595906895, "minimum": 0.2601587407238677, "maximum": 0.7149069436376357, "count": 12},
+          "stress_response": {"mean": 0.47954216837403935, "std": 0.1498769378521824, "minimum": 0.30074968756730664, "maximum": 0.7532697583993698, "count": 12},
+          "contractile_maturation": {"mean": 0.5813256355780652, "std": 0.1434341755640233, "minimum": 0.3221992974776166, "maximum": 0.7834708626968703, "count": 12},
+          "extracellular_matrix_remodeling": {"mean": 0.493198632462118, "std": 0.15703572981603744, "minimum": 0.256096479163029, "maximum": 0.7549358915777538, "count": 12}
+        }
+      },
+      "reoxygenation_1": {
+        "sample_unit_count": 12,
+        "domains": {
+          "hypoxia_response": {"mean": 0.4745493848447318, "std": 0.07914540802647323, "minimum": 0.3202638920382497, "maximum": 0.5954113935178151, "count": 12},
+          "inflammatory_response": {"mean": 0.5263050530568868, "std": 0.14176630491445848, "minimum": 0.286030081560393, "maximum": 0.7482047507291159, "count": 12},
+          "stress_response": {"mean": 0.541032957290671, "std": 0.15641587839363844, "minimum": 0.2779090583705241, "maximum": 0.7500080462366065, "count": 12},
+          "contractile_maturation": {"mean": 0.47351729573669155, "std": 0.127968442821565, "minimum": 0.28426818546041345, "maximum": 0.6771071391312832, "count": 12},
+          "extracellular_matrix_remodeling": {"mean": 0.5120169492224891, "std": 0.14556426156410834, "minimum": 0.280992626163584, "maximum": 0.7343016170136538, "count": 12}
+        }
+      },
+      "reoxygenation_2": {
+        "sample_unit_count": 12,
+        "domains": {
+          "hypoxia_response": {"mean": 0.38704323659341044, "std": 0.11255238183082028, "minimum": 0.1915238160731287, "maximum": 0.5602241544838701, "count": 12},
+          "inflammatory_response": {"mean": 0.4858425910577739, "std": 0.160927800976295, "minimum": 0.2658873757305333, "maximum": 0.794739368598027, "count": 12},
+          "stress_response": {"mean": 0.45637222882998635, "std": 0.17474675107217585, "minimum": 0.2458150713826238, "maximum": 0.7585019039489122, "count": 12},
+          "contractile_maturation": {"mean": 0.4227208650696541, "std": 0.16959444261905314, "minimum": 0.20268220421036458, "maximum": 0.7209250314544586, "count": 12},
+          "extracellular_matrix_remodeling": {"mean": 0.5077788566390729, "std": 0.16040691452264035, "minimum": 0.2713280622833572, "maximum": 0.758769218638628, "count": 12}
+        }
+      }
+    }
+  },
+  "dataset": {
+    "id": "GSE144424",
+    "source_file": "GSE144424_Counts_RNA_MCW_NEB.txt.gz",
+    "source_sha256": "cad9ac4c6514550ea9bfb2b491cc2934f6952894d7cbd17338d5054d03da6f7c",
+    "gene_rows": 19081,
+    "sample_count": 84,
+    "biological_subject_count": 15,
+    "condition_map": {
+      "A": {"label": "normoxia", "time_hours": 0.0},
+      "B": {"label": "hypoxia", "time_hours": 6.0},
+      "C": {"label": "reoxygenation_1", "time_hours": 12.0},
+      "D": {"label": "reoxygenation_2", "time_hours": 30.0}
+    },
+    "replicated_subjects": {"18511": 3, "18852": 3, "18855": 3}
+  },
+  "modules": {
+    "normalization": "log1p(CPM) then development-only z-standardization and 0.15 scaling around 0.5",
+    "requested_gene_count": 34,
+    "present_gene_count": 33,
+    "missing_gene_ids": ["ENSG00000116193"],
+    "missing_gene_symbol": "DNAJB9",
+    "minimum_genes_per_module": 3,
+    "module_symbols": {
+      "hypoxia_response": ["HIF1A", "VEGFA", "EGLN3", "LDHA", "SLC2A1", "BNIP3", "ADM"],
+      "inflammatory_response": ["IL6", "CXCL8", "CCL2", "NFKBIA", "TNFAIP3", "PTGS2", "ICAM1"],
+      "stress_response": ["DDIT3", "ATF4", "HSPA5", "XBP1", "DNAJB9", "HMOX1"],
+      "contractile_maturation": ["TNNT2", "TNNI3", "MYH6", "MYH7", "ACTC1", "RYR2", "ATP2A2"],
+      "extracellular_matrix_remodeling": ["COL1A1", "COL1A2", "COL3A1", "FN1", "TGFB1", "SERPINE1", "MMP2"]
+    }
+  },
+  "predictive_baseline": {
+    "model": "multi-output linear transition model on 5 module scores + delta_time",
+    "development_transitions": 36,
+    "held_out_transitions": 9,
+    "held_out_mae": 0.0700939170663903,
+    "held_out_max_error": 0.22733801724457603,
+    "carry_forward_mae": 0.07718091571271886,
+    "carry_forward_max_error": 0.3261877428489162,
+    "per_domain_mae": {
+      "hypoxia_response": 0.0934237747026591,
+      "inflammatory_response": 0.06436980211871081,
+      "stress_response": 0.11154713080618045,
+      "contractile_maturation": 0.054476042529094666,
+      "extracellular_matrix_remodeling": 0.026652835175306477
+    },
+    "interpretation": "development-only baseline; held-out subject transitions are evaluation only; this is not external validation"
+  },
+  "qc": {
+    "library_size_min": 4241469.0,
+    "library_size_median": 29127619.0,
+    "library_size_max": 91998821.0,
+    "median_zero_gene_fraction": 0.18314029663015563,
+    "lowest_library_samples": ["H18852_A", "H18852_2_D", "H18499_A", "H18858_C", "H18499_C"],
+    "highest_library_samples": ["H18520_A", "H19108_B", "H19108_C", "H18855_C", "H18505_D"]
+  },
+  "split": {
+    "method": "deterministic SHA256 ranking of biological subject IDs",
+    "held_out_subjects": ["19128", "18870", "18855"],
+    "development_subject_count": 12,
+    "held_out_subject_count": 3,
+    "development_raw_sample_count": 64,
+    "held_out_raw_sample_count": 20,
+    "development_collapsed_subject_timepoints": 48,
+    "held_out_collapsed_subject_timepoints": 12,
+    "replicate_handling": "mean within subject x condition x time; original contributing sample IDs retained in provenance"
+  },
+  "temporal_profile": [
+    {"time_hours": 0.0, "n_subjects": 12, "means": {"hypoxia_response": 0.4693781938740856, "inflammatory_response": 0.46892591562878483, "stress_response": 0.47954216837403935, "contractile_maturation": 0.5813256355780652, "extracellular_matrix_remodeling": 0.493198632462118}},
+    {"time_hours": 6.0, "n_subjects": 12, "means": {"hypoxia_response": 0.6690291846877727, "inflammatory_response": 0.5156065823412128, "stress_response": 0.5230526455053033, "contractile_maturation": 0.5224362036155897, "extracellular_matrix_remodeling": 0.48700556167631986}},
+    {"time_hours": 12.0, "n_subjects": 12, "means": {"hypoxia_response": 0.4745493848447318, "inflammatory_response": 0.5263050530568868, "stress_response": 0.541032957290671, "contractile_maturation": 0.47351729573669155, "extracellular_matrix_remodeling": 0.5120169492224891}},
+    {"time_hours": 30.0, "n_subjects": 12, "means": {"hypoxia_response": 0.38704323659341044, "inflammatory_response": 0.4858425910577739, "stress_response": 0.45637222882998635, "contractile_maturation": 0.4227208650696541, "extracellular_matrix_remodeling": 0.5077788566390729}}
+  ],
+  "report_id": "35ab0e89b583f876",
+  "report_version": "0.1.0",
+  "status": "real_data_calibration_complete_for_omics_layer"
+}
