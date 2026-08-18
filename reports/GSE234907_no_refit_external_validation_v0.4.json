@@ -4,7 +4,7 @@
   "reference": {
     "dataset_id": "GSE144424",
     "artifact": "reports/GSE144424_frozen_module_transform_v0.2.json",
-    "artifact_id": "ba2f4c85542cfcb6",
+    "artifact_id": "192a649117f0329d",
     "source_sha256": "cad9ac4c6514550ea9bfb2b491cc2934f6952894d7cbd17338d5054d03da6f7c",
     "fit_subjects": 12,
     "fit_raw_sample_count": 64,
