@@ -1,6 +1,6 @@
 {
-  "report_version": "0.1.0",
-  "status": "physiology_source_available_linkage_unresolved",
+  "report_version": "0.2.0",
+  "status": "physiology_source_available_partial_linkage_verified",
   "dataset_id": "GSE234907",
   "rna": {
     "source_file": "GSE234907_Heart_counts.txt.gz",
@@ -11,17 +11,20 @@
   "physiology_source": {
     "paper": "Electro-metabolic coupling in multi-chambered vascularized human cardiac organoids",
     "doi": "10.1038/s41551-023-01071-9",
-    "source_data_status": "publicly provided with paper",
-    "measurements_documented": ["oxygen uptake/interstitial oxygen", "extracellular field potential", "cardiac contraction"],
-    "measurement_resolution_documented": ">10 Hz",
-    "source_data_scope": "Source Data for Figs. 3, 5, 6-8 and Extended Data Figs. 1-8"
+    "workbook": "41551_2023_1071_MOESM12_ESM.xlsx",
+    "workbook_sha256": "cdb2b8779647c53ff2e8506eca896d8c11c06bcb4ad0b353eb4cf9aebe306763",
+    "relevant_sheet": "ED Fig 2",
+    "measurements_documented": ["oxygen uptake/interstitial oxygen", "extracellular field potential", "cardiac contraction"]
   },
   "linkage_audit": {
-    "sample_level_status": "blocked",
-    "reason": "The public paper/source-data description does not establish a one-to-one mapping from the six GEO RNA sample IDs S7_2-S12_2 to physiology experimental-unit IDs. Inferring pairing from 2D/3D class labels or sample ordering would be invalid.",
+    "sample_level_status": "partial_linkage",
+    "explicitly_linked_rna_samples": ["S10_2", "S11_2", "S12_2"],
+    "unmatched_rna_samples": ["S7_2", "S8_2", "S9_2"],
+    "reason": "The Source Data workbook explicitly contains the three 3D GEO RNA IDs, but does not contain the three 2D GEO RNA IDs. Pairing the missing 2D samples by order or class would be invalid.",
     "group_level_status": "allowed_descriptively",
-    "required_for_sample_level_validation": "explicit one-to-one rna_sample_id -> physiology_unit_id mapping with provenance"
+    "sample_level_status_for_all_six": "blocked",
+    "allowed_partial_analysis": "Exploratory paired RNA-to-physiology analysis for S10_2, S11_2, S12_2 only, with n=3 and no inferential overclaiming."
   },
   "implemented_guard": "cardivex.physiology_linkage.audit_physiology_linkage",
-  "policy": "No sample-level RNA-to-physiology correlation, regression, or prediction is permitted until explicit experimental-unit linkage is supplied."
+  "policy": "No complete six-sample paired RNA-to-physiology analysis is permitted until S7_2, S8_2, and S9_2 are explicitly linked to physiology units with provenance."
 }
