@@ -1,0 +1,92 @@
+{
+  "report_version": "0.5.0",
+  "status": "sample_level_no_refit_external_validation_audited",
+  "supersedes": "reports/GSE234907_no_refit_external_validation_v0.4.json",
+  "reference": {
+    "dataset_id": "GSE144424",
+    "artifact": "reports/GSE144424_frozen_module_transform_v0.2.json",
+    "artifact_id": "27a6554942da99ba",
+    "source_sha256": "cad9ac4c6514550ea9bfb2b491cc2934f6952894d7cbd17338d5054d03da6f7c",
+    "fit_subjects": 12,
+    "fit_raw_sample_count": 64,
+    "held_out_subjects": ["19128", "18870", "18855"],
+    "mapping_revision": "EGLN3 corrected to ENSG00000129521; previous ENSG00000147813 is NAPRT.",
+    "artifact_identity_rule": "sha256 of the complete canonical transform payload including artifact_version; first 16 hex characters"
+  },
+  "external": {
+    "dataset_id": "GSE234907",
+    "source_file": "GSE234907_Heart_counts.txt.gz",
+    "source_sha256": "ee2a2cf4279eefe68aa89aed0251eb192f48f97c48000539f848c9b255752e2c",
+    "sample_count": 6,
+    "classes": {"1021-2D": 3, "1021-3D": 3},
+    "gene_rows": 28395,
+    "gene_namespace": "NCBI/Entrez Gene IDs",
+    "external_module_gene_overlap": {
+      "hypoxia_response": {"requested": 7, "present": 7, "missing": []},
+      "inflammatory_response": {"requested": 7, "present": 7, "missing": []},
+      "stress_response": {"requested": 6, "present": 6, "missing": []},
+      "contractile_maturation": {"requested": 7, "present": 7, "missing": []},
+      "extracellular_matrix_remodeling": {"requested": 7, "present": 7, "missing": []}
+    },
+    "external_fit": "none"
+  },
+  "canonical_effect_3d_minus_2d": {
+    "hypoxia_response": 0.07957704639836283,
+    "inflammatory_response": 0.20360488920082137,
+    "stress_response": 0.05370001514469175,
+    "contractile_maturation": 0.3270041344188497,
+    "extracellular_matrix_remodeling": 0.037536776381490444
+  },
+  "canonical_small_n_statistics": {
+    "permutation_method": "exhaustive two-sided relabeling",
+    "permutations_per_module": 20,
+    "p_value_two_sided": 0.1,
+    "cliff_delta": 1.0,
+    "interpretation": "Complete sample separation is descriptive; n=3 per class does not support conventional small-p inference."
+  },
+  "clipping_audit": {
+    "external_samples_clipped_in_any_module": 0,
+    "result": "No external score reached the [0,1] clipping boundaries."
+  },
+  "leave_one_gene_out_sensitivity_raw_module_effect": {
+    "hypoxia_response": {"min": 0.14731932587704932, "max": 0.420338667183743, "all_positive": true},
+    "inflammatory_response": {"min": 0.7376333114490667, "max": 1.1380096172414103, "all_positive": true},
+    "stress_response": {"min": 0.14354385306230144, "max": 0.29115573820268104, "all_positive": true},
+    "contractile_maturation": {"min": 0.28592382527106786, "max": 1.11796943788298, "all_positive": true},
+    "extracellular_matrix_remodeling": {"min": -0.1033403220993474, "max": 0.48971443223216404, "all_positive": false}
+  },
+  "alternative_within_module_median_sensitivity": {
+    "hypoxia_response": 0.03318794849974349,
+    "inflammatory_response": 1.0929756842946943,
+    "stress_response": 0.31797732123030364,
+    "contractile_maturation": -0.1830435366582437,
+    "extracellular_matrix_remodeling": 0.23662910364115142,
+    "interpretation": "The frozen CardiVex estimand is mean log1p(CPM) module scoring. Median aggregation is a sensitivity analysis, not the primary estimand. Inflammation remains directionally positive under both mean and median; contractile maturation does not."
+  },
+  "reference_state_robustness": {
+    "class_mean_nearest_state": {"1021-2D": "reoxygenation_2", "1021-3D": "reoxygenation_2"},
+    "leave_one_domain_out_nearest_state": {
+      "1021-2D": {"hypoxia_response": "reoxygenation_2", "inflammatory_response": "reoxygenation_2", "stress_response": "reoxygenation_2", "contractile_maturation": "reoxygenation_2", "extracellular_matrix_remodeling": "reoxygenation_2"},
+      "1021-3D": {"hypoxia_response": "reoxygenation_2", "inflammatory_response": "reoxygenation_2", "stress_response": "reoxygenation_2", "contractile_maturation": "reoxygenation_2", "extracellular_matrix_remodeling": "reoxygenation_2"}
+    },
+    "interpretation": "The nearest-state assignment to corrected reoxygenation_2 is stable to removing any single domain from RMSE."
+  },
+  "physiology_evidence": {
+    "source_workbook": "41551_2023_1071_MOESM12_ESM.xlsx",
+    "source_sha256": "cdb2b8779647c53ff2e8506eca896d8c11c06bcb4ad0b353eb4cf9aebe306763",
+    "same_row_rna_ids_with_physiology_fields": ["S10_2", "S11_2", "S12_2"],
+    "missing_rna_ids_in_workbook": ["S7_2", "S8_2", "S9_2"],
+    "allowed_claim": "Three 3D RNA sample rows co-occur with physiology fields in ED Fig 2; complete six-sample paired RNA-to-physiology validation remains unavailable because the 2D RNA IDs are absent.",
+    "forbidden_claim": "Do not infer 2D physiology pairing from row order, class labels, or replicate order."
+  },
+  "final_claim_guardrails": {
+    "strongest_robust_molecular_signal": "inflammatory_response",
+    "largest_canonical_mean_effect": "contractile_maturation",
+    "contractile_maturation_invariant_to_alternative_aggregation": false,
+    "ecm_direction_invariant_to_leave_one_gene_out": false,
+    "nearest_reference_state_invariant_to_leave_one_domain_out": true,
+    "external_model_refit": false,
+    "sample_level_external_validation": true,
+    "complete_rna_to_physiology_validation": false
+  }
+}
