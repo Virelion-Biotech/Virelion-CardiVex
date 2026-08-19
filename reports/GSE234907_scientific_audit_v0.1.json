@@ -1,0 +1,93 @@
+{
+  "audit_version": "0.1.0",
+  "dataset_id": "GSE234907",
+  "reference_artifact": "27a6554942da99ba",
+  "audit_scope": ["data_integrity", "gene_mapping", "transform_identity", "external_leakage", "small_n_statistics", "aggregation_sensitivity", "reference_state_robustness", "physiology_provenance"],
+  "findings": [
+    {
+      "id": "DATA-001",
+      "severity": "pass",
+      "finding": "GSE234907 source SHA-256 matches the uploaded six-sample matrix and the committed provenance record.",
+      "evidence": "ee2a2cf4279eefe68aa89aed0251eb192f48f97c48000539f848c9b255752e2c"
+    },
+    {
+      "id": "MAP-001",
+      "severity": "fixed",
+      "finding": "The previous GSE144424 EGLN3 Ensembl mapping was incorrect; ENSG00000147813 is NAPRT and EGLN3 is ENSG00000129521.",
+      "action": "Corrected module mapping and regenerated the frozen artifact."
+    },
+    {
+      "id": "ART-001",
+      "severity": "fixed",
+      "finding": "Frozen-artifact identity was inconsistent across historical reports.",
+      "action": "Canonical hashing now includes artifact_version explicitly; v0.2.0 artifact ID is 27a6554942da99ba. Historical IDs are recorded as superseded."
+    },
+    {
+      "id": "EXT-001",
+      "severity": "fixed",
+      "finding": "An older external-validation report stated one GSE234907 stress gene was missing.",
+      "action": "Re-audit of the actual raw matrix shows all requested Entrez module genes are present in all five modules."
+    },
+    {
+      "id": "LEAK-001",
+      "severity": "pass",
+      "finding": "The sample-level external scorer applies only the GSE144424 frozen centers/scales and does not fit on GSE234907.",
+      "evidence": "external_fit=none; transform parameters derive from GSE144424 development samples only."
+    },
+    {
+      "id": "STAT-001",
+      "severity": "pass_with_caution",
+      "finding": "Exact two-sided permutation testing is appropriate for n=3 versus n=3, but the minimum attainable two-sided p-value is 0.1.",
+      "action": "Use descriptive separation and effect size; do not make conventional significance claims."
+    },
+    {
+      "id": "ROB-001",
+      "severity": "mixed",
+      "finding": "The canonical mean-module effects are all positive, but gene-level leave-one-out sensitivity is not uniform.",
+      "details": {
+        "hypoxia_response": "all leave-one-out effects positive",
+        "inflammatory_response": "all leave-one-out effects positive",
+        "stress_response": "all leave-one-out effects positive",
+        "contractile_maturation": "all leave-one-out effects positive",
+        "extracellular_matrix_remodeling": "effect reverses sign when one gene is omitted"
+      }
+    },
+    {
+      "id": "ROB-002",
+      "severity": "mixed",
+      "finding": "Alternative within-module median aggregation changes some effect directions.",
+      "details": {
+        "inflammation": "positive under mean and median; most robust major signal",
+        "contractile_maturation": "positive under canonical mean but negative under median sensitivity",
+        "ecm": "positive under both mean and median but not invariant to leave-one-gene-out"
+      },
+      "action": "Retain mean log1p(CPM) as the pre-specified CardiVex estimand, but avoid presenting contractile maturation as aggregation-invariant evidence."
+    },
+    {
+      "id": "STATE-001",
+      "severity": "pass",
+      "finding": "Both GSE234907 class means remain nearest to corrected GSE144424 reoxygenation_2 under leave-one-domain-out RMSE sensitivity.",
+      "action": "The nearest-state assignment is more robust than any single-domain effect."
+    },
+    {
+      "id": "PHYS-001",
+      "severity": "partial",
+      "finding": "The Nature source-data workbook contains rows labeled S10_2, S11_2, and S12_2 that also carry physiology fields; S7_2, S8_2, and S9_2 are absent.",
+      "action": "Allow three-sample exploratory 3D physiology linkage only; do not infer the missing 2D mapping."
+    }
+  ],
+  "canonical_external_effects": {
+    "hypoxia_response": 0.07957704639836283,
+    "inflammatory_response": 0.20360488920082137,
+    "stress_response": 0.05370001514469175,
+    "contractile_maturation": 0.3270041344188497,
+    "extracellular_matrix_remodeling": 0.037536776381490444
+  },
+  "bottom_line": {
+    "strongest_robust_signal": "inflammatory_response",
+    "largest_canonical_effect": "contractile_maturation",
+    "robust_nearest_reference_state": "reoxygenation_2",
+    "complete_sample_level_rna_to_physiology_validation": false,
+    "overall_status": "molecular_external_validation_supported_with_methodological_caveats"
+  }
+}
