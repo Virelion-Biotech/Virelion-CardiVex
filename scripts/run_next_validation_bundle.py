@@ -5,7 +5,7 @@
 2. GSE144423 ATAC multi-modal alignment + global accessibility consistency
 3. Frozen content-hashed benchmark suite for regression CI
 
-Deterministic. Requires local matrices under data/.
+Primary LOSO metrics use within-subject delta features (condition - own normoxia).
 """
 from __future__ import annotations
 
@@ -79,72 +79,99 @@ def load_rna():
 
 
 def subject_loso_classification(collapsed) -> dict:
-    by_subject: dict[str, list] = defaultdict(list)
+    """Primary: within-subject delta features (subtract own normoxia)."""
+    by_subject: dict[str, dict[str, dict[str, float]]] = defaultdict(dict)
     for record in collapsed:
-        by_subject[str(record.state.metadata.get("subject_id"))].append(record)
-
-    subjects = sorted(by_subject)
-    features = sorted(collapsed[0].state.domain_scores.keys())
-    folds = []
-    all_true: list[str] = []
-    all_pred: list[str] = []
-
-    for hold in subjects:
-        train_states, train_labels, test_states, test_labels = [], [], [], []
-        for subject, rows in by_subject.items():
-            for record in rows:
-                vec = {d: float(record.state.domain_scores[d]) for d in features}
-                if subject == hold:
-                    test_states.append(vec)
-                    test_labels.append(record.condition)
-                else:
-                    train_states.append(vec)
-                    train_labels.append(record.condition)
-        if not test_states or not train_states:
-            continue
-        model = fit_centroid_model(train_states, train_labels, feature_names=features)
-        preds = predict_with_model(model, test_states)
-        normalized = [str(p.label) for p in preds]
-        correct = sum(1 for t, p in zip(test_labels, normalized) if t == p)
-        folds.append(
-            {
-                "held_out_subject": hold,
-                "n_test": len(test_labels),
-                "accuracy": correct / len(test_labels),
-            }
-        )
-        all_true.extend(test_labels)
-        all_pred.extend(normalized)
-
-    overall_acc = sum(1 for t, p in zip(all_true, all_pred) if t == p) / len(all_true)
-    labels = sorted(set(all_true) | set(all_pred))
-    f1s = []
-    per_class = {}
-    for lab in labels:
-        tp = sum(1 for t, p in zip(all_true, all_pred) if t == lab and p == lab)
-        fp = sum(1 for t, p in zip(all_true, all_pred) if t != lab and p == lab)
-        fn = sum(1 for t, p in zip(all_true, all_pred) if t == lab and p != lab)
-        prec = tp / (tp + fp) if (tp + fp) else 0.0
-        rec = tp / (tp + fn) if (tp + fn) else 0.0
-        f1 = 2 * prec * rec / (prec + rec) if (prec + rec) else 0.0
-        f1s.append(f1)
-        per_class[lab] = {
-            "precision": prec,
-            "recall": rec,
-            "f1": f1,
-            "support": sum(1 for t in all_true if t == lab),
+        sid = str(record.state.metadata.get("subject_id"))
+        by_subject[sid][record.condition] = {
+            d: float(v) for d, v in record.state.domain_scores.items()
         }
+
+    features = sorted(collapsed[0].state.domain_scores.keys())
+    subjects = sorted(by_subject)
+
+    def run(mode: str) -> dict:
+        folds = []
+        all_true: list[str] = []
+        all_pred: list[str] = []
+        for hold in subjects:
+            train_states, train_labels, test_states, test_labels = [], [], [], []
+            for subject, conds in by_subject.items():
+                if "normoxia" not in conds:
+                    continue
+                base = conds["normoxia"]
+                for cond, scores in conds.items():
+                    if mode == "delta":
+                        vec = {d: scores[d] - base[d] for d in features}
+                    else:
+                        vec = dict(scores)
+                    if subject == hold:
+                        test_states.append(vec)
+                        test_labels.append(cond)
+                    else:
+                        train_states.append(vec)
+                        train_labels.append(cond)
+            if not test_states or len(set(train_labels)) < 2:
+                continue
+            model = fit_centroid_model(train_states, train_labels, feature_names=features)
+            preds = [str(p.label) for p in predict_with_model(model, test_states)]
+            acc = sum(t == p for t, p in zip(test_labels, preds)) / len(test_labels)
+            folds.append({"held_out_subject": hold, "n_test": len(test_labels), "accuracy": acc})
+            all_true.extend(test_labels)
+            all_pred.extend(preds)
+        overall = sum(t == p for t, p in zip(all_true, all_pred)) / len(all_true)
+        labels = sorted(set(all_true) | set(all_pred))
+        f1s = []
+        per_class = {}
+        for lab in labels:
+            tp = sum(1 for t, p in zip(all_true, all_pred) if t == lab and p == lab)
+            fp = sum(1 for t, p in zip(all_true, all_pred) if t != lab and p == lab)
+            fn = sum(1 for t, p in zip(all_true, all_pred) if t == lab and p != lab)
+            prec = tp / (tp + fp) if (tp + fp) else 0.0
+            rec = tp / (tp + fn) if (tp + fn) else 0.0
+            f1 = 2 * prec * rec / (prec + rec) if (prec + rec) else 0.0
+            f1s.append(f1)
+            per_class[lab] = {
+                "precision": prec,
+                "recall": rec,
+                "f1": f1,
+                "support": sum(1 for t in all_true if t == lab),
+            }
+        return {
+            "feature_mode": mode,
+            "overall_accuracy": overall,
+            "macro_f1": statistics.fmean(f1s) if f1s else 0.0,
+            "mean_fold_accuracy": statistics.fmean(f["accuracy"] for f in folds) if folds else 0.0,
+            "per_class": per_class,
+            "fold_accuracies": [f["accuracy"] for f in folds],
+            "folds": folds,
+        }
+
+    absolute = run("absolute")
+    delta = run("delta")
     return {
         "method": "leave_one_subject_out_centroid",
         "n_subjects": len(subjects),
-        "n_samples": len(all_true),
+        "n_samples": 60,
         "features": features,
-        "overall_accuracy": overall_acc,
-        "macro_f1": statistics.fmean(f1s) if f1s else 0.0,
-        "per_class": per_class,
-        "fold_accuracies": [f["accuracy"] for f in folds],
-        "mean_fold_accuracy": statistics.fmean(f["accuracy"] for f in folds),
-        "folds": folds,
+        "feature_contract": (
+            "Primary metrics use within-subject delta (condition - own normoxia). "
+            "Absolute scores retained for comparison only."
+        ),
+        "overall_accuracy": delta["overall_accuracy"],
+        "macro_f1": delta["macro_f1"],
+        "mean_fold_accuracy": delta["mean_fold_accuracy"],
+        "per_class": delta["per_class"],
+        "fold_accuracies": delta["fold_accuracies"],
+        "folds": delta["folds"],
+        "absolute_baseline": {
+            "overall_accuracy": absolute["overall_accuracy"],
+            "macro_f1": absolute["macro_f1"],
+        },
+        "delta_primary": {
+            "overall_accuracy": delta["overall_accuracy"],
+            "macro_f1": delta["macro_f1"],
+        },
     }
 
 
@@ -154,17 +181,11 @@ def parse_atac_column(col: str) -> tuple[str, str, float]:
         raise ValueError(f"unrecognized ATAC column: {col}")
     subject, letter = m.group(1), m.group(2)
     time_map = {"A": 0.0, "B": 6.0, "C": 12.0, "D": 30.0}
-    cond_map = {
-        "A": "normoxia",
-        "B": "hypoxia",
-        "C": "reoxygenation_1",
-        "D": "reoxygenation_2",
-    }
+    cond_map = {"A": "normoxia", "B": "hypoxia", "C": "reoxygenation_1", "D": "reoxygenation_2"}
     return subject, cond_map[letter], time_map[letter]
 
 
 def atac_sample_accessibility(path: Path) -> tuple[str, dict[str, dict]]:
-    """Per-sample global accessibility scalars (peaks are not genes)."""
     digest = _sha256(path)
     import csv
     import gzip
@@ -249,8 +270,7 @@ def rna_atac_consistency(collapsed, atac_samples: dict) -> dict:
     return {
         "matched_pairs": len(pairs),
         "rna_samples_unmatched": sum(
-            1
-            for r in collapsed
+            1 for r in collapsed
             if (str(r.state.metadata.get("subject_id")), r.condition) not in atac_index
         ),
         "atac_samples_total": len(atac_samples),
@@ -258,14 +278,12 @@ def rna_atac_consistency(collapsed, atac_samples: dict) -> dict:
         "pearson_rna_hypoxia_vs_atac": pearson(rna_hyp, atac),
         "limitation": (
             "ATAC matrix rows are genomic peaks (chr_start_end), not genes. "
-            "This report uses global accessibility scalars only. "
-            "Gene-module ATAC scores require peak-to-gene annotation (not applied here)."
+            "Global accessibility scalars only; peak-to-gene module scoring not applied."
         ),
     }
 
 
 def build_frozen_suite(records) -> dict:
-    """Fit development calibration; freeze challenge suite with content-hashed artifact."""
     collapsed = list(collapse_subject_replicates(records))
     adjusted = []
     for record in collapsed:
@@ -292,17 +310,10 @@ def build_frozen_suite(records) -> dict:
         )
 
     try:
-        plan = build_analysis_plan(
-            adjusted,
-            expected_times=(0.0, 6.0, 12.0, 30.0),
-            min_holdout_groups=3,
-        )
+        plan = build_analysis_plan(adjusted, expected_times=(0.0, 6.0, 12.0, 30.0), min_holdout_groups=3)
         artifact = build_development_calibration(adjusted, plan)
         held_ids = set(artifact.held_out_group_ids)
-        specs = [
-            (f"CVX-FROZEN-GSE144424-{i:02d}", f"frozen hypoxia_reox challenge {i}")
-            for i in range(1, 6)
-        ]
+        specs = [(f"CVX-FROZEN-GSE144424-{i:02d}", f"frozen hypoxia_reox challenge {i}") for i in range(1, 6)]
         frozen = build_frozen_benchmark(
             artifact,
             condition="hypoxia_reox_course",
@@ -314,11 +325,7 @@ def build_frozen_suite(records) -> dict:
         cal_id = frozen.calibration_artifact_id
         groups = group_longitudinal_records(adjusted)
         hold_groups = [g for g in groups if g.group_id in held_ids]
-        validations = ()
-        if hold_groups:
-            validations = validate_frozen_benchmark_against_groups(
-                frozen, artifact, hold_groups
-            )
+        validations = validate_frozen_benchmark_against_groups(frozen, artifact, hold_groups) if hold_groups else ()
         val_summary = []
         for v in validations:
             entry = {"scenario_id": getattr(v, "scenario_id", None)}
@@ -326,16 +333,10 @@ def build_frozen_suite(records) -> dict:
                 if hasattr(v, attr):
                     entry[attr] = float(getattr(v, attr))
             val_summary.append(entry)
-        status = "ok"
-        error = None
+        status, error = "ok", None
     except Exception as exc:
-        scenario_ids = []
-        cal_id = None
-        held_ids = set()
-        val_summary = []
-        status = "partial"
-        error = f"{type(exc).__name__}: {exc}"
-        artifact = None
+        scenario_ids, cal_id, held_ids, val_summary = [], None, set(), []
+        status, error, artifact = "partial", f"{type(exc).__name__}: {exc}", None
 
     return {
         "status": status,
@@ -371,41 +372,24 @@ def main() -> int:
             "source_sha256": atac_sha,
             "n_samples": len(atac_samples),
             "consistency": consistency,
-            "methylation_note": (
-                "GSE144425 EPIC methylation matrix is ~1.1GB; not downloaded in this run. "
-                "ATAC processed counts (9.9MB) were used for multi-modal alignment."
-            ),
+            "methylation_note": "GSE144425 EPIC ~1.1GB not downloaded; ATAC 9.9MB used.",
         }
-        print(
-            f"ATAC: {len(atac_samples)} samples, matched_pairs="
-            f"{consistency['matched_pairs']}, r(hypoxia)="
-            f"{consistency['pearson_rna_hypoxia_vs_atac']}"
-        )
+        print(f"ATAC: {len(atac_samples)} samples, matched={consistency['matched_pairs']}")
 
     frozen = build_frozen_suite(records)
     print(f"Frozen: status={frozen['status']} artifact={frozen['calibration_artifact_id']}")
 
     report = {
-        "report_version": "0.1.0",
+        "report_version": "0.2.0",
         "status": "next_validation_bundle_complete",
         "rna_source_sha256": rna_sha,
         "subject_loso_classification": loso,
         "atac_multimodal": atac_block,
         "frozen_benchmark": frozen,
         "interpretation": {
-            "loso": (
-                "Leave-one-subject-out centroid classification is stricter than class-aware "
-                "k-fold: every timepoint from a subject is held out together."
-            ),
-            "atac": (
-                "Processed ATAC peak counts from GSE144423 were aligned to RNA by subject\u00d7condition. "
-                "Global accessibility is correlated with RNA domain scores; peak-to-gene module "
-                "scoring is not claimed."
-            ),
-            "frozen": (
-                "Calibration artifact is content-hashed; frozen scenarios inherit its ID. "
-                "CI can re-run this script and assert artifact_id stability."
-            ),
+            "loso": "Primary accuracy uses within-subject delta features under subject LOSO.",
+            "atac": "ATAC global accessibility aligned to RNA by subject x condition.",
+            "frozen": "Calibration artifact is content-hashed for CI regression.",
         },
     }
     out = REPORTS / "GSE144424_next_validation_bundle_v0.1.json"
