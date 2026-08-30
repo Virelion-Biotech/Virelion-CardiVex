@@ -41,7 +41,8 @@ def test_ingest_preserves_experimental_unit_and_functional_only():
     assert len(records) == 1
     assert records[0].available_modalities == ("functional",)
     assert records[0].state.metadata["experimental_unit"] == "ORG-1"
-    assert set(records[0].state.imaging.values) == set()
+    assert records[0].state.imaging is None
+    assert records[0].state.functional is not None
     assert records[0].source_ref.startswith("GSE234907")
 
 

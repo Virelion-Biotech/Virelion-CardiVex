@@ -1,7 +1,5 @@
-from __future__ import annotations
-
-import gzip
 from pathlib import Path
+import gzip
 
 from cardivex.frozen_modules import FrozenModuleTransform
 from cardivex.gse234907 import read_gse234907_heart_counts
@@ -63,5 +61,5 @@ def test_gse234907_frozen_scorer_does_not_fit_external_data(tmp_path: Path) -> N
         minimum_genes=1,
     )
     assert len(records) == 6
-    assert all(record.metadata["external_fit"] == "none" for record in records)
+    assert all(record.state.metadata["external_fit"] == "none" for record in records)
     assert all(record.state.domain_scores["hypoxia_response"] > 0.0 for record in records)
