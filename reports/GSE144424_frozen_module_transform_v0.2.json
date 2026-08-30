@@ -1,59 +1,59 @@
 {
+  "artifact_id": "192a649117f0329d",
+  "artifact_id_rule": "sha256 of the canonical FrozenModuleTransform payload using sorted keys and compact JSON; first 16 hex characters; artifact_version=0.2.0",
   "artifact_version": "0.2.0",
-  "status": "complete_frozen_fit",
-  "supersedes": "reports/GSE144424_frozen_module_transform_v0.1.json",
-  "dataset_id": "GSE144424",
-  "source_file": "GSE144424_Counts_RNA_MCW_NEB.txt.gz",
-  "source_sha256": "cad9ac4c6514550ea9bfb2b491cc2934f6952894d7cbd17338d5054d03da6f7c",
-  "normalization": "log1p(CPM) then development-only z-standardization and 0.15 scaling around 0.5",
-  "minimum_genes": 3,
-  "module_symbols": {
-    "hypoxia_response": ["HIF1A", "VEGFA", "EGLN3", "LDHA", "SLC2A1", "BNIP3", "ADM"],
-    "inflammatory_response": ["IL6", "CXCL8", "CCL2", "NFKBIA", "TNFAIP3", "PTGS2", "ICAM1"],
-    "stress_response": ["DDIT3", "ATF4", "HSPA5", "XBP1", "DNAJB9", "HMOX1"],
-    "contractile_maturation": ["TNNT2", "TNNI3", "MYH6", "MYH7", "ACTC1", "RYR2", "ATP2A2"],
-    "extracellular_matrix_remodeling": ["COL1A1", "COL1A2", "COL3A1", "FN1", "TGFB1", "SERPINE1", "MMP2"]
-  },
-  "module_ensembl": {
-    "hypoxia_response": ["ENSG00000100644", "ENSG00000112715", "ENSG00000129521", "ENSG00000134333", "ENSG00000117394", "ENSG00000176171", "ENSG00000148926"],
-    "inflammatory_response": ["ENSG00000136244", "ENSG00000169429", "ENSG00000108691", "ENSG00000100906", "ENSG00000118503", "ENSG00000073756", "ENSG00000090339"],
-    "stress_response": ["ENSG00000175197", "ENSG00000128272", "ENSG00000044574", "ENSG00000100219", "ENSG00000116193", "ENSG00000100292"],
-    "contractile_maturation": ["ENSG00000118194", "ENSG00000129991", "ENSG00000197616", "ENSG00000092054", "ENSG00000159251", "ENSG00000198626", "ENSG00000174437"],
-    "extracellular_matrix_remodeling": ["ENSG00000108821", "ENSG00000164692", "ENSG00000168542", "ENSG00000115414", "ENSG00000105329", "ENSG00000106366", "ENSG00000087245"]
-  },
-  "fit_raw_sample_count": 64,
-  "fit_subject_count": 12,
-  "held_out_subjects": ["19128", "18870", "18855"],
-  "held_out_raw_sample_count": 20,
-  "gene_rows": 19081,
-  "present_gene_count": 33,
-  "requested_gene_count": 34,
-  "missing_gene_ids": ["ENSG00000116193"],
-  "missing_gene_symbols": ["DNAJB9"],
-  "minimum_genes_per_module": 3,
   "centers": {
+    "contractile_maturation": 7.763700331112314,
+    "extracellular_matrix_remodeling": 5.885868277196324,
     "hypoxia_response": 5.943568072823221,
     "inflammatory_response": 2.031578586172451,
-    "stress_response": 4.453042806259525,
-    "contractile_maturation": 7.763700331112314,
-    "extracellular_matrix_remodeling": 5.885868277196324
+    "stress_response": 4.453042806259525
   },
-  "scales": {
-    "hypoxia_response": 0.5786549043876493,
-    "inflammatory_response": 0.711188636036,
-    "stress_response": 0.48815295451044377,
-    "contractile_maturation": 0.34265313032174183,
-    "extracellular_matrix_remodeling": 1.2833733325723107
-  },
-  "artifact_id": "27a6554942da99ba",
-  "artifact_id_rule": "sha256 of the canonical FrozenModuleTransform payload using sorted keys and compact JSON; first 16 hex characters; artifact_version=0.2.0",
-  "superseded_artifact_ids": ["192a649117f0329d", "ba2f4c85542cfcb6", "a6b5fa9e36ddf650"],
+  "dataset_id": "GSE144424",
+  "fit_raw_sample_count": 64,
+  "fit_rule": "12 development subjects selected by the existing deterministic SHA256 subject split; all 64 raw samples from those subjects fit the module center/scale; held-out subjects 19128, 18870, 18855 were excluded before fitting.",
+  "fit_subject_count": 12,
+  "gene_rows": 19081,
+  "held_out_raw_sample_count": 20,
+  "held_out_subjects": ["19128", "18870", "18855"],
   "mapping_correction": {
+    "correct_egln3_id": "ENSG00000129521",
+    "correct_symbol_for_previous_id": "NAPRT",
     "incorrect_previous_id": "ENSG00000147813",
     "incorrect_previous_symbol": "EGLN3",
-    "correct_symbol_for_previous_id": "NAPRT",
-    "correct_egln3_id": "ENSG00000129521",
     "verification": "NCBI Gene: ENSG00000147813 is NAPRT; ENSG00000129521 is EGLN3."
   },
-  "fit_rule": "12 development subjects selected by the existing deterministic SHA256 subject split; all 64 raw samples from those subjects fit the module center/scale; held-out subjects 19128, 18870, 18855 were excluded before fitting."
+  "minimum_genes": 3,
+  "minimum_genes_per_module": 3,
+  "missing_gene_ids": ["ENSG00000116193"],
+  "missing_gene_symbols": ["DNAJB9"],
+  "module_ensembl": {
+    "contractile_maturation": ["ENSG00000118194", "ENSG00000129991", "ENSG00000197616", "ENSG00000092054", "ENSG00000159251", "ENSG00000198626", "ENSG00000174437"],
+    "extracellular_matrix_remodeling": ["ENSG00000108821", "ENSG00000164692", "ENSG00000168542", "ENSG00000115414", "ENSG00000105329", "ENSG00000106366", "ENSG00000087245"],
+    "hypoxia_response": ["ENSG00000100644", "ENSG00000112715", "ENSG00000129521", "ENSG00000134333", "ENSG00000117394", "ENSG00000176171", "ENSG00000148926"],
+    "inflammatory_response": ["ENSG00000136244", "ENSG00000169429", "ENSG00000108691", "ENSG00000100906", "ENSG00000118503", "ENSG00000073756", "ENSG00000090339"],
+    "stress_response": ["ENSG00000175197", "ENSG00000128272", "ENSG00000044574", "ENSG00000100219", "ENSG00000116193", "ENSG00000100292"]
+  },
+  "module_symbols": {
+    "contractile_maturation": ["TNNT2", "TNNI3", "MYH6", "MYH7", "ACTC1", "RYR2", "ATP2A2"],
+    "extracellular_matrix_remodeling": ["COL1A1", "COL1A2", "COL3A1", "FN1", "TGFB1", "SERPINE1", "MMP2"],
+    "hypoxia_response": ["HIF1A", "VEGFA", "EGLN3", "LDHA", "SLC2A1", "BNIP3", "ADM"],
+    "inflammatory_response": ["IL6", "CXCL8", "CCL2", "NFKBIA", "TNFAIP3", "PTGS2", "ICAM1"],
+    "stress_response": ["DDIT3", "ATF4", "HSPA5", "XBP1", "DNAJB9", "HMOX1"]
+  },
+  "normalization": "log1p(CPM) then development-only z-standardization and 0.15 scaling around 0.5",
+  "present_gene_count": 33,
+  "requested_gene_count": 34,
+  "scales": {
+    "contractile_maturation": 0.34265313032174183,
+    "extracellular_matrix_remodeling": 1.2833733325723107,
+    "hypoxia_response": 0.5786549043876493,
+    "inflammatory_response": 0.711188636036,
+    "stress_response": 0.48815295451044377
+  },
+  "source_file": "GSE144424_Counts_RNA_MCW_NEB.txt.gz",
+  "source_sha256": "cad9ac4c6514550ea9bfb2b491cc2934f6952894d7cbd17338d5054d03da6f7c",
+  "status": "complete_frozen_fit",
+  "superseded_artifact_ids": ["27a6554942da99ba", "ba2f4c85542cfcb6", "a6b5fa9e36ddf650"],
+  "supersedes": "reports/GSE144424_frozen_module_transform_v0.1.json"
 }
