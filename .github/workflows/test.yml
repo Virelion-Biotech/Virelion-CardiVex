@@ -60,9 +60,11 @@ jobs:
             python scripts/run_full_validation.py
           fi
           python scripts/run_next_validation_bundle.py
+          python scripts/run_improved_classification.py
           test -f reports/GSE144424_loso_temporal_benchmark_v0.2.json
           test -f reports/FULL_VALIDATION_SUMMARY_2026-08-30.json
           test -f reports/NEXT_BUNDLE_SUMMARY_2026-08-30.json
+          test -f reports/GSE144424_improved_classification_v0.2.json
           python - <<'PY'
           import json
           s = json.load(open("reports/FULL_VALIDATION_SUMMARY_2026-08-30.json"))
@@ -70,8 +72,10 @@ jobs:
           assert s["loso_fold_count"] == 15
           b = json.load(open("reports/NEXT_BUNDLE_SUMMARY_2026-08-30.json"))
           assert b["status"] == "ok"
-          assert b["loso_accuracy"] > 0.25
+          assert b["loso_accuracy"] > 0.55  # delta features; absolute was ~0.45
           assert b["frozen_status"] == "ok"
           assert b["frozen_artifact_id"]
-          print("real-data smoke ok", s.get("frozen_artifact_id"), b["frozen_artifact_id"])
+          c = json.load(open("reports/GSE144424_improved_classification_v0.2.json"))
+          assert c["primary_metrics"]["delta_hypoxia_vs_other_accuracy"] >= 0.85
+          print("real-data smoke ok", b["loso_accuracy"], c["primary_metrics"]["delta_hypoxia_vs_other_accuracy"])
           PY
