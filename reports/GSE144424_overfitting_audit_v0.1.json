@@ -1,0 +1,48 @@
+{
+  "report_version": "0.1.0",
+  "status": "overfitting_audit_complete",
+  "question": "Is gene-level LOSO 0.90/0.97 overfit?",
+  "verdict": {
+    "label_memorization": "NO — train-label permutation yields ~chance (4class 0.24, reox 0.53)",
+    "de_ranking_essential": "NO — fixed phenotype module genes as individuals already reach 4class 0.92 / reox 0.97",
+    "main_driver": "Within-subject multi-baseline features (especially delta-from-hypoxia) + treating genes as separate features instead of module means",
+    "optimism_in_loso": "YES mild — fixed held-out drops 4class to 0.67–0.83; reox stays 0.83–1.00 on n=6",
+    "random_gene_floor": "High — random 30 genes: 4class mean 0.81, reox mean 0.85. DE ranking adds ~0.09 / ~0.12 over random",
+    "dimensionality_risk": "Present for reox (~90 features / ~28 train samples). Prefer top_n<=10 or fixed phenotype genes.",
+    "gene_stability": "Moderate — 6 genes in all 15 folds; 11 in >=12 folds; 75 unique genes ever selected at top_n=20"
+  },
+  "metrics_table": {
+    "permutation_4class_mean": 0.241,
+    "permutation_4class_max": 0.350,
+    "permutation_reox_mean": 0.533,
+    "permutation_reox_max": 0.700,
+    "random_genes_30_4class_mean": 0.809,
+    "random_genes_30_reox_mean": 0.853,
+    "module_mean_multibaseline_4class": 0.800,
+    "phenotype_genes_as_individuals_4class": 0.917,
+    "phenotype_genes_as_individuals_reox": 0.967,
+    "de_gene_level_loso_4class": 0.900,
+    "de_gene_level_loso_reox": 0.967,
+    "fixed_heldout_de_top30_4class": 0.833,
+    "fixed_heldout_de_top30_reox": 0.833,
+    "feature_ablation_stable20": {
+      "dn_only_4class": 0.683,
+      "dh_only_4class": 0.717,
+      "dn_dh_4class": 0.833,
+      "dn_dh_dr1_4class": 0.883,
+      "dh_only_reox": 0.967
+    }
+  },
+  "recommendations": [
+    "Report fixed held-out or external metrics as primary, not only fold-wise LOSO",
+    "Prefer individual phenotype-module genes or a frozen stable gene set for deployment",
+    "Do not claim recovery-DE ranking alone produced the 0.97 reox accuracy",
+    "Keep ATAC claims withheld",
+    "External GSE117192 module-mean 0.81 remains the cleanest independent check"
+  ],
+  "honest_headline_numbers": {
+    "best_supported_4class": "0.83 fixed-heldout; LOSO 0.90 has mild selection optimism",
+    "best_supported_reox": "0.83 fixed-heldout; LOSO ~0.97 but random genes already ~0.85",
+    "external_module_reox": 0.8125
+  }
+}
