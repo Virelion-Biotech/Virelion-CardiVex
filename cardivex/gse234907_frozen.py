@@ -41,9 +41,10 @@ def score_gse234907_with_frozen_transform(
     frozen_scores = frozen_transform.apply(raw_rows)
     records: list[IngestRecord] = []
     for index, sample_id in enumerate(matrix.sample_ids):
+        scores = frozen_scores[index]
         state = CardiacState(
-            domain_scores=frozen_scores[index],
-            omics=ModalityVector("omics", {"rna_module_features": float(len(frozen_scores[index]))}),
+            domain_scores=scores,
+            omics=ModalityVector("omics", {"rna_module_features": 1.0 if scores else 0.0}),
             time=0.0,
             metadata={
                 "experimental_unit_id": sample_id,
