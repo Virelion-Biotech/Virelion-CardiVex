@@ -157,8 +157,9 @@ def apply_perturbation(
         metabolic_stress=_clip(baseline.metabolic_stress + 0.65 * metabolic + 0.25 * injury_burden),
         inflammatory_activation=_clip(baseline.inflammatory_activation + host_inflammation),
         structural_remodeling=remodeling,
-        tissue_injury=injury_burden,
-        ischemic_burden=ischemia,
+        # Preserve baseline residual injury when no injury-related mechanism is applied.
+        tissue_injury=_clip(baseline.tissue_injury + injury + 0.45 * ischemia + 0.35 * metabolic),
+        ischemic_burden=_clip(baseline.ischemic_burden + ischemia),
         time=time,
     )
 
