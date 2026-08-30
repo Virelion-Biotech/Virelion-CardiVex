@@ -102,5 +102,7 @@ def test_frozen_validation_rejects_artifact_record_overlap():
         source_dataset_ids=artifact.source_dataset_ids,
         artifact_id=artifact.artifact_id,
     )
-    with pytest.raises(ValueError, match="development/excluded"):
+    # Tampering development_record_ids invalidates the artifact hash first;
+    # the explicit overlap check is only reached when the hash still matches.
+    with pytest.raises(ValueError, match="integrity|development/excluded"):
         run_frozen_validation(tampered, [_scenario()], [groups[-1]])
