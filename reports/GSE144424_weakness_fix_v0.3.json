@@ -1,0 +1,43 @@
+{
+  "report_version": "0.3.0",
+  "status": "weakness_fixed_where_possible",
+  "investigation": {
+    "atac_peak_to_gene": {
+      "result": "weak",
+      "rna_atac_r_recovery": -0.12,
+      "reox_loso": 0.39,
+      "conclusion": "Gene-proximal bulk ATAC does not track recovery RNA."
+    },
+    "atac_reox_DARs": {
+      "leaky_all_subject_selection": 1.0,
+      "honest_3fold": 0.536,
+      "honest_fixed_heldout": 0.167,
+      "conclusion": "DAR signal does not transfer across subjects; perfect accuracy was leakage."
+    },
+    "rna_module_mean_limit": {
+      "issue": "Averaging recovery genes discards gene-specific axes that separate reox1.",
+      "fix": "Per-gene multi-baseline features; fold-wise gene selection."
+    }
+  },
+  "improved_rna": {
+    "method": "Fold-wise gene selection + per-gene multi-baseline deltas",
+    "four_class_loso_accuracy": 0.90,
+    "four_class_per_class_recall": {
+      "hypoxia": 1.00,
+      "normoxia": 1.00,
+      "reoxygenation_1": 0.67,
+      "reoxygenation_2": 0.93
+    },
+    "reox1_vs_reox2_loso_accuracy": 0.967,
+    "prior_module_mean_four_class": 0.833,
+    "prior_module_mean_reox": 0.90
+  },
+  "external_gse117192": {
+    "reox_loso_with_frozen_module": 0.8125
+  },
+  "remaining_limits": [
+    "reoxygenation_1 recall 0.67",
+    "n=15 subjects",
+    "ATAC not a reliable multi-modal partner for recovery here"
+  ]
+}
