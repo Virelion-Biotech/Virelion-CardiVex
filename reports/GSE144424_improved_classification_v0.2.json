@@ -1,0 +1,42 @@
+{
+  "dataset_id": "GSE144424",
+  "interpretation": {
+    "absolute_four_class_was_low_because": "Between-subject normoxia range exceeds mean within-subject hypoxia delta; absolute features mix identity with condition.",
+    "delta_is_not_cheating": "Subject baseline uses only that subject's normoxia sample. LOSO still removes the entire subject from training.",
+    "remaining_limits": [
+      "Four-class still confuses reoxygenation states (biology overlaps).",
+      "Five RNA modules only; not multi-modal.",
+      "n=15 subjects; point estimates are noisy."
+    ]
+  },
+  "method": {
+    "classifier": "centroid",
+    "delta_definition": "For each subject, subtract that subject's normoxia domain vector from each condition vector. Held-out subjects never contribute baselines.",
+    "split": "leave_one_subject_out"
+  },
+  "primary_metrics": {
+    "absolute_four_class_accuracy": 0.45,
+    "delta_four_class_accuracy": 0.6666666666666666,
+    "delta_four_class_macro_f1": 0.6605087505087506,
+    "delta_hypoxia_vs_other_accuracy": 0.9,
+    "delta_hypoxia_vs_other_macro_f1": 0.8721590909090909
+  },
+  "report_version": "0.2.0",
+  "results": [
+    {"feature_mode": "absolute", "label_mode": "four_class", "macro_f1": 0.43493025493025494, "mean_fold_accuracy": 0.45, "n_samples": 60, "n_subjects": 15, "overall_accuracy": 0.45},
+    {"feature_mode": "delta", "label_mode": "four_class", "macro_f1": 0.6605087505087506, "mean_fold_accuracy": 0.6666666666666666, "n_samples": 60, "n_subjects": 15, "overall_accuracy": 0.6666666666666666},
+    {"feature_mode": "absolute", "label_mode": "hypoxia_vs_normoxia", "macro_f1": 0.7991071428571428, "mean_fold_accuracy": 0.8, "n_samples": 30, "n_subjects": 15, "overall_accuracy": 0.8},
+    {"feature_mode": "delta", "label_mode": "hypoxia_vs_normoxia", "macro_f1": 0.8993288590604027, "mean_fold_accuracy": 0.9, "n_samples": 30, "n_subjects": 15, "overall_accuracy": 0.9},
+    {"feature_mode": "absolute", "label_mode": "hypoxia_vs_other", "macro_f1": 0.7222222222222222, "mean_fold_accuracy": 0.75, "n_samples": 60, "n_subjects": 15, "overall_accuracy": 0.75},
+    {"feature_mode": "delta", "label_mode": "hypoxia_vs_other", "macro_f1": 0.8721590909090909, "mean_fold_accuracy": 0.9, "n_samples": 60, "n_subjects": 15, "overall_accuracy": 0.9}
+  ],
+  "root_cause": {
+    "diagnosis": "Between-subject normoxia range exceeds mean within-subject hypoxia delta; absolute features mix identity with condition.",
+    "mean_within_subject_hypoxia_delta": 0.18280277234173452,
+    "normoxia_hypoxia_response_max": 0.7161185091168302,
+    "normoxia_hypoxia_response_min": 0.194079524186464,
+    "normoxia_hypoxia_response_range": 0.5220389849303662
+  },
+  "source_sha256": "cad9ac4c6514550ea9bfb2b491cc2934f6952894d7cbd17338d5054d03da6f7c",
+  "status": "improved_classification_complete"
+}
