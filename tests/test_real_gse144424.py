@@ -52,10 +52,12 @@ def test_collapse_subject_replicates():
     records = score_count_modules(matrix, metadata, config)
     collapsed = collapse_subject_replicates(records)
     groups = group_longitudinal_records(collapsed)
+    # collapse averages technical replicates at the same (subject, condition, time);
+    # grouping is by (experimental_unit_id, condition), so two conditions → two groups.
     assert len(collapsed) == 2
-    assert len(groups) == 1
-    assert len(groups[0].records) == 2
-    assert groups[0].records[0].state.metadata["collapsed_replicates"] == "2"
+    assert len(groups) == 2
+    assert all(len(group.records) == 1 for group in groups)
+    assert all(group.records[0].state.metadata["collapsed_replicates"] == "2" for group in groups)
 
 
 def test_count_reader_rejects_negative_values(tmp_path: Path):
