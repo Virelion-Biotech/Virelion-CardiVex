@@ -183,7 +183,7 @@ def score_count_modules(
             domain_scores=scores_by_sample[index],
             omics=ModalityVector(
                 name="omics",
-                values={"rna_module_features": float(len(domains))},
+                values={"rna_module_features": 1.0 if domains else 0.0},
             ),
             time=meta.elapsed_hours,
             metadata={
