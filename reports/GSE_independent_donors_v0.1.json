@@ -1,0 +1,33 @@
+{
+  "status": "independent_donor_search_complete",
+  "same_design_multi_donor_cohorts_found": [
+    {"id": "GSE144424", "n_human_donors": 15, "role": "discovery"},
+    {"id": "GSE117192", "n_human_donors": 8, "role": "external", "donors": ["20682", "20961", "21792", "22422", "24280", "25237", "28126", "28815"]}
+  ],
+  "other_geo_checked": {
+    "GSE275104": "hypoxia/normoxia + EV; 3 reps/condition; not multi-donor longitudinal reox",
+    "GSE84167": "aggregated Normoxia/Hypoxia/ReO2 FPKM only; not multi-donor",
+    "GSE108676": "human vs rhesus anoxia DE tables only; no multi-donor count matrix"
+  },
+  "no_third_same_design_cohort": true,
+  "total_independent_human_donors": 23,
+  "external_train144_test117": {
+    "method": "phenotype genes as individuals + multi-baseline deltas; train GSE144424, test GSE117192",
+    "four_class_accuracy": 0.84375,
+    "reox_accuracy": 0.9375,
+    "n_test_four": 32,
+    "n_test_reox": 16,
+    "per_class_recall_four": {
+      "hypoxia": 1.0,
+      "normoxia": 1.0,
+      "reoxygenation_1": 0.625,
+      "reoxygenation_2": 0.75
+    }
+  },
+  "gse117192_loso": {
+    "four_class_accuracy": 0.84375,
+    "reox_accuracy": 0.9375,
+    "n_donors": 8
+  },
+  "note": "GSE117192 is the only public multi-donor human iPSC-CM cohort with the same A/B/C/D hypoxia-reox design. Related lab lineage (Gilad) but independent donors and study."
+}
