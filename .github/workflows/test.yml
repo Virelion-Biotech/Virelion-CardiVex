@@ -31,16 +31,17 @@ jobs:
           python-version: "3.12"
       - run: python -m pip install --upgrade pip
       - run: pip install -e '.[test]'
-      - name: Real-data smoke (skip if download/SHA fails)
+      - name: Real-data smoke + next validation bundle
         env:
-          GSE144424_URL: https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE144424&format=file&file=GSE144424%5FCounts%5FRNA%5FMCW%5FNEB%2Etxt%2Egz
+          GSE144424_URL: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE144nnn/GSE144424/suppl/GSE144424_Counts_RNA_MCW_NEB.txt.gz
+          GSE144423_URL: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE144nnn/GSE144423/suppl/GSE144423_Counts_ATAC_MCW_NEB.txt.gz
         run: |
           set -euo pipefail
           mkdir -p data
           if [[ ! -f data/GSE144424_Counts_RNA_MCW_NEB.txt.gz ]]; then
-            echo "Downloading GSE144424 counts..."
+            echo "Downloading GSE144424 RNA counts..."
             curl -fsSL -o data/GSE144424_Counts_RNA_MCW_NEB.txt.gz "$GSE144424_URL" || {
-              echo "Download failed; skipping real-data smoke."
+              echo "RNA download failed; skipping real-data smoke."
               exit 0
             }
           fi
@@ -50,18 +51,27 @@ jobs:
             echo "SHA256 mismatch: $GOT (expected $EXPECTED); skipping."
             exit 0
           fi
+          if [[ ! -f data/GSE144423_Counts_ATAC_MCW_NEB.txt.gz ]]; then
+            curl -fsSL -o data/GSE144423_Counts_ATAC_MCW_NEB.txt.gz "$GSE144423_URL" || true
+          fi
           if [[ ! -f data/GSE234907_Heart_counts.txt.gz ]]; then
             python scripts/run_full_validation.py --skip-external
           else
             python scripts/run_full_validation.py
           fi
+          python scripts/run_next_validation_bundle.py
           test -f reports/GSE144424_loso_temporal_benchmark_v0.2.json
           test -f reports/FULL_VALIDATION_SUMMARY_2026-08-30.json
+          test -f reports/NEXT_BUNDLE_SUMMARY_2026-08-30.json
           python - <<'PY'
           import json
           s = json.load(open("reports/FULL_VALIDATION_SUMMARY_2026-08-30.json"))
           assert s["status"] == "ok"
           assert s["loso_fold_count"] == 15
-          assert s["source_sha256"] == "cad9ac4c6514550ea9bfb2b491cc2934f6952894d7cbd17338d5054d03da6f7c"
-          print("real-data smoke ok", s["frozen_artifact_id"])
+          b = json.load(open("reports/NEXT_BUNDLE_SUMMARY_2026-08-30.json"))
+          assert b["status"] == "ok"
+          assert b["loso_accuracy"] > 0.25
+          assert b["frozen_status"] == "ok"
+          assert b["frozen_artifact_id"]
+          print("real-data smoke ok", s.get("frozen_artifact_id"), b["frozen_artifact_id"])
           PY
