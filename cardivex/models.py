@@ -78,3 +78,43 @@ class Scenario:
 
     def domain_vector(self) -> dict[str, float]:
         return {name: value.value for name, value in self.phenotype_domains.items()}
+
+    def to_dict(self) -> dict[str, Any]:
+        """Deterministic JSON-serializable representation for audit/comparisons."""
+
+        def _domain_map(mapping: Mapping[str, DomainValue]) -> dict[str, dict[str, float | str]]:
+            return {
+                name: {
+                    "value": float(item.value),
+                    "uncertainty": float(item.uncertainty),
+                    "evidence_status": item.evidence_status,
+                }
+                for name, item in sorted(mapping.items())
+            }
+
+        return {
+            "scenario_id": self.scenario_id,
+            "version": self.version,
+            "name": self.name,
+            "target_model": self.target_model,
+            "evidence_tier": self.evidence_tier.value,
+            "confidence": self.confidence.value,
+            "phenotype_domains": _domain_map(self.phenotype_domains),
+            "temporal_profile": [
+                {
+                    "state": step.state,
+                    "relative_time": float(step.relative_time),
+                    "duration": float(step.duration),
+                    "domains": _domain_map(step.domains),
+                }
+                for step in self.temporal_profile
+            ],
+            "description": self.description,
+            "severity_profile": {k: float(v) for k, v in sorted(self.severity_profile.items())},
+            "interaction_profile": list(self.interaction_profile),
+            "variation_space": dict(self.variation_space),
+            "validation_targets": list(self.validation_targets),
+            "ood_status": self.ood_status,
+            "provenance_sources": list(self.provenance_sources),
+            "provenance_transformations": list(self.provenance_transformations),
+        }
