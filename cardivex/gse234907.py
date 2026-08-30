@@ -93,9 +93,13 @@ def score_gse234907_modules(
             if len(values) < minimum_genes:
                 raise ValueError(f"gene set '{domain}' has insufficient overlap")
             scores[domain] = sum(values) / len(values)
+        # Domain scores from log1p-CPM means are not yet unit-interval; clamp for
+        # the CardiacState contract. Downstream frozen transforms replace these
+        # with development-calibrated scores in [0, 1].
+        bounded = {domain: max(0.0, min(1.0, float(value))) for domain, value in scores.items()}
         state = CardiacState(
-            domain_scores=scores,
-            omics=ModalityVector("omics", {"rna_module_features": float(len(scores))}),
+            domain_scores=bounded,
+            omics=ModalityVector("omics", {"rna_module_features": 1.0 if scores else 0.0}),
             time=0.0,
             metadata={
                 "experimental_unit_id": sample_id,
