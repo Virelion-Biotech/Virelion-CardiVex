@@ -1,0 +1,111 @@
+{
+  "condition_classification": {
+    "features": [
+      "contractile_maturation",
+      "extracellular_matrix_remodeling",
+      "hypoxia_response",
+      "inflammatory_response",
+      "stress_response"
+    ],
+    "fold_accuracies": [0.4166666666666667, 0.4166666666666667, 0.4166666666666667, 0.4166666666666667, 0.4166666666666667],
+    "fold_macro_f1": [0.38905844155844155, 0.38905844155844155, 0.38905844155844155, 0.38905844155844155, 0.38905844155844155],
+    "k_folds": 5,
+    "label_counts": {
+      "hypoxia": 15,
+      "normoxia": 15,
+      "reoxygenation_1": 15,
+      "reoxygenation_2": 15
+    },
+    "mean_accuracy": 0.4166666666666667,
+    "mean_balanced_accuracy": 0.41666666666666663,
+    "mean_macro_f1": 0.38905844155844155,
+    "model": "centroid",
+    "n_samples": 60
+  },
+  "dataset_id": "GSE144424",
+  "interpretation": {
+    "benchmark_layer": "Held-out subject hypoxia scenarios are scored against development normoxia references. Omics abnormality is expected; imaging/functional modalities are empty so their novelty flags reflect absence of those channels.",
+    "classification_layer": "Centroid k-fold classification of condition labels from domain scores is a transparent baseline, not a clinical predictor.",
+    "limitations": [
+      "Omics-only; no imaging or functional measurements in GSE144424.",
+      "Three held-out subjects only for the validated-benchmark scenarios.",
+      "Condition classification is not subject-stratified LOSO (uses class-aware k-fold)."
+    ],
+    "surrogate_layer": "Domain MAE and temporal similarity compare scenario phenotype profiles to disjoint held-out longitudinal groups. clean_split=true means no subject ID overlap."
+  },
+  "report_version": "0.1.0",
+  "source_sha256": "cad9ac4c6514550ea9bfb2b491cc2934f6952894d7cbd17338d5054d03da6f7c",
+  "split": {
+    "development_normoxia_reference_states": 12,
+    "development_subject_count": 12,
+    "held_out_subject_count": 3,
+    "held_out_subjects": ["19128", "18870", "18855"],
+    "policy": "subject-level holdout before scenario construction and surrogate validation"
+  },
+  "status": "real_data_validated_benchmark_complete",
+  "validated_benchmark": {
+    "clean_split": true,
+    "name": "gse144424-validated-heldout",
+    "scenario_scores": [
+      {
+        "attribution_coverage": 0.8,
+        "issues": [],
+        "modality_scores": [
+          {"abnormality": 0.0, "available": true, "modality": "imaging", "novelty": 1.0},
+          {"abnormality": 0.0, "available": true, "modality": "functional", "novelty": 1.0},
+          {"abnormality": 0.4472135954999579, "available": true, "modality": "omics", "novelty": 0.4472135954999579}
+        ],
+        "overall_abnormality": 0.12160390074996208,
+        "overall_novelty": 0.10649678799295773,
+        "scenario_id": "CVX-GSE144424-18855-hypoxia",
+        "status": "ok"
+      },
+      {
+        "attribution_coverage": 0.8,
+        "issues": [],
+        "modality_scores": [
+          {"abnormality": 0.0, "available": true, "modality": "imaging", "novelty": 1.0},
+          {"abnormality": 0.0, "available": true, "modality": "functional", "novelty": 1.0},
+          {"abnormality": 0.31622776601683794, "available": true, "modality": "omics", "novelty": 0.31622776601683794}
+        ],
+        "overall_abnormality": 0.07768245235861601,
+        "overall_novelty": 0.07320508075688773,
+        "scenario_id": "CVX-GSE144424-18870-hypoxia",
+        "status": "ok"
+      },
+      {
+        "attribution_coverage": 0.8,
+        "issues": [],
+        "modality_scores": [
+          {"abnormality": 0.0, "available": true, "modality": "imaging", "novelty": 1.0},
+          {"abnormality": 0.0, "available": true, "modality": "functional", "novelty": 1.0},
+          {"abnormality": 0.8944271909999159, "available": true, "modality": "omics", "novelty": 0.7071067811865476}
+        ],
+        "overall_abnormality": 0.3989337224387643,
+        "overall_novelty": 0.297978742662473,
+        "scenario_id": "CVX-GSE144424-19128-hypoxia",
+        "status": "ok"
+      }
+    ],
+    "suite_summary": {
+      "all_novel_held_out": true,
+      "family_counts": {"held_out_novel": 3},
+      "held_out_count": 3,
+      "leakage_free": true,
+      "scenario_count": 3
+    },
+    "surrogate_summary": {
+      "groups": 9,
+      "max_group_domain_mae": 0.33233523769054524,
+      "mean_domain_mae": 0.15142531985660407,
+      "mean_multimodal_mae": 0.0,
+      "mean_temporal_similarity": 0.8485746801433959
+    },
+    "validation_policy": {
+      "held_out_units_disjoint": true,
+      "reference_split": "development",
+      "surrogate_validation_is_independent_of_defensive_scoring": true,
+      "time_tolerance": 0.0
+    }
+  }
+}
