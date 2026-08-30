@@ -1,0 +1,31 @@
+{
+  "protocol": "Genes/hyperparams selected on DEV only; evaluated once on fixed held-out {19128,18870,18855}",
+  "held_out_subjects": ["19128", "18870", "18855"],
+  "prior_fixed_heldout": {"four_class": 0.833, "reox": 0.833},
+  "valid_selected_by_inner_loso": {
+    "four_class": {
+      "inner": 1.0,
+      "outer": 0.667,
+      "config": {"src": "de", "n": 20, "modes": ["dn", "dh", "dr1"]},
+      "note": "Inner LOSO overfit; outer collapsed"
+    },
+    "reox": {
+      "inner": 1.0,
+      "outer": 0.833,
+      "config": {"src": "pheno", "n": null, "modes": ["dh"]}
+    }
+  },
+  "hierarchical_outer_4class": 0.667,
+  "oracle_best_outer_four": 0.917,
+  "oracle_best_outer_reox": 0.833,
+  "oracle_note": "0.917 uses union genes chosen by peeking at held-out — not a valid claim",
+  "improved_over_prior": false,
+  "conclusion": "No honest improvement over prior fixed-heldout 0.83. LOSO 0.90/0.97 was selection optimism. Ceiling on this split appears ~0.83 reox; 4-class is noisy at n=12 test samples.",
+  "what_was_tried": [
+    "phenotype genes as individuals",
+    "DE genes ranked on DEV only",
+    "feature ablations dn/dh/dr1",
+    "hierarchical hyp-vs-rest then 3-class",
+    "inner LOSO hyperparameter selection"
+  ]
+}
