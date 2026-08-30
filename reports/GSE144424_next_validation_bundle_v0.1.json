@@ -1,0 +1,66 @@
+{
+  "atac_multimodal": {
+    "consistency": {
+      "atac_samples_total": 56,
+      "limitation": "ATAC matrix rows are genomic peaks (chr_start_end), not genes. This report uses global accessibility scalars only. Gene-module ATAC scores require peak-to-gene annotation (not applied here).",
+      "matched_pairs": 56,
+      "pearson_rna_domain_mean_vs_atac": -0.07587606039693522,
+      "pearson_rna_hypoxia_vs_atac": -0.4115614466375974,
+      "rna_samples_unmatched": 4
+    },
+    "dataset_id": "GSE144423",
+    "methylation_note": "GSE144425 EPIC methylation matrix is ~1.1GB; not downloaded in this run. ATAC processed counts (9.9MB) were used for multi-modal alignment.",
+    "n_samples": 56,
+    "source_file": "GSE144423_Counts_ATAC_MCW_NEB.txt.gz",
+    "source_sha256": "44981dcbf23abcd9bed06dd644ff8cfde282473308c983ceddded9c14ed6b33e",
+    "status": "ok"
+  },
+  "frozen_benchmark": {
+    "calibration_artifact_id": "71b14c9cc5935951",
+    "development_record_count": 48,
+    "error": null,
+    "excluded_record_count": 0,
+    "frozen_validation": [],
+    "held_out_group_ids": ["19116", "19128", "19160"],
+    "manifest_name": "cardivex-frozen-challenge-suite",
+    "manifest_version": "0.5.0",
+    "scenario_ids": [
+      "CVX-FROZEN-GSE144424-01",
+      "CVX-FROZEN-GSE144424-02",
+      "CVX-FROZEN-GSE144424-03",
+      "CVX-FROZEN-GSE144424-04",
+      "CVX-FROZEN-GSE144424-05"
+    ],
+    "status": "ok"
+  },
+  "interpretation": {
+    "atac": "Processed ATAC peak counts from GSE144423 were aligned to RNA by subject\u00d7condition. Global accessibility is correlated with RNA domain scores; peak-to-gene module scoring is not claimed.",
+    "frozen": "Calibration artifact is content-hashed; frozen scenarios inherit its ID. CI can re-run this script and assert artifact_id stability.",
+    "loso": "Leave-one-subject-out centroid classification is stricter than class-aware k-fold: every timepoint from a subject is held out together."
+  },
+  "report_version": "0.1.0",
+  "rna_source_sha256": "cad9ac4c6514550ea9bfb2b491cc2934f6952894d7cbd17338d5054d03da6f7c",
+  "status": "next_validation_bundle_complete",
+  "subject_loso_classification": {
+    "features": [
+      "contractile_maturation",
+      "extracellular_matrix_remodeling",
+      "hypoxia_response",
+      "inflammatory_response",
+      "stress_response"
+    ],
+    "fold_accuracies": [0.5, 0.5, 0.25, 0.5, 0.5, 0.25, 0.75, 0.25, 0.5, 0.5, 0.5, 0.5, 0.5, 0.25, 0.5],
+    "macro_f1": 0.43493025493025494,
+    "mean_fold_accuracy": 0.45,
+    "method": "leave_one_subject_out_centroid",
+    "n_samples": 60,
+    "n_subjects": 15,
+    "overall_accuracy": 0.45,
+    "per_class": {
+      "hypoxia": {"f1": 0.6857142857142857, "precision": 0.6, "recall": 0.8, "support": 15},
+      "normoxia": {"f1": 0.3636363636363636, "precision": 0.3333333333333333, "recall": 0.4, "support": 15},
+      "reoxygenation_1": {"f1": 0.32, "precision": 0.4, "recall": 0.26666666666666666, "support": 15},
+      "reoxygenation_2": {"f1": 0.3703703703703704, "precision": 0.4166666666666667, "recall": 0.3333333333333333, "support": 15}
+    }
+  }
+}
