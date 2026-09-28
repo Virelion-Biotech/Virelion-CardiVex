@@ -1,0 +1,2 @@
+GitHub connector probe — 2026-09-29
+Status: ok
