@@ -1,0 +1,46 @@
+{
+  "report_version": "0.1.0",
+  "status": "source_reproduction_verified",
+  "dataset_id": "GSE144424",
+  "verification_source": {
+    "uploaded_filename": "GSE144424_Counts_RNA_MCW_NEB.txt(1).gz",
+    "sha256": "cad9ac4c6514550ea9bfb2b491cc2934f6952894d7cbd17338d5054d03da6f7c",
+    "bytes": 2660472,
+    "matches_frozen_artifact_source": true
+  },
+  "matrix": {
+    "sample_count": 84,
+    "gene_rows": 19081,
+    "development_raw_sample_count": 64,
+    "development_subject_count": 12,
+    "held_out_raw_sample_count": 20,
+    "held_out_subjects": ["19128", "18870", "18855"]
+  },
+  "recomputed_centers": {
+    "hypoxia_response": 5.64568998198972,
+    "inflammatory_response": 2.031578586172451,
+    "stress_response": 4.453042806259525,
+    "contractile_maturation": 7.763700331112314,
+    "extracellular_matrix_remodeling": 5.885868277196324
+  },
+  "recomputed_scales": {
+    "hypoxia_response": 0.4785714563680631,
+    "inflammatory_response": 0.711188636036,
+    "stress_response": 0.48815295451044377,
+    "contractile_maturation": 0.34265313032174183,
+    "extracellular_matrix_remodeling": 1.2833733325723105
+  },
+  "comparison": {
+    "centers_match_committed_artifact": true,
+    "scales_match_committed_artifact": true,
+    "normalization": "log1p(CPM) then development-only z-standardization and 0.15 scaling around 0.5",
+    "module_gene_count": 34,
+    "present_gene_count": 33,
+    "missing_gene": "ENSG00000116193 / DNAJB9"
+  },
+  "artifact": {
+    "path": "reports/GSE144424_frozen_module_transform_v0.1.json",
+    "artifact_id": "dedc33a825f4e301"
+  },
+  "interpretation": "The newly uploaded GSE144424 count file is byte-identical to the source used to define the frozen transform and independently reproduces all five development-only centers and scales. The frozen representation is therefore source-reproducible. This file is not GSE234907 and does not enable the missing sample-level GSE234907 validation."
+}

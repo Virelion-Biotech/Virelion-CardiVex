@@ -1,0 +1,70 @@
+dataset_id: GSE144424_GSE144426
+status: candidate-real-data
+organism: Homo sapiens
+model: human_iPSC_derived_cardiomyocytes
+primary_series: GSE144424
+superseries: GSE144426
+related_series:
+  - GSE144423
+  - GSE144425
+study_design:
+  individuals: 15
+  total_rna_samples: 84
+  conditions_per_individual: 4
+  replicated_individuals:
+    - 18511
+    - 18852
+    - 18855
+  experimental_unit: subject_id
+conditions:
+  A:
+    name: normoxia
+    oxygen_percent: 10
+    elapsed_hours: 0
+    role: reference
+  B:
+    name: hypoxia
+    oxygen_percent: 1
+    hypoxia_hours: 6
+    elapsed_hours: 6
+    role: challenge
+  C:
+    name: reoxygenation_1
+    oxygen_percent: 10
+    hypoxia_hours: 6
+    reoxygenation_hours: 6
+    elapsed_hours: 12
+    role: recovery_early
+  D:
+    name: reoxygenation_2
+    oxygen_percent: 10
+    hypoxia_hours: 6
+    reoxygenation_hours: 24
+    elapsed_hours: 30
+    role: recovery_late
+modalities:
+  rna_seq:
+    accession: GSE144424
+    samples: 84
+    processed_counts_available: true
+  atac_seq:
+    accession: GSE144423
+    matched_subject_condition_structure: true
+  dna_methylation:
+    accession: GSE144425
+    matched_subject_condition_structure: true
+notes:
+  - Use subject_id as the experimental unit; never split repeated samples independently.
+  - Preserve A/B/C/D condition identity alongside derived elapsed time.
+  - RNA, ATAC, and methylation should be calibrated separately before any multimodal fusion.
+  - This dataset is appropriate for hypoxia/reoxygenation host-response benchmarking, not for pathogen-specific claims.
+recommended_use:
+  - empirical_phenotype_calibration
+  - longitudinal_trajectory_calibration
+  - correlation_calibration
+  - cross-modal regulatory-state benchmarking
+  - held_out_subject validation
+  - temporal-shift evaluation
+source_urls:
+  geo_rna: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE144424
+  geo_superseries: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE144426

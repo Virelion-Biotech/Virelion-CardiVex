@@ -1,0 +1,24 @@
+{
+  "report_version": "0.2.0",
+  "status": "partial_linkage",
+  "dataset_id": "GSE234907",
+  "source_workbook": {
+    "filename": "41551_2023_1071_MOESM12_ESM.xlsx",
+    "sha256": "cdb2b8779647c53ff2e8506eca896d8c11c06bcb4ad0b353eb4cf9aebe306763",
+    "relevant_sheet": "ED Fig 2"
+  },
+  "rna_samples": ["S7_2", "S8_2", "S9_2", "S10_2", "S11_2", "S12_2"],
+  "explicit_links_verified": {
+    "S10_2": {"condition": "1021-3D", "sheet": "ED Fig 2", "source_row": 6},
+    "S11_2": {"condition": "1021-3D", "sheet": "ED Fig 2", "source_row": 7},
+    "S12_2": {"condition": "1021-3D", "sheet": "ED Fig 2", "source_row": 8}
+  },
+  "unmatched_rna_samples": ["S7_2", "S8_2", "S9_2"],
+  "physiology_fields_observed": ["OCR", "Basal Respiration"],
+  "analysis_policy": {
+    "complete_six_sample_pairing": "blocked",
+    "three_sample_3d_exploratory_pairing": "allowed_descriptively",
+    "inference_from_class_or_row_order": "forbidden"
+  },
+  "next_required_evidence": "explicit physiology-unit mapping for S7_2, S8_2, and S9_2"
+}

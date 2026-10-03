@@ -1,0 +1,25 @@
+{
+  "dataset_id": "GSE234907",
+  "source_file": "GSE234907_Heart_counts.txt.gz",
+  "source_sha256": "ee2a2cf4279eefe68aa89aed0251eb192f48f97c48000539f848c9b255752e2c",
+  "matrix": {"gene_rows": 28395, "sample_count": 6, "columns": ["S7_2", "S8_2", "S9_2", "S10_2", "S11_2", "S12_2"]},
+  "classes": {"1021-2D": ["S7_2", "S8_2", "S9_2"], "1021-3D": ["S10_2", "S11_2", "S12_2"]},
+  "qc": {"library_size_min": 23977104.0, "library_size_median": 27694476.0, "library_size_max": 30137721.0, "zero_gene_fraction": {"S7_2": 0.291283676703645, "S8_2": 0.28934671597112166, "S9_2": 0.2915654164465575, "S10_2": 0.31107589364324706, "S11_2": 0.30829371368198627, "S12_2": 0.3125902447614017}},
+  "modules": {
+    "hypoxia_response": ["HIF1A", "VEGFA", "EGLN3", "LDHA", "SLC2A1", "BNIP3", "ADM"],
+    "inflammatory_response": ["IL6", "CXCL8", "CCL2", "NFKBIA", "TNFAIP3", "PTGS2", "ICAM1"],
+    "stress_response": ["DDIT3", "ATF4", "HSPA5", "XBP1", "DNAJB9", "HMOX1"],
+    "contractile_maturation": ["TNNT2", "TNNI3", "MYH6", "MYH7", "ACTC1", "RYR2", "ATP2A2"],
+    "extracellular_matrix_remodeling": ["COL1A1", "COL1A2", "COL3A1", "FN1", "TGFB1", "SERPINE1", "MMP2"]
+  },
+  "class_means_log_cpm": {
+    "1021-2D": {"hypoxia_response": 5.044568054483235, "inflammatory_response": 1.7009207312381756, "stress_response": 3.9231712049492575, "contractile_maturation": 6.643515431540272, "extracellular_matrix_remodeling": 6.496729297801255},
+    "1021-3D": {"hypoxia_response": 5.266351338323196, "inflammatory_response": 2.666263954178129, "stress_response": 4.09793001195017, "contractile_maturation": 7.39050870011874, "extracellular_matrix_remodeling": 6.817887283126154}
+  },
+  "difference_3D_minus_2D": {"hypoxia_response": 0.2217832838399616, "inflammatory_response": 0.9653432229399532, "stress_response": 0.17475880700091206, "contractile_maturation": 0.7469932685784686, "extracellular_matrix_remodeling": 0.32115798532489936},
+  "geometric_fold_change_in_mean_log_cpm": {"hypoxia_response": 1.2483008215877565, "inflammatory_response": 2.6256886984310728, "stress_response": 1.1909589310117517, "contractile_maturation": 2.110644325859073, "extracellular_matrix_remodeling": 1.3787233817500435},
+  "welch_p_descriptive": {"hypoxia_response": 0.0010235875218760286, "inflammatory_response": 3.9650094089429586e-07, "stress_response": 0.0005323237701732493, "contractile_maturation": 8.743676621173249e-06, "extracellular_matrix_remodeling": 2.0589171754869284e-06},
+  "interpretation": "Descriptive 2D-vs-3D RNA comparison only; n=3 per class. These p-values are not presented as definitive inferential evidence or external validation.",
+  "functional_data_status": "The uploaded file is an RNA count matrix only. The GSE234907 study documents oxygen-uptake, extracellular-field-potential, and contraction sensing, but those sensor measurements are not contained in this file.",
+  "report_version": "0.1.0"
+}

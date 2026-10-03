@@ -1,0 +1,29 @@
+dataset: GSE144424
+name: cardiVex_safe_rna_modules_v1
+purpose: downstream host-response phenotype scoring from processed RNA-seq
+source: literature-informed, transparent module definitions; not causal
+modules:
+  hypoxia_response:
+    genes: [HIF1A, VEGFA, EGLN3, LDHA, SLC2A1, BNIP3, ADM]
+    aggregation: mean_zscore
+  inflammatory_response:
+    genes: [IL6, CXCL8, CCL2, NFKBIA, TNFAIP3, PTGS2, ICAM1]
+    aggregation: mean_zscore
+  stress_response:
+    genes: [DDIT3, ATF4, HSPA5, XBP1, DNAJB9, HMOX1]
+    aggregation: mean_zscore
+  contractile_maturation:
+    genes: [TNNT2, TNNI3, MYH6, MYH7, ACTC1, RYR2, ATP2A2]
+    aggregation: mean_zscore
+  extracellular_matrix_remodeling:
+    genes: [COL1A1, COL1A2, COL3A1, FN1, TGFB1, SERPINE1, MMP2]
+    aggregation: mean_zscore
+qc:
+  missing_gene_policy: omit_and_record
+  minimum_genes_per_module: 3
+  sample_normalization: log_cpm
+  subject_key: subject_id
+  time_key: elapsed_hours
+notes:
+  - Module scores are descriptive features, not mechanistic claims.
+  - Missing genes are recorded explicitly; modules are not silently completed.

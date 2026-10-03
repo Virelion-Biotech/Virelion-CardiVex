@@ -1,0 +1,45 @@
+{
+  "aggregate": {
+    "bootstrap_95pct_ci_paired_improvement": [
+      -0.005564924481603473,
+      0.02156057850535194
+    ],
+    "bootstrap_seed": 0,
+    "carry_forward_mean_mae": 0.0711805037704993,
+    "clinical_validation": false,
+    "external_validation": false,
+    "folds_better_than_carry_forward": 12,
+    "interpretation": "Promising but not definitive. Bootstrap CI spans zero or is non-positive; single-dataset omics-only.",
+    "mean_paired_improvement": 0.009507195607426279,
+    "relative_mae_reduction": 0.13356460131385764,
+    "temporal_model_mean_mae": 0.061673308163073016
+  },
+  "benchmark": "leave_one_biological_subject_out_temporal_prediction",
+  "biological_subject_count": 15,
+  "collapsed_subject_timepoint_count": 60,
+  "dataset": "GSE144424",
+  "development_rule": "for each fold, one biological subject is held out completely before fitting",
+  "feature_contract": "five RNA phenotype modules + normalized time delta; domain scores in [0,1]",
+  "fold_count": 15,
+  "folds": [
+    {"carry_forward_mae": 0.078464559106, "n_timepoints": 4, "paired_improvement": 0.01003727329, "subject": "18499", "temporal_model_mae": 0.068427285816, "transition_count": 3},
+    {"carry_forward_mae": 0.06683002786, "n_timepoints": 4, "paired_improvement": 0.037551609868, "subject": "18505", "temporal_model_mae": 0.029278417992, "transition_count": 3},
+    {"carry_forward_mae": 0.069073838213, "n_timepoints": 4, "paired_improvement": -0.023485698483, "subject": "18511", "temporal_model_mae": 0.092559536696, "transition_count": 3},
+    {"carry_forward_mae": 0.05937724141, "n_timepoints": 4, "paired_improvement": -0.018339552236, "subject": "18520", "temporal_model_mae": 0.077716793646, "transition_count": 3},
+    {"carry_forward_mae": 0.053631610662, "n_timepoints": 4, "paired_improvement": 0.020756388414, "subject": "18852", "temporal_model_mae": 0.032875222248, "transition_count": 3},
+    {"carry_forward_mae": 0.055559977037, "n_timepoints": 4, "paired_improvement": 0.019716944622, "subject": "18855", "temporal_model_mae": 0.035843032415, "transition_count": 3},
+    {"carry_forward_mae": 0.063186915279, "n_timepoints": 4, "paired_improvement": 0.017477350763, "subject": "18858", "temporal_model_mae": 0.045709564516, "transition_count": 3},
+    {"carry_forward_mae": 0.084315933753, "n_timepoints": 4, "paired_improvement": 0.033748626858, "subject": "18870", "temporal_model_mae": 0.050567306895, "transition_count": 3},
+    {"carry_forward_mae": 0.063910817229, "n_timepoints": 4, "paired_improvement": 0.007651363767, "subject": "18912", "temporal_model_mae": 0.056259453462, "transition_count": 3},
+    {"carry_forward_mae": 0.090186541436, "n_timepoints": 4, "paired_improvement": 0.009514183681, "subject": "19098", "temporal_model_mae": 0.080672357755, "transition_count": 3},
+    {"carry_forward_mae": 0.083100956084, "n_timepoints": 4, "paired_improvement": 0.031807806164, "subject": "19101", "temporal_model_mae": 0.05129314992, "transition_count": 3},
+    {"carry_forward_mae": 0.091859521163, "n_timepoints": 4, "paired_improvement": 0.026672574776, "subject": "19108", "temporal_model_mae": 0.065186946387, "transition_count": 3},
+    {"carry_forward_mae": 0.067980053878, "n_timepoints": 4, "paired_improvement": 0.001368399482, "subject": "19116", "temporal_model_mae": 0.066611654397, "transition_count": 3},
+    {"carry_forward_mae": 0.076272642326, "n_timepoints": 4, "paired_improvement": -0.068763744381, "subject": "19128", "temporal_model_mae": 0.145036386707, "transition_count": 3},
+    {"carry_forward_mae": 0.063956921122, "n_timepoints": 4, "paired_improvement": 0.036894407527, "subject": "19160", "temporal_model_mae": 0.027062513595, "transition_count": 3}
+  ],
+  "model": "multi-output linear next-state predictor (TemporalSurrogateSpec v0.1.0)",
+  "replicate_handling": "mean within biological subject x condition x time",
+  "report_version": "0.2.0",
+  "source_archive_sha256": "cad9ac4c6514550ea9bfb2b491cc2934f6952894d7cbd17338d5054d03da6f7c"
+}

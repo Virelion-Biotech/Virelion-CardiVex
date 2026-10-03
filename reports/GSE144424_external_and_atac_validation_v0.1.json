@@ -1,0 +1,48 @@
+{
+  "report_version": "0.1.0",
+  "status": "external_and_atac_complete",
+  "summary": {
+    "atac_recovery_rna_correlation": -0.11936720516810281,
+    "atac_reox_loso_accuracy": 0.39285714285714285,
+    "external_mean_reox2_minus_reox1": -0.09296085937542248,
+    "external_reox_loso_accuracy": 0.8125
+  },
+  "external_recovery_validation": {
+    "dataset": "GSE117192",
+    "species_filter": "human_only",
+    "n_human_subjects_with_full_course": 8,
+    "recovery_genes_requested": 24,
+    "recovery_genes_present": 22,
+    "loso_reox1_vs_reox2_accuracy": 0.8125,
+    "loso_n": 16,
+    "mean_paired_reox2_minus_reox1": -0.09296085937542248,
+    "mean_recovery_module_by_condition": {
+      "hypoxia": 3.3308495882209987,
+      "normoxia": 3.2075566103383184,
+      "reoxygenation_1": 3.33361644992426,
+      "reoxygenation_2": 3.2406555905488377
+    },
+    "source_sha256": "b761607e773eea15d8070b533b78553a6b15959e8f8932ac937b63c12ca55dd1",
+    "note": "GSE117192 independent human iPSC-CM hypoxia-reox (Ward & Gilad 2019); different donors than GSE144424. Recovery genes selected only on GSE144424."
+  },
+  "peak_to_gene_atac": {
+    "status": "ok",
+    "dataset_atac": "GSE144423",
+    "peak_to_gene_window_bp": 50000,
+    "n_peaks_total": 128672,
+    "n_peaks_assigned_to_module_genes": 542,
+    "module_genes_with_coords": 57,
+    "module_genes_with_peaks": 57,
+    "matched_rna_atac_pairs": 56,
+    "pearson_rna_vs_atac_by_domain": {
+      "contractile_maturation": -0.04874907421266177,
+      "extracellular_matrix_remodeling": 0.20541840571928027,
+      "hypoxia_response": -0.17051366760083322,
+      "inflammatory_response": -0.22731193170817415,
+      "recovery_trajectory": -0.11936720516810281,
+      "stress_response": -0.145640377742289
+    },
+    "atac_loso_reox1_vs_reox2_accuracy": 0.39285714285714285,
+    "limitation": "Peak-to-gene uses gene body +/-50kb; bulk ATAC does not strongly track recovery RNA in this design."
+  }
+}

@@ -1,0 +1,24 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+title: CardiVex Dataset Analysis Plan
+type: object
+required: [dataset_id, profile_record_ids, longitudinal_group_ids, multimodal_record_ids, held_out_candidate_group_ids, condition_counts, qualification]
+properties:
+  dataset_id: {type: string}
+  profile_record_ids:
+    type: array
+    items: {type: string}
+  longitudinal_group_ids:
+    type: array
+    items: {type: string}
+  multimodal_record_ids:
+    type: array
+    items: {type: string}
+  held_out_candidate_group_ids:
+    type: array
+    items: {type: string}
+  condition_counts:
+    type: object
+    additionalProperties: {type: integer, minimum: 0}
+  qualification:
+    type: object
+    required: [record_count, group_count, condition_count, modality_coverage, longitudinal_coverage, issues, recommended_uses]

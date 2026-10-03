@@ -1,0 +1,12 @@
+{
+  "frozen_artifact_id": "27a6554942da99ba",
+  "gse144424_subjects": 15,
+  "loso_bootstrap_ci": [
+    -0.005564924481603473,
+    0.02156057850535194
+  ],
+  "loso_fold_count": 15,
+  "loso_mean_paired_improvement": 0.009507195607426279,
+  "source_sha256": "cad9ac4c6514550ea9bfb2b491cc2934f6952894d7cbd17338d5054d03da6f7c",
+  "status": "ok"
+}

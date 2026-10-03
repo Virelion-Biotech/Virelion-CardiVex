@@ -1,0 +1,52 @@
+{
+  "report_version": "0.2.0",
+  "status": "partial_sample_linkage_verified",
+  "dataset_id": "GSE234907",
+  "physiology_source": {
+    "workbook": "41551_2023_1071_MOESM12_ESM.xlsx",
+    "sha256": "cdb2b8779647c53ff2e8506eca896d8c11c06bcb4ad0b353eb4cf9aebe306763",
+    "bytes": 102076,
+    "sheet_count": 12,
+    "relevant_sheet": "ED Fig 2",
+    "paper_doi": "10.1038/s41551-023-01071-9"
+  },
+  "rna_reference": {
+    "source_file": "GSE234907_Heart_counts.txt.gz",
+    "sha256": "ee2a2cf4279eefe68aa89aed0251eb192f48f97c48000539f848c9b255752e2c",
+    "samples": ["S7_2", "S8_2", "S9_2", "S10_2", "S11_2", "S12_2"],
+    "classes": {"1021-2D": 3, "1021-3D": 3}
+  },
+  "explicit_sample_ids_found_in_physiology_workbook": {
+    "1021-3D": ["S10_2", "S11_2", "S12_2"],
+    "1021-2D": []
+  },
+  "verified_3d_rows": {
+    "S10_2": {
+      "sheet": "ED Fig 2",
+      "workbook_row": 6,
+      "class_label": "1021-3D",
+      "ocr_group_values": [101.802704, 63.9566432, 127.883671],
+      "basal_respiration_3d_cms": 99.56612
+    },
+    "S11_2": {
+      "sheet": "ED Fig 2",
+      "workbook_row": 7,
+      "class_label": "1021-3D",
+      "ocr_group_values": [94.9095414, 71.0294204, 115.684891],
+      "basal_respiration_3d_cms": 70.93174
+    },
+    "S12_2": {
+      "sheet": "ED Fig 2",
+      "workbook_row": 8,
+      "class_label": "1021-3D",
+      "ocr_group_values": [100.409996, 78.7637016, 114.102268],
+      "basal_respiration_3d_cms": 67.52506
+    }
+  },
+  "interpretation": {
+    "what_is_now_supported": "The source-data workbook contains physiology rows explicitly labeled S10_2, S11_2, and S12_2, establishing sample-level provenance for the three GSE234907 3D RNA samples.",
+    "what_is_not_supported": "The workbook does not contain the RNA IDs S7_2, S8_2, or S9_2, so a complete six-sample paired RNA-to-physiology analysis is not yet justified.",
+    "allowed_next_analysis": "Run a leakage-safe paired RNA-to-physiology analysis for the three explicitly linked 3D samples only, clearly labeled as n=3 exploratory validation; do not infer 2D physiology links from row order or class labels.",
+    "remaining_gap": "Identify the physiology experimental-unit identifiers corresponding to S7_2, S8_2, and S9_2, or obtain a source manifest that maps those GEO samples to the workbook units."
+  }
+}

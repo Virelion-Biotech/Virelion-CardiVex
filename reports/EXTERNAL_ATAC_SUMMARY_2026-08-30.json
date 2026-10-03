@@ -1,0 +1,11 @@
+{
+  "atac_matched_pairs": 56,
+  "atac_peaks_assigned": 542,
+  "atac_recovery_rna_r": -0.11936720516810281,
+  "atac_reox_loso_accuracy": 0.39285714285714285,
+  "external_dataset": "GSE117192",
+  "external_mean_reox2_minus_reox1": -0.09296085937542248,
+  "external_n_subjects": 8,
+  "external_reox_loso_accuracy": 0.8125,
+  "status": "ok"
+}

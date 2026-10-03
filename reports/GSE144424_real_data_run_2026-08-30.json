@@ -1,0 +1,65 @@
+{
+  "artifact_id": "8af79ba87d3b2636",
+  "dataset_id": "GSE144424",
+  "domains": [
+    "contractile_maturation",
+    "extracellular_matrix_remodeling",
+    "hypoxia_response",
+    "inflammatory_response",
+    "stress_response"
+  ],
+  "n_collapsed": 60,
+  "n_groups": 60,
+  "n_raw_samples": 84,
+  "sample_domain_scores_head": [
+    {
+      "condition": "normoxia",
+      "domain_scores": {
+        "contractile_maturation": 0.642856,
+        "extracellular_matrix_remodeling": 0.329355,
+        "hypoxia_response": 0.66593,
+        "inflammatory_response": 0.360237,
+        "stress_response": 0.454003
+      },
+      "observation_id": "H18499_A",
+      "time": 0.0
+    },
+    {
+      "condition": "hypoxia",
+      "domain_scores": {
+        "contractile_maturation": 0.497568,
+        "extracellular_matrix_remodeling": 0.325378,
+        "hypoxia_response": 0.74705,
+        "inflammatory_response": 0.430355,
+        "stress_response": 0.540831
+      },
+      "observation_id": "H18499_B",
+      "time": 6.0
+    },
+    {
+      "condition": "reoxygenation_1",
+      "domain_scores": {
+        "contractile_maturation": 0.511897,
+        "extracellular_matrix_remodeling": 0.38842,
+        "hypoxia_response": 0.566233,
+        "inflammatory_response": 0.495613,
+        "stress_response": 0.532283
+      },
+      "observation_id": "H18499_C",
+      "time": 12.0
+    },
+    {
+      "condition": "reoxygenation_2",
+      "domain_scores": {
+        "contractile_maturation": 0.516454,
+        "extracellular_matrix_remodeling": 0.321468,
+        "hypoxia_response": 0.556991,
+        "inflammatory_response": 0.375133,
+        "stress_response": 0.27587
+      },
+      "observation_id": "H18499_D",
+      "time": 30.0
+    }
+  ],
+  "source_sha256": "cad9ac4c6514550ea9bfb2b491cc2934f6952894d7cbd17338d5054d03da6f7c"
+}

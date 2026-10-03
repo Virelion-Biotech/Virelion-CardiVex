@@ -1,0 +1,39 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+title: CardiVex Cardiac State
+description: Normalized multimodal cardiac state for computational evaluation.
+type: object
+required:
+  - domain_scores
+  - time
+properties:
+  domain_scores:
+    type: object
+    additionalProperties:
+      type: number
+      minimum: 0
+      maximum: 1
+  time:
+    type: number
+    minimum: 0
+  imaging:
+    type: object
+    additionalProperties:
+      type: number
+      minimum: 0
+      maximum: 1
+  functional:
+    type: object
+    additionalProperties:
+      type: number
+      minimum: 0
+      maximum: 1
+  omics:
+    type: object
+    additionalProperties:
+      type: number
+      minimum: 0
+      maximum: 1
+  metadata:
+    type: object
+    additionalProperties:
+      type: string

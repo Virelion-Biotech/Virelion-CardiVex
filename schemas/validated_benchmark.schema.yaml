@@ -1,0 +1,21 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+title: CardiVex Validated Benchmark Run
+type: object
+required: [benchmark, surrogate_validation, validation_policy]
+properties:
+  benchmark:
+    type: object
+  surrogate_validation:
+    type: object
+    required: [run_id, development_group_count, held_out_group_count, scenario_count, results, summary, clean_split]
+    properties:
+      run_id: {type: string}
+      development_group_count: {type: integer, minimum: 1}
+      held_out_group_count: {type: integer, minimum: 1}
+      scenario_count: {type: integer, minimum: 1}
+      results: {type: array}
+      summary: {type: object}
+      clean_split: {type: boolean}
+  validation_policy:
+    type: object
+    required: [reference_split, time_tolerance, held_out_units_disjoint]

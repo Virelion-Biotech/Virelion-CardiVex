@@ -1,0 +1,83 @@
+{
+  "report_version": "0.1.0",
+  "status": "directional_external_validation_complete",
+  "reference": {
+    "dataset_id": "GSE144424",
+    "artifact": "reports/GSE144424_real_calibration_v0.1.json",
+    "reference_effects": {
+      "normoxia_to_hypoxia": {
+        "hypoxia_response": 0.1996509908136871,
+        "inflammatory_response": 0.04668066671242797,
+        "stress_response": 0.043510477131272,
+        "contractile_maturation": -0.0588894312375235,
+        "extracellular_matrix_remodeling": -0.00619234946279086
+      },
+      "hypoxia_to_reoxygenation_1": {
+        "hypoxia_response": -0.1944797998430409,
+        "inflammatory_response": 0.0106984707144858,
+        "stress_response": 0.017980311785298,
+        "contractile_maturation": -0.04891890787889745,
+        "extracellular_matrix_remodeling": 0.0250113875461692
+      },
+      "reoxygenation_1_to_reoxygenation_2": {
+        "hypoxia_response": -0.08750614825132136,
+        "inflammatory_response": -0.0404624619991129,
+        "stress_response": -0.08466072846068465,
+        "contractile_maturation": -0.05079643066703745,
+        "extracellular_matrix_remodeling": -0.00423809258341624
+      }
+    }
+  },
+  "external": {
+    "dataset_id": "GSE234907",
+    "source_sha256": "ee2a2cf4279eefe68aa89aed0251eb192f48f97c48000539f848c9b255752e2c",
+    "contrast": "1021-3D minus 1021-2D",
+    "sample_count": 6,
+    "n_per_class": 3,
+    "effect_vector_log_cpm": {
+      "hypoxia_response": 0.2217832838399616,
+      "inflammatory_response": 0.9653432229399532,
+      "stress_response": 0.17475880700091206,
+      "contractile_maturation": 0.7469932685784686,
+      "extracellular_matrix_remodeling": 0.32115798532489936
+    }
+  },
+  "direction_transfer": {
+    "normoxia_to_hypoxia": {
+      "sign_agreement_fraction": 0.6,
+      "agreement_domains": ["hypoxia_response", "inflammatory_response", "stress_response"],
+      "discordant_domains": ["contractile_maturation", "extracellular_matrix_remodeling"]
+    },
+    "hypoxia_to_reoxygenation_1": {
+      "sign_agreement_fraction": 0.6,
+      "agreement_domains": ["inflammatory_response", "stress_response", "extracellular_matrix_remodeling"],
+      "discordant_domains": ["hypoxia_response", "contractile_maturation"]
+    },
+    "reoxygenation_1_to_reoxygenation_2": {
+      "sign_agreement_fraction": 0.0,
+      "agreement_domains": [],
+      "discordant_domains": ["hypoxia_response", "inflammatory_response", "stress_response", "contractile_maturation", "extracellular_matrix_remodeling"]
+    }
+  },
+  "reference_similarity": {
+    "normoxia_to_hypoxia": {"pearson_r": -0.43002934153287503, "cosine_similarity": 0.18092741893610667},
+    "hypoxia_to_reoxygenation_1": {"pearson_r": 0.26285101122674936, "cosine_similarity": -0.22137761828456176},
+    "reoxygenation_1_to_reoxygenation_2": {"pearson_r": 0.36318107676635725, "cosine_similarity": -0.6304292539735872}
+  },
+  "interpretation": {
+    "transferable_dimensions": ["inflammatory_response", "stress_response"],
+    "partially_transferable_dimensions": ["hypoxia_response", "contractile_maturation", "extracellular_matrix_remodeling"],
+    "finding": "The GSE234907 3D-vs-2D phenotype is not a simple replay of the GSE144424 oxygen trajectory. Inflammatory and stress directions agree with the first two GSE144424 transitions, while contractile and ECM directions diverge. The late GSE144424 reoxygenation transition is directionally opposite across all five modules.",
+    "important_caveat": "This is an external directional validation, not a calibrated cross-study score comparison. The committed GSE144424 artifact stores already transformed module distributions, but not the gene-level frozen centering/scaling parameters required to transform GSE234907 raw log-CPM module scores onto the exact GSE144424 [0,1] representation without refitting. Therefore no external dataset scaler, centroid, or predictive model was fit here."
+  },
+  "dataset_metadata_audit": {
+    "family_soft_contains": {
+      "human_samples": 6,
+      "rat_samples": 2,
+      "human_organoid_samples": 3,
+      "human_2d_cardiomyocyte_samples": 3
+    },
+    "uploaded_count_matrix": "six human samples only; rat endothelial samples are not represented in the uploaded matrix"
+  },
+  "next_required_artifact_for_true_no_refit_validation": "Persist the exact GSE144424 gene-level module transformation parameters (gene IDs, development-only center, development-only scale, and module aggregation rule) and then score GSE234907 with those frozen parameters before comparing absolute representation distances."
+}

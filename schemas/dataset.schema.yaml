@@ -1,0 +1,49 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+title: CardiVex Dataset Record
+type: object
+required:
+  - dataset_id
+  - name
+  - species
+  - model
+  - assay_types
+  - condition_labels
+  - source_ref
+properties:
+  dataset_id:
+    type: string
+    pattern: '^DS-[0-9]{4,}$'
+  name:
+    type: string
+    minLength: 1
+  species:
+    type: string
+    minLength: 1
+  model:
+    type: string
+    minLength: 1
+  assay_types:
+    type: array
+    minItems: 1
+    items: {type: string}
+  condition_labels:
+    type: array
+    minItems: 1
+    items: {type: string}
+  source_ref:
+    type: string
+    minLength: 1
+  version:
+    type: string
+    pattern: '^[0-9]+\\.[0-9]+\\.[0-9]+$'
+  sample_count:
+    type: [integer, 'null']
+    minimum: 0
+  processed_feature_contract:
+    type: string
+  evidence_ids:
+    type: array
+    items: {type: string}
+  notes:
+    type: array
+    items: {type: string}
