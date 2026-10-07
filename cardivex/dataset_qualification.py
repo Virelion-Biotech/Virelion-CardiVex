@@ -55,7 +55,7 @@ def qualify_records(
     uses: list[str] = ["domain_profile"]
     if longitudinal_coverage == 1.0 and len(groups) >= 2:
         uses.append("longitudinal_surrogate_validation")
-    if all(modalities.get(name, 0.0) > 0 for name in ("imaging", "functional", "omics")):
+    if all(modalities.get(name, 0.0) == 1.0 for name in ("imaging", "functional", "omics")):
         uses.append("multimodal_calibration")
     return DatasetQualification(
         dataset_id=dataset_id,

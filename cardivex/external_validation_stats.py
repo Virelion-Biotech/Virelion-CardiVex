@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from itertools import combinations
+from math import comb, isfinite, isclose
 from statistics import mean
 from typing import Sequence
 
@@ -24,7 +25,12 @@ def exact_two_group_permutation(a: Sequence[float], b: Sequence[float]) -> Exact
     if len(a) < 1 or len(b) < 1:
         raise ValueError("both groups must be non-empty")
     values = tuple(float(x) for x in a) + tuple(float(x) for x in b)
+    if not all(isfinite(x) for x in values):
+        raise ValueError("group values must be finite")
     n_a = len(a)
+    if comb(len(values), n_a) > 100_000:
+        raise ValueError("exact test exceeds 100000 permutations; use a separately specified Monte Carlo test")
+    a, b = values[:n_a], values[n_a:]
     observed = mean(b) - mean(a)
     permutation_differences: list[float] = []
     for chosen in combinations(range(len(values)), n_a):
@@ -32,7 +38,7 @@ def exact_two_group_permutation(a: Sequence[float], b: Sequence[float]) -> Exact
         left = [values[i] for i in chosen]
         right = [values[i] for i in range(len(values)) if i not in chosen_set]
         permutation_differences.append(mean(right) - mean(left))
-    extreme = sum(abs(diff) >= abs(observed) - 1e-15 for diff in permutation_differences)
+    extreme = sum(abs(diff) >= abs(observed) or isclose(abs(diff), abs(observed), rel_tol=1e-14, abs_tol=0.0) for diff in permutation_differences)
     total = len(permutation_differences)
     wins = sum(x > y for x in b for y in a)
     losses = sum(x < y for x in b for y in a)

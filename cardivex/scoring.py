@@ -12,8 +12,8 @@ from .pipeline import ChallengeAssessment
 @dataclass(frozen=True)
 class ModalityDetectionScore:
     modality: str
-    abnormality: float
-    novelty: float
+    abnormality: float | None
+    novelty: float | None
     available: bool
 
 
@@ -40,13 +40,13 @@ def score_modalities(
     for modality in ("imaging", "functional", "omics"):
         baseline_values = _modality_domains(baseline, modality)
         query_values = _modality_domains(challenged, modality)
-        available = bool(baseline_values or query_values)
+        available = bool(baseline_values) and set(baseline_values) == set(query_values)
         if not available:
-            scores.append(ModalityDetectionScore(modality, 0.0, 0.0, False))
+            scores.append(ModalityDetectionScore(modality, None, None, False))
             continue
         abnormality = abnormality_score(baseline_values, query_values)
         refs = [_modality_domains(state, modality) for state in references]
-        refs = [reference for reference in refs if reference]
+        refs = [reference for reference in refs if set(reference) == set(query_values)]
         novelty = nearest_state_distance(query_values, refs) if refs else 1.0
         scores.append(ModalityDetectionScore(modality, abnormality, novelty, True))
     return tuple(scores)
@@ -79,7 +79,7 @@ def score_recovery(
     baseline: CardiacState,
     challenged: CardiacState,
     treated: CardiacState,
-) -> dict[str, float]:
+) -> dict[str, float | None]:
     result = evaluate_recovery(baseline, challenged, treated)
     return {
         "structural": result.structural,

@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import importlib
 import json
+from math import isfinite
 from pathlib import Path
 from typing import Sequence
 
@@ -26,6 +27,11 @@ def run_model(*, model: CardiVexModel, input_path: Path, output_path: Path) -> N
     rows = payload.get("feature_rows")
     if not isinstance(rows, list):
         raise ValueError("input JSON must contain a feature_rows list")
+    for row in rows:
+        if not isinstance(row, dict) or not row:
+            raise ValueError("each feature row must be a non-empty object")
+        if any(isinstance(v, bool) or not isinstance(v, (int, float)) or not isfinite(v) for v in row.values()):
+            raise ValueError("feature values must be finite numbers")
     predictions = tuple(model.predict(rows))
     validate_model_predictions(predictions, expected_count=len(rows))
     output = {
@@ -42,7 +48,7 @@ def run_model(*, model: CardiVexModel, input_path: Path, output_path: Path) -> N
         ],
     }
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(output, sort_keys=True, indent=2), encoding="utf-8")
+    output_path.write_text(json.dumps(output, sort_keys=True, indent=2, allow_nan=False), encoding="utf-8")
 
 
 def build_parser() -> argparse.ArgumentParser:

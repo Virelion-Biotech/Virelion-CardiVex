@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from math import sqrt
+from math import sqrt, isfinite
 from typing import Mapping
 
 
@@ -10,8 +10,10 @@ def abnormality_score(
     *,
     weights: Mapping[str, float] | None = None,
 ) -> float:
-    """Return a normalized distance from baseline across shared domains."""
-    keys = set(baseline) | set(observed)
+    """Return a normalized distance from baseline across matching domains."""
+    if set(baseline) != set(observed):
+        raise ValueError("distance vectors must have matching domains; missing is not zero")
+    keys = set(baseline)
     if not keys:
         raise ValueError("baseline and observed cannot both be empty")
     weights = weights or {}
@@ -21,11 +23,15 @@ def abnormality_score(
         b = float(baseline.get(key, 0.0))
         x = float(observed.get(key, 0.0))
         w = float(weights.get(key, 1.0))
+        if not all(isfinite(v) for v in (b, x, w)):
+            raise ValueError("scores and weights must be finite")
         if w < 0:
             raise ValueError("weights must be non-negative")
         weighted.append(w * (x - b) ** 2)
         total_weight += w
-    return 0.0 if total_weight == 0 else min(1.0, sqrt(sum(weighted) / total_weight))
+    if not isfinite(total_weight) or total_weight <= 0:
+        raise ValueError("weights must have finite positive total")
+    return min(1.0, sqrt(sum(weighted) / total_weight))
 
 
 def nearest_state_distance(

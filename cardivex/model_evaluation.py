@@ -27,7 +27,8 @@ def classification_report(predicted: Sequence[str], observed: Sequence[str]) -> 
         recall = tp / (tp + fn) if tp + fn else 0.0
         precision = tp / (tp + fp) if tp + fp else 0.0
         f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
-        recalls.append(recall)
+        if tp + fn:
+            recalls.append(recall)
         f1s.append(f1)
     return ClassificationReport(
         accuracy=accuracy,

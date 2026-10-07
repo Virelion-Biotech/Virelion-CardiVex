@@ -10,6 +10,9 @@ def to_jsonable(value: Any) -> Any:
     if is_dataclass(value):
         return {key: to_jsonable(item) for key, item in asdict(value).items()}
     if isinstance(value, Mapping):
+        keys = [str(key) for key in value]
+        if len(set(keys)) != len(keys):
+            raise ValueError("mapping keys collide after string conversion")
         return {str(key): to_jsonable(item) for key, item in value.items()}
     if isinstance(value, (tuple, list)):
         return [to_jsonable(item) for item in value]

@@ -1,7 +1,9 @@
 from pathlib import Path
 import gzip
 
-from cardivex.frozen_modules import FrozenModuleTransform
+from dataclasses import replace
+from cardivex.geo_counts import ModuleScoreScaler
+from cardivex.frozen_modules import compute_artifact_id, FrozenModuleTransform
 from cardivex.gse234907 import read_gse234907_heart_counts
 from cardivex.gse234907_frozen import score_gse234907_with_frozen_transform
 
@@ -35,7 +37,7 @@ def _artifact() -> FrozenModuleTransform:
     domains = {name: tuple(values) for name, values in GENE_SETS.items()}
     centers = {name: 0.0 for name in domains}
     scales = {name: 1.0 for name in domains}
-    return FrozenModuleTransform(
+    return _with_valid_id(FrozenModuleTransform(
         artifact_version="0.1.0",
         dataset_id="GSE144424",
         source_file="source",
@@ -47,7 +49,7 @@ def _artifact() -> FrozenModuleTransform:
         scales=scales,
         fit_sample_ids=("development",),
         artifact_id="fixture",
-    )
+    ))
 
 
 def test_gse234907_frozen_scorer_does_not_fit_external_data(tmp_path: Path) -> None:
@@ -63,3 +65,11 @@ def test_gse234907_frozen_scorer_does_not_fit_external_data(tmp_path: Path) -> N
     assert len(records) == 6
     assert all(record.state.metadata["external_fit"] == "none" for record in records)
     assert all(record.state.domain_scores["hypoxia_response"] > 0.0 for record in records)
+
+
+def _with_valid_id(artifact):
+    payload = artifact.payload()
+    centers = payload.pop("centers")
+    scales = payload.pop("scales")
+    ids = payload.pop("fit_sample_ids")
+    return replace(artifact, artifact_id=compute_artifact_id(**payload, scaler=ModuleScoreScaler(centers, scales, tuple(ids))))

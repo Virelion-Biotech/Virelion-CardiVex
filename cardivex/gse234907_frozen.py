@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Mapping, Sequence
 
+from .geo_counts import ModuleScoreConfig
 from .features import CardiacState, ModalityVector
 from .frozen_modules import FrozenModuleTransform, require_complete_frozen_transform
 from .gse234907 import GSE234907Matrix, _log_cpm
@@ -27,6 +28,7 @@ def score_gse234907_with_frozen_transform(
     if minimum_genes < 1:
         raise ValueError("minimum_genes must be positive")
 
+    ModuleScoreConfig({d: tuple(g) for d, g in gene_sets.items()}, minimum_genes)
     expression = _log_cpm(matrix)
     raw_rows: list[dict[str, float]] = []
     for index, sample_id in enumerate(matrix.sample_ids):

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Mapping
+from math import isfinite
 
 
 DOMAINS = (
@@ -49,7 +50,7 @@ class CardiacState:
     metadata: Mapping[str, str] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
-        if self.time < 0:
+        if not isfinite(self.time) or self.time < 0:
             raise ValueError("time must be non-negative")
         for domain, value in self.domain_scores.items():
             if not 0.0 <= float(value) <= 1.0:

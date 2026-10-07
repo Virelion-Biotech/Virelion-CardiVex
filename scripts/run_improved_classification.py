@@ -7,7 +7,7 @@ which is larger than the typical hypoxia response (~+0.18 within subject).
 
 Fix (no leakage): for each subject, subtract that subject's own normoxia
 vector before classification. LOSO still holds out all timepoints of one
-subject; the baseline is never taken from a held-out subject.
+subject; the held-out normoxia baseline is an explicit test-time covariate.
 
 Reports absolute vs delta side-by-side so the improvement is auditable.
 """
@@ -20,6 +20,8 @@ import statistics
 from collections import defaultdict
 from pathlib import Path
 
+import argparse
+from run_full_validation import fold_records
 from cardivex.experiments import fit_centroid_model, predict_with_model
 from cardivex.geo_counts import (
     ModuleScoreConfig,
@@ -97,6 +99,7 @@ def loso_centroid(
     *,
     feature_mode: str,
     label_mode: str,
+    fold_by_subject: dict | None = None,
 ) -> dict:
     domains = sorted(next(iter(next(iter(by_subj.values())).values())).keys())
     subjects = sorted(by_subj)
@@ -126,8 +129,9 @@ def loso_centroid(
         raise ValueError(feature_mode)
 
     for hold in subjects:
+        fold_data = by_subj if fold_by_subject is None else fold_by_subject[hold]
         tr_x, tr_y, te_x, te_y = [], [], [], []
-        for sid, conds in by_subj.items():
+        for sid, conds in fold_data.items():
             if "normoxia" not in conds and feature_mode == "delta":
                 continue
             for cond, scores in conds.items():
@@ -190,6 +194,10 @@ def baseline_diagnostics(by_subj: dict) -> dict:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description="Subject LOSO classification with fold-fitted normalization")
+    parser.add_argument("--output-dir", type=Path, default=ROOT / "validation" / "real_data")
+    args = parser.parse_args()
+    args.output_dir.mkdir(parents=True, exist_ok=True)
     if not COUNTS.is_file():
         raise SystemExit(f"missing {COUNTS}")
     digest = _sha256(COUNTS)
@@ -207,6 +215,13 @@ def main() -> int:
         sid = str(record.state.metadata.get("subject_id"))
         by_subj[sid][record.condition] = dict(record.state.domain_scores)
 
+    fold_by_subject = {}
+    for hold in sorted(by_subj):
+        fold_raw, scaler = fold_records(matrix, config, hold)
+        fold_data = defaultdict(dict)
+        for record in collapse_subject_replicates(fold_raw):
+            fold_data[str(record.state.metadata["subject_id"])][record.condition] = dict(record.state.domain_scores)
+        fold_by_subject[hold] = fold_data
     diag = baseline_diagnostics(by_subj)
     tasks = [
         ("absolute", "four_class"),
@@ -218,7 +233,7 @@ def main() -> int:
     ]
     results = []
     for feature_mode, label_mode in tasks:
-        result = loso_centroid(by_subj, feature_mode=feature_mode, label_mode=label_mode)
+        result = loso_centroid(by_subj, feature_mode=feature_mode, label_mode=label_mode, fold_by_subject=fold_by_subject)
         results.append(result)
         print(
             f"{feature_mode:8s} {label_mode:22s} "
@@ -229,7 +244,7 @@ def main() -> int:
     primary_4 = next(r for r in results if r["feature_mode"] == "delta" and r["label_mode"] == "four_class")
 
     report = {
-        "report_version": "0.2.0",
+        "report_version": "0.4.0",
         "status": "improved_classification_complete",
         "dataset_id": "GSE144424",
         "source_sha256": digest,
@@ -237,9 +252,10 @@ def main() -> int:
         "method": {
             "classifier": "centroid",
             "split": "leave_one_subject_out",
+            "preprocessing": "fit centers/scales on development subjects independently in each fold",
             "delta_definition": (
                 "For each subject, subtract that subject's normoxia domain vector from "
-                "each condition vector. Held-out subjects never contribute baselines."
+                "each condition vector. Held-out normoxia is required as a test-time covariate, never used to fit training parameters."
             ),
         },
         "results": results,
@@ -265,7 +281,7 @@ def main() -> int:
             ],
         },
     }
-    out = REPORTS / "GSE144424_improved_classification_v0.2.json"
+    out = args.output_dir / "GSE144424_classification_v0.4.json"
     out.write_text(json.dumps(report, sort_keys=True, indent=2) + "\n", encoding="utf-8")
     print(f"wrote {out}")
     print(json.dumps(report["primary_metrics"], indent=2))

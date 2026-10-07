@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import csv
 import gzip
-from math import log1p, sqrt
+from math import log1p, sqrt, isfinite
 from pathlib import Path
 from typing import Mapping, Sequence
 
@@ -18,6 +18,20 @@ class GEOCountMatrix:
     sample_ids: tuple[str, ...]
     counts: tuple[tuple[float, ...], ...]
 
+    def __post_init__(self):
+        if not self.gene_ids or not self.sample_ids:
+            raise ValueError("count matrix requires genes and samples")
+        for ids in (self.gene_ids, self.sample_ids):
+            if any(not item for item in ids) or len(set(ids)) != len(ids):
+                raise ValueError("gene and sample IDs must be non-empty and unique")
+        if len(self.counts) != len(self.gene_ids):
+            raise ValueError("gene/count row mismatch")
+        for row in self.counts:
+            if len(row) != len(self.sample_ids):
+                raise ValueError("count row width mismatch")
+            if any(not isfinite(value) or value < 0 for value in row):
+                raise ValueError("counts must be finite and non-negative")
+
 
 @dataclass(frozen=True)
 class ModuleScoreConfig:
@@ -25,6 +39,17 @@ class ModuleScoreConfig:
 
     domain_gene_sets: Mapping[str, tuple[str, ...]]
     minimum_genes: int = 2
+
+    def __post_init__(self):
+        if isinstance(self.minimum_genes, bool) or not isinstance(self.minimum_genes, int) or self.minimum_genes < 1:
+            raise ValueError("minimum_genes must be a positive integer")
+        if not self.domain_gene_sets:
+            raise ValueError("at least one domain gene set is required")
+        for domain, genes in self.domain_gene_sets.items():
+            if not domain or any(not gene for gene in genes) or len(set(genes)) != len(genes):
+                raise ValueError("module domains and genes must be non-empty; genes must be unique")
+            if len(genes) < self.minimum_genes:
+                raise ValueError("gene module has insufficient overlap with the count matrix")
 
 
 @dataclass(frozen=True)
@@ -34,6 +59,14 @@ class ModuleScoreScaler:
     centers: Mapping[str, float]
     scales: Mapping[str, float]
     fit_sample_ids: tuple[str, ...]
+
+    def __post_init__(self):
+        if not self.centers or set(self.centers) != set(self.scales):
+            raise ValueError("scaler centers and scales must have matching domains")
+        if any(not isfinite(v) for v in self.centers.values()) or any(not isfinite(v) or v <= 0 for v in self.scales.values()):
+            raise ValueError("scaler parameters must be finite with positive scales")
+        if not self.fit_sample_ids or len(set(self.fit_sample_ids)) != len(self.fit_sample_ids):
+            raise ValueError("scaler requires unique fit sample IDs")
 
 
 def _open_text(path: str | Path):
@@ -84,10 +117,14 @@ def _sample_totals(matrix: GEOCountMatrix) -> tuple[float, ...]:
     return tuple(sum(row[index] for row in matrix.counts) for index in range(len(matrix.sample_ids)))
 
 
-def _log_cpm(matrix: GEOCountMatrix) -> tuple[dict[str, float], ...]:
+def _log_cpm(matrix: GEOCountMatrix, genes: set[str] | None = None) -> tuple[dict[str, float], ...]:
     totals = _sample_totals(matrix)
+    if any(not isfinite(total) or total <= 0 for total in totals):
+        raise ValueError("library totals must be finite and positive")
     result: list[dict[str, float]] = [dict() for _ in matrix.sample_ids]
     for gene, row in zip(matrix.gene_ids, matrix.counts):
+        if genes is not None and gene not in genes:
+            continue
         for index, value in enumerate(row):
             scale = totals[index]
             cpm = 0.0 if scale <= 0 else value / scale * 1_000_000.0
@@ -106,7 +143,7 @@ def _raw_module_scores(
     matrix: GEOCountMatrix,
     config: ModuleScoreConfig,
 ) -> list[dict[str, float]]:
-    expression = _log_cpm(matrix)
+    expression = _log_cpm(matrix, set().union(*config.domain_gene_sets.values()))
     return [
         {
             domain: _module_score(sample, genes, config.minimum_genes)
@@ -161,9 +198,12 @@ def score_count_modules(
         scaler = fit_module_scaler(
             matrix,
             config,
-            fit_sample_ids=fit_sample_ids or matrix.sample_ids,
+            fit_sample_ids=matrix.sample_ids if fit_sample_ids is None else fit_sample_ids,
         )
 
+    scaler.__post_init__()
+    if set(scaler.centers) != set(config.domain_gene_sets):
+        raise ValueError("scaler domains must match scoring config")
     raw = _raw_module_scores(matrix, config)
     domains = tuple(sorted(config.domain_gene_sets))
     scores_by_sample = [

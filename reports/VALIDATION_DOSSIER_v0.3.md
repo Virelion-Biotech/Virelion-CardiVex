@@ -1,3 +1,7 @@
+> Historical dossier: preprocessing leakage was corrected in 0.4.0. See
+> [the current CPU audit](../validation/CPU_AUDIT_2026-10-07.md) and fresh results
+> under `validation/real_data/`; metrics and validation claims below are historical.
+
 # CardiVex Validation Dossier v0.3
 
 **Date:** 2026-08-30  

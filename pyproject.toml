@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "virelion-cardivex"
-version = "0.3.0"
+version = "0.4.0"
 description = "Computational cardiac challenge and defensive evaluation platform."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -12,7 +12,8 @@ license = { file = "LICENSE" }
 dependencies = []
 
 [project.optional-dependencies]
-test = ["pytest>=8.0"]
+test = ["pytest>=8.0", "pytest-cov>=5.0"]
+reference = ["scipy>=1.11", "scikit-learn>=1.4"]
 
 [project.scripts]
 cardivex = "cardivex.cli:main"

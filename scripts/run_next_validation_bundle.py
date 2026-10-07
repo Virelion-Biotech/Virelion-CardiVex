@@ -9,6 +9,9 @@ Primary LOSO metrics use within-subject delta features (condition - own normoxia
 """
 from __future__ import annotations
 
+import argparse
+from dataclasses import replace
+from run_full_validation import fold_records
 import hashlib
 import json
 import math
@@ -73,12 +76,13 @@ def load_rna():
     matrix = read_geo_counts(RNA_COUNTS)
     metadata = parse_gse144424_count_metadata(matrix.sample_ids)
     config = ModuleScoreConfig(domain_gene_sets=read_ensembl_modules(MODULES), minimum_genes=3)
-    records = score_count_modules(matrix, metadata, config)
+    fit_ids = tuple(m.sample_id for m in metadata if m.subject_id not in HELD_OUT)
+    records = score_count_modules(matrix, metadata, config, fit_sample_ids=fit_ids)
     collapsed = list(collapse_subject_replicates(records))
-    return records, collapsed, digest
+    return records, collapsed, digest, matrix, config
 
 
-def subject_loso_classification(collapsed) -> dict:
+def subject_loso_classification(collapsed, *, matrix, config) -> dict:
     """Primary: within-subject delta features (subtract own normoxia)."""
     by_subject: dict[str, dict[str, dict[str, float]]] = defaultdict(dict)
     for record in collapsed:
@@ -90,13 +94,21 @@ def subject_loso_classification(collapsed) -> dict:
     features = sorted(collapsed[0].state.domain_scores.keys())
     subjects = sorted(by_subject)
 
+    fold_by_subject = {}
+    for hold in subjects:
+        records, scaler = fold_records(matrix, config, hold)
+        fold_data = defaultdict(dict)
+        for record in collapse_subject_replicates(records):
+            fold_data[str(record.state.metadata["subject_id"])][record.condition] = dict(record.state.domain_scores)
+        fold_by_subject[hold] = fold_data
+
     def run(mode: str) -> dict:
         folds = []
         all_true: list[str] = []
         all_pred: list[str] = []
         for hold in subjects:
             train_states, train_labels, test_states, test_labels = [], [], [], []
-            for subject, conds in by_subject.items():
+            for subject, conds in fold_by_subject[hold].items():
                 if "normoxia" not in conds:
                     continue
                 base = conds["normoxia"]
@@ -187,6 +199,9 @@ def parse_atac_column(col: str) -> tuple[str, str, float]:
 
 def atac_sample_accessibility(path: Path) -> tuple[str, dict[str, dict]]:
     digest = _sha256(path)
+    expected = "44981dcbf23abcd9bed06dd644ff8cfde282473308c983ceddded9c14ed6b33e"
+    if digest != expected:
+        raise ValueError("ATAC archive SHA mismatch")
     import csv
     import gzip
 
@@ -205,7 +220,7 @@ def atac_sample_accessibility(path: Path) -> tuple[str, dict[str, dict]]:
             if len(values) != len(sample_ids):
                 raise ValueError("ATAC row width mismatch")
             for i, v in enumerate(values):
-                if v < 0:
+                if not math.isfinite(v) or v < 0:
                     raise ValueError("negative ATAC count")
                 totals[i] += v
                 peak_sums[i] += v
@@ -215,7 +230,8 @@ def atac_sample_accessibility(path: Path) -> tuple[str, dict[str, dict]]:
     for i, sid in enumerate(sample_ids):
         subject, condition, time = parse_atac_column(sid)
         mean_count = peak_sums[i] / max(n_peaks, 1)
-        cpm = 0.0 if totals[i] <= 0 else (peak_sums[i] / totals[i]) * 1_000_000.0
+        if totals[i] <= 0 or n_peaks == 0:
+            raise ValueError("ATAC library must have positive counts and peaks")
         samples[sid] = {
             "subject_id": subject,
             "condition": condition,
@@ -224,7 +240,6 @@ def atac_sample_accessibility(path: Path) -> tuple[str, dict[str, dict]]:
             "library_size": totals[i],
             "mean_count": mean_count,
             "log1p_mean_count": math.log1p(mean_count),
-            "log1p_total_cpm_proxy": math.log1p(cpm),
         }
     return digest, samples
 
@@ -278,7 +293,7 @@ def rna_atac_consistency(collapsed, atac_samples: dict) -> dict:
         "pearson_rna_hypoxia_vs_atac": pearson(rna_hyp, atac),
         "limitation": (
             "ATAC matrix rows are genomic peaks (chr_start_end), not genes. "
-            "Global accessibility scalars only; peak-to-gene module scoring not applied."
+            "Raw mean peak count reflects library depth; this is QC alignment, not biological accessibility validation. Peak-to-gene scoring is absent."
         ),
     }
 
@@ -311,6 +326,7 @@ def build_frozen_suite(records) -> dict:
 
     try:
         plan = build_analysis_plan(adjusted, expected_times=(0.0, 6.0, 12.0, 30.0), min_holdout_groups=3)
+        plan = replace(plan, held_out_candidate_group_ids=tuple(sorted(HELD_OUT)))
         artifact = build_development_calibration(adjusted, plan)
         held_ids = set(artifact.held_out_group_ids)
         specs = [(f"CVX-FROZEN-GSE144424-{i:02d}", f"frozen hypoxia_reox challenge {i}") for i in range(1, 6)]
@@ -353,12 +369,18 @@ def build_frozen_suite(records) -> dict:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output-dir", type=Path, default=ROOT / "validation" / "real_data")
+    args = parser.parse_args()
+    args.output_dir.mkdir(parents=True, exist_ok=True)
+    if not ATAC_COUNTS.is_file():
+        raise SystemExit(f"missing required ATAC QC matrix: {ATAC_COUNTS}")
     if not RNA_COUNTS.is_file():
         raise SystemExit(f"missing {RNA_COUNTS}")
-    records, collapsed, rna_sha = load_rna()
+    records, collapsed, rna_sha, matrix, config = load_rna()
     print(f"RNA: {len(records)} raw, {len(collapsed)} collapsed")
 
-    loso = subject_loso_classification(collapsed)
+    loso = subject_loso_classification(collapsed, matrix=matrix, config=config)
     print(f"LOSO accuracy={loso['overall_accuracy']:.4f} macro_f1={loso['macro_f1']:.4f}")
 
     atac_block = {"status": "skipped", "reason": "ATAC matrix not present"}
@@ -377,22 +399,25 @@ def main() -> int:
         print(f"ATAC: {len(atac_samples)} samples, matched={consistency['matched_pairs']}")
 
     frozen = build_frozen_suite(records)
+    if frozen["status"] != "ok":
+        raise RuntimeError(f"frozen benchmark validation failed: {frozen['error']}")
     print(f"Frozen: status={frozen['status']} artifact={frozen['calibration_artifact_id']}")
 
     report = {
-        "report_version": "0.2.0",
+        "report_version": "0.4.0",
         "status": "next_validation_bundle_complete",
         "rna_source_sha256": rna_sha,
+        "preprocessing_held_out_subjects": sorted(HELD_OUT),
         "subject_loso_classification": loso,
         "atac_multimodal": atac_block,
         "frozen_benchmark": frozen,
         "interpretation": {
             "loso": "Primary accuracy uses within-subject delta features under subject LOSO.",
-            "atac": "ATAC global accessibility aligned to RNA by subject x condition.",
+            "atac": "ATAC library-depth QC aligned to RNA by subject x condition; no functional or causal validation.",
             "frozen": "Calibration artifact is content-hashed for CI regression.",
         },
     }
-    out = REPORTS / "GSE144424_next_validation_bundle_v0.1.json"
+    out = args.output_dir / "GSE144424_next_validation_bundle_v0.4.json"
     out.write_text(json.dumps(report, sort_keys=True, indent=2) + "\n", encoding="utf-8")
     print(f"wrote {out}")
 
@@ -405,7 +430,7 @@ def main() -> int:
         "frozen_status": frozen.get("status"),
         "rna_sha256": rna_sha,
     }
-    (REPORTS / "NEXT_BUNDLE_SUMMARY_2026-08-30.json").write_text(
+    (args.output_dir / "next_bundle_summary.json").write_text(
         json.dumps(summary, sort_keys=True, indent=2) + "\n", encoding="utf-8"
     )
     print(json.dumps(summary, indent=2))

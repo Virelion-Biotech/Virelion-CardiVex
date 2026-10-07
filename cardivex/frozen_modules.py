@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from hashlib import sha256
 import json
+from math import isfinite
 from typing import Mapping, Sequence
 
 from .geo_counts import ModuleScoreConfig, ModuleScoreScaler
@@ -10,7 +11,7 @@ from .geo_counts import ModuleScoreConfig, ModuleScoreScaler
 
 @dataclass(frozen=True)
 class FrozenModuleTransform:
-    """Immutable representation of a fitted module transform."""
+    """Content-addressed fitted module transform, verified before application."""
 
     artifact_version: str
     dataset_id: str
@@ -49,6 +50,10 @@ class FrozenModuleTransform:
             raise ValueError("frozen artifact minimum_genes does not match scoring config")
 
     def apply(self, raw_scores: Sequence[Mapping[str, float]]) -> tuple[dict[str, float], ...]:
+        require_complete_frozen_transform(self)
+        for row in raw_scores:
+            if set(row) != set(self.domain_gene_sets) or any(not isfinite(float(v)) for v in row.values()):
+                raise ValueError("raw scores require matching domains and finite values")
         domains = tuple(sorted(self.domain_gene_sets))
         missing = [domain for domain in domains if domain not in self.centers or domain not in self.scales]
         if missing:
@@ -88,7 +93,7 @@ def compute_artifact_id(
         "scales": {domain: float(value) for domain, value in sorted(scaler.scales.items())},
         "fit_sample_ids": list(scaler.fit_sample_ids),
     }
-    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
     return sha256(encoded).hexdigest()[:16]
 
 
@@ -137,3 +142,14 @@ def require_complete_frozen_transform(artifact: FrozenModuleTransform) -> None:
         raise ValueError("frozen module transform is incomplete: fitted centers/scales are required")
     if set(artifact.centers) != set(artifact.domain_gene_sets) or set(artifact.scales) != set(artifact.domain_gene_sets):
         raise ValueError("frozen module transform is incomplete: every domain needs a center and scale")
+
+    ModuleScoreConfig(artifact.domain_gene_sets, artifact.minimum_genes)
+    scaler = ModuleScoreScaler(artifact.centers, artifact.scales, artifact.fit_sample_ids)
+    expected = compute_artifact_id(
+        dataset_id=artifact.dataset_id, source_file=artifact.source_file,
+        source_sha256=artifact.source_sha256, normalization=artifact.normalization,
+        minimum_genes=artifact.minimum_genes, domain_gene_sets=artifact.domain_gene_sets,
+        scaler=scaler, artifact_version=artifact.artifact_version,
+    )
+    if expected != artifact.artifact_id:
+        raise ValueError("frozen module transform artifact ID does not match its payload")

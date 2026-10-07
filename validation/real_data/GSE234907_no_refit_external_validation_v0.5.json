@@ -1,0 +1,142 @@
+{
+  "class_effects": {
+    "contrast": "1021-3D minus 1021-2D",
+    "delta": {
+      "contractile_maturation": 0.32700413441885023,
+      "extracellular_matrix_remodeling": 0.03753677638149033,
+      "hypoxia_response": 0.07957704639836294,
+      "inflammatory_response": 0.20360488920082137,
+      "stress_response": 0.05370001514469175
+    }
+  },
+  "class_means": {
+    "1021-2D": {
+      "contractile_maturation": 0.009627316761901353,
+      "extracellular_matrix_remodeling": 0.5713971147484296,
+      "hypoxia_response": 0.2867481370315665,
+      "inflammatory_response": 0.4302594617982188,
+      "stress_response": 0.33718066343314607
+    },
+    "1021-3D": {
+      "contractile_maturation": 0.3366314511807516,
+      "extracellular_matrix_remodeling": 0.6089338911299199,
+      "hypoxia_response": 0.3663251834299294,
+      "inflammatory_response": 0.6338643509990401,
+      "stress_response": 0.3908806785778378
+    }
+  },
+  "direction_transfer": null,
+  "direction_transfer_status": "not_validated_no_biologically_matched_reference",
+  "exact_permutation_tests": {
+    "contractile_maturation": {
+      "cliff_delta": 1.0,
+      "observed_difference": 0.32700413441885023,
+      "p_value_two_sided": 0.1,
+      "permutation_count": 20
+    },
+    "extracellular_matrix_remodeling": {
+      "cliff_delta": 1.0,
+      "observed_difference": 0.03753677638149033,
+      "p_value_two_sided": 0.1,
+      "permutation_count": 20
+    },
+    "hypoxia_response": {
+      "cliff_delta": 1.0,
+      "observed_difference": 0.07957704639836288,
+      "p_value_two_sided": 0.1,
+      "permutation_count": 20
+    },
+    "inflammatory_response": {
+      "cliff_delta": 1.0,
+      "observed_difference": 0.20360488920082137,
+      "p_value_two_sided": 0.1,
+      "permutation_count": 20
+    },
+    "stress_response": {
+      "cliff_delta": 1.0,
+      "observed_difference": 0.05370001514469175,
+      "p_value_two_sided": 0.1,
+      "permutation_count": 20
+    }
+  },
+  "external": {
+    "classes": {
+      "1021-2D": 3,
+      "1021-3D": 3
+    },
+    "dataset_id": "GSE234907",
+    "external_fit": "none",
+    "sample_count": 6,
+    "source_file": "GSE234907_Heart_counts.txt.gz",
+    "source_sha256": "ee2a2cf4279eefe68aa89aed0251eb192f48f97c48000539f848c9b255752e2c"
+  },
+  "interpretation": {
+    "contract": "All domain scores and rna_module_features are in [0,1].",
+    "inferential_caution": "Class sizes {'1021-2D': 3, '1021-3D': 3}; exhaustive relabeling yields limited p-value resolution. Treat effects as descriptive.",
+    "no_refit_guarantee": "GSE234907 counts transformed only with GSE144424 development-fitted centers/scales. No external centering, scaling, or model fitting."
+  },
+  "reference": {
+    "artifact_id": "27a6554942da99ba",
+    "dataset_id": "GSE144424",
+    "fit_sample_count": 64,
+    "held_out_subjects_policy": [
+      "19128",
+      "18870",
+      "18855"
+    ],
+    "normalization": "log1p(CPM) then development-only z-standardization and 0.15 scaling around 0.5",
+    "source_sha256": "cad9ac4c6514550ea9bfb2b491cc2934f6952894d7cbd17338d5054d03da6f7c"
+  },
+  "report_version": "0.5.0",
+  "sample_scores": {
+    "S10_2": {
+      "class": "1021-3D",
+      "contractile_maturation": 0.342424,
+      "extracellular_matrix_remodeling": 0.609946,
+      "hypoxia_response": 0.367033,
+      "inflammatory_response": 0.638457,
+      "stress_response": 0.388923
+    },
+    "S11_2": {
+      "class": "1021-3D",
+      "contractile_maturation": 0.336681,
+      "extracellular_matrix_remodeling": 0.608768,
+      "hypoxia_response": 0.366629,
+      "inflammatory_response": 0.630982,
+      "stress_response": 0.395113
+    },
+    "S12_2": {
+      "class": "1021-3D",
+      "contractile_maturation": 0.330789,
+      "extracellular_matrix_remodeling": 0.608087,
+      "hypoxia_response": 0.365314,
+      "inflammatory_response": 0.632153,
+      "stress_response": 0.388606
+    },
+    "S7_2": {
+      "class": "1021-2D",
+      "contractile_maturation": 0.006837,
+      "extracellular_matrix_remodeling": 0.571605,
+      "hypoxia_response": 0.283135,
+      "inflammatory_response": 0.428067,
+      "stress_response": 0.334132
+    },
+    "S8_2": {
+      "class": "1021-2D",
+      "contractile_maturation": 0.010405,
+      "extracellular_matrix_remodeling": 0.570192,
+      "hypoxia_response": 0.286292,
+      "inflammatory_response": 0.42843,
+      "stress_response": 0.344039
+    },
+    "S9_2": {
+      "class": "1021-2D",
+      "contractile_maturation": 0.011639,
+      "extracellular_matrix_remodeling": 0.572395,
+      "hypoxia_response": 0.290818,
+      "inflammatory_response": 0.434282,
+      "stress_response": 0.33337
+    }
+  },
+  "status": "sample_level_no_refit_external_validation_complete"
+}

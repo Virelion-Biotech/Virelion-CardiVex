@@ -1,0 +1,668 @@
+{
+  "dataset_id": "GSE144424",
+  "interpretation": {
+    "absolute_four_class_was_low_because": "Between-subject normoxia range exceeds mean within-subject hypoxia delta; absolute features mix identity with condition.",
+    "delta_is_not_cheating": "Subject baseline uses only that subject's normoxia sample. LOSO still removes the entire subject from training.",
+    "remaining_limits": [
+      "Four-class still confuses reoxygenation states (biology overlaps).",
+      "Five RNA modules only; not multi-modal.",
+      "n=15 subjects; point estimates are noisy."
+    ]
+  },
+  "method": {
+    "classifier": "centroid",
+    "delta_definition": "For each subject, subtract that subject's normoxia domain vector from each condition vector. Held-out normoxia is required as a test-time covariate, never used to fit training parameters.",
+    "preprocessing": "fit centers/scales on development subjects independently in each fold",
+    "split": "leave_one_subject_out"
+  },
+  "primary_metrics": {
+    "absolute_four_class_accuracy": 0.45,
+    "delta_four_class_accuracy": 0.65,
+    "delta_four_class_macro_f1": 0.6421892599218181,
+    "delta_hypoxia_vs_other_accuracy": 0.9,
+    "delta_hypoxia_vs_other_macro_f1": 0.8721590909090909
+  },
+  "report_version": "0.4.0",
+  "results": [
+    {
+      "feature_mode": "absolute",
+      "folds": [
+        {
+          "accuracy": 0.25,
+          "held_out_subject": "18499",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.5,
+          "held_out_subject": "18505",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.5,
+          "held_out_subject": "18511",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.5,
+          "held_out_subject": "18520",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.75,
+          "held_out_subject": "18852",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.25,
+          "held_out_subject": "18855",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.25,
+          "held_out_subject": "18858",
+          "n_test": 4
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "18870",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.5,
+          "held_out_subject": "18912",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.25,
+          "held_out_subject": "19098",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.25,
+          "held_out_subject": "19101",
+          "n_test": 4
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "19108",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.25,
+          "held_out_subject": "19116",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.25,
+          "held_out_subject": "19128",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.25,
+          "held_out_subject": "19160",
+          "n_test": 4
+        }
+      ],
+      "label_mode": "four_class",
+      "macro_f1": 0.43493025493025494,
+      "mean_fold_accuracy": 0.45,
+      "n_samples": 60,
+      "n_subjects": 15,
+      "overall_accuracy": 0.45,
+      "per_class": {
+        "hypoxia": {
+          "f1": 0.6857142857142857,
+          "precision": 0.6,
+          "recall": 0.8,
+          "support": 15
+        },
+        "normoxia": {
+          "f1": 0.3636363636363636,
+          "precision": 0.3333333333333333,
+          "recall": 0.4,
+          "support": 15
+        },
+        "reoxygenation_1": {
+          "f1": 0.32,
+          "precision": 0.4,
+          "recall": 0.26666666666666666,
+          "support": 15
+        },
+        "reoxygenation_2": {
+          "f1": 0.3703703703703704,
+          "precision": 0.4166666666666667,
+          "recall": 0.3333333333333333,
+          "support": 15
+        }
+      }
+    },
+    {
+      "feature_mode": "delta",
+      "folds": [
+        {
+          "accuracy": 0.5,
+          "held_out_subject": "18499",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.75,
+          "held_out_subject": "18505",
+          "n_test": 4
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "18511",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.5,
+          "held_out_subject": "18520",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.5,
+          "held_out_subject": "18852",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.5,
+          "held_out_subject": "18855",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.5,
+          "held_out_subject": "18858",
+          "n_test": 4
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "18870",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.75,
+          "held_out_subject": "18912",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.75,
+          "held_out_subject": "19098",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.75,
+          "held_out_subject": "19101",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.75,
+          "held_out_subject": "19108",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.5,
+          "held_out_subject": "19116",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.5,
+          "held_out_subject": "19128",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.5,
+          "held_out_subject": "19160",
+          "n_test": 4
+        }
+      ],
+      "label_mode": "four_class",
+      "macro_f1": 0.6421892599218181,
+      "mean_fold_accuracy": 0.65,
+      "n_samples": 60,
+      "n_subjects": 15,
+      "overall_accuracy": 0.65,
+      "per_class": {
+        "hypoxia": {
+          "f1": 0.7692307692307692,
+          "precision": 0.9090909090909091,
+          "recall": 0.6666666666666666,
+          "support": 15
+        },
+        "normoxia": {
+          "f1": 0.6976744186046512,
+          "precision": 0.5357142857142857,
+          "recall": 1.0,
+          "support": 15
+        },
+        "reoxygenation_1": {
+          "f1": 0.5185185185185186,
+          "precision": 0.5833333333333334,
+          "recall": 0.4666666666666667,
+          "support": 15
+        },
+        "reoxygenation_2": {
+          "f1": 0.5833333333333334,
+          "precision": 0.7777777777777778,
+          "recall": 0.4666666666666667,
+          "support": 15
+        }
+      }
+    },
+    {
+      "feature_mode": "absolute",
+      "folds": [
+        {
+          "accuracy": 0.5,
+          "held_out_subject": "18499",
+          "n_test": 2
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "18505",
+          "n_test": 2
+        },
+        {
+          "accuracy": 0.5,
+          "held_out_subject": "18511",
+          "n_test": 2
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "18520",
+          "n_test": 2
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "18852",
+          "n_test": 2
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "18855",
+          "n_test": 2
+        },
+        {
+          "accuracy": 0.5,
+          "held_out_subject": "18858",
+          "n_test": 2
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "18870",
+          "n_test": 2
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "18912",
+          "n_test": 2
+        },
+        {
+          "accuracy": 0.5,
+          "held_out_subject": "19098",
+          "n_test": 2
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "19101",
+          "n_test": 2
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "19108",
+          "n_test": 2
+        },
+        {
+          "accuracy": 0.5,
+          "held_out_subject": "19116",
+          "n_test": 2
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "19128",
+          "n_test": 2
+        },
+        {
+          "accuracy": 0.5,
+          "held_out_subject": "19160",
+          "n_test": 2
+        }
+      ],
+      "label_mode": "hypoxia_vs_normoxia",
+      "macro_f1": 0.7963800904977375,
+      "mean_fold_accuracy": 0.8,
+      "n_samples": 30,
+      "n_subjects": 15,
+      "overall_accuracy": 0.8,
+      "per_class": {
+        "hypoxia": {
+          "f1": 0.8235294117647058,
+          "precision": 0.7368421052631579,
+          "recall": 0.9333333333333333,
+          "support": 15
+        },
+        "normoxia": {
+          "f1": 0.7692307692307692,
+          "precision": 0.9090909090909091,
+          "recall": 0.6666666666666666,
+          "support": 15
+        }
+      }
+    },
+    {
+      "feature_mode": "delta",
+      "folds": [
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "18499",
+          "n_test": 2
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "18505",
+          "n_test": 2
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "18511",
+          "n_test": 2
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "18520",
+          "n_test": 2
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "18852",
+          "n_test": 2
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "18855",
+          "n_test": 2
+        },
+        {
+          "accuracy": 0.5,
+          "held_out_subject": "18858",
+          "n_test": 2
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "18870",
+          "n_test": 2
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "18912",
+          "n_test": 2
+        },
+        {
+          "accuracy": 0.5,
+          "held_out_subject": "19098",
+          "n_test": 2
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "19101",
+          "n_test": 2
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "19108",
+          "n_test": 2
+        },
+        {
+          "accuracy": 0.5,
+          "held_out_subject": "19116",
+          "n_test": 2
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "19128",
+          "n_test": 2
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "19160",
+          "n_test": 2
+        }
+      ],
+      "label_mode": "hypoxia_vs_normoxia",
+      "macro_f1": 0.898989898989899,
+      "mean_fold_accuracy": 0.9,
+      "n_samples": 30,
+      "n_subjects": 15,
+      "overall_accuracy": 0.9,
+      "per_class": {
+        "hypoxia": {
+          "f1": 0.888888888888889,
+          "precision": 1.0,
+          "recall": 0.8,
+          "support": 15
+        },
+        "normoxia": {
+          "f1": 0.9090909090909091,
+          "precision": 0.8333333333333334,
+          "recall": 1.0,
+          "support": 15
+        }
+      }
+    },
+    {
+      "feature_mode": "absolute",
+      "folds": [
+        {
+          "accuracy": 0.5,
+          "held_out_subject": "18499",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.5,
+          "held_out_subject": "18505",
+          "n_test": 4
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "18511",
+          "n_test": 4
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "18520",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.75,
+          "held_out_subject": "18852",
+          "n_test": 4
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "18855",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.25,
+          "held_out_subject": "18858",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.75,
+          "held_out_subject": "18870",
+          "n_test": 4
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "18912",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.5,
+          "held_out_subject": "19098",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.75,
+          "held_out_subject": "19101",
+          "n_test": 4
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "19108",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.5,
+          "held_out_subject": "19116",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.75,
+          "held_out_subject": "19128",
+          "n_test": 4
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "19160",
+          "n_test": 4
+        }
+      ],
+      "label_mode": "hypoxia_vs_other",
+      "macro_f1": 0.7221364618709478,
+      "mean_fold_accuracy": 0.75,
+      "n_samples": 60,
+      "n_subjects": 15,
+      "overall_accuracy": 0.75,
+      "per_class": {
+        "hypoxia": {
+          "f1": 0.6341463414634146,
+          "precision": 0.5,
+          "recall": 0.8666666666666667,
+          "support": 15
+        },
+        "other": {
+          "f1": 0.8101265822784811,
+          "precision": 0.9411764705882353,
+          "recall": 0.7111111111111111,
+          "support": 45
+        }
+      }
+    },
+    {
+      "feature_mode": "delta",
+      "folds": [
+        {
+          "accuracy": 0.75,
+          "held_out_subject": "18499",
+          "n_test": 4
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "18505",
+          "n_test": 4
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "18511",
+          "n_test": 4
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "18520",
+          "n_test": 4
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "18852",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.75,
+          "held_out_subject": "18855",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.75,
+          "held_out_subject": "18858",
+          "n_test": 4
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "18870",
+          "n_test": 4
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "18912",
+          "n_test": 4
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "19098",
+          "n_test": 4
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "19101",
+          "n_test": 4
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "19108",
+          "n_test": 4
+        },
+        {
+          "accuracy": 1.0,
+          "held_out_subject": "19116",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.5,
+          "held_out_subject": "19128",
+          "n_test": 4
+        },
+        {
+          "accuracy": 0.75,
+          "held_out_subject": "19160",
+          "n_test": 4
+        }
+      ],
+      "label_mode": "hypoxia_vs_other",
+      "macro_f1": 0.8721590909090909,
+      "mean_fold_accuracy": 0.9,
+      "n_samples": 60,
+      "n_subjects": 15,
+      "overall_accuracy": 0.9,
+      "per_class": {
+        "hypoxia": {
+          "f1": 0.8125,
+          "precision": 0.7647058823529411,
+          "recall": 0.8666666666666667,
+          "support": 15
+        },
+        "other": {
+          "f1": 0.9318181818181819,
+          "precision": 0.9534883720930233,
+          "recall": 0.9111111111111111,
+          "support": 45
+        }
+      }
+    }
+  ],
+  "root_cause": {
+    "diagnosis": "Between-subject normoxia range exceeds mean within-subject hypoxia delta; absolute features mix identity with condition.",
+    "domains": [
+      "contractile_maturation",
+      "extracellular_matrix_remodeling",
+      "hypoxia_response",
+      "inflammatory_response",
+      "stress_response"
+    ],
+    "mean_within_subject_hypoxia_delta": 0.1830241086954226,
+    "normoxia_hypoxia_response_max": 0.716081024337809,
+    "normoxia_hypoxia_response_min": 0.19443427379119077,
+    "normoxia_hypoxia_response_range": 0.5216467505466182
+  },
+  "source_sha256": "cad9ac4c6514550ea9bfb2b491cc2934f6952894d7cbd17338d5054d03da6f7c",
+  "status": "improved_classification_complete"
+}

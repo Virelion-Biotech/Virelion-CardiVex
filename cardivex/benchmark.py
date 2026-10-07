@@ -17,9 +17,9 @@ class DetectionResult:
 
 @dataclass(frozen=True)
 class RecoveryResult:
-    structural: float
-    functional: float
-    molecular: float
+    structural: float | None
+    functional: float | None
+    molecular: float | None
     overall: float
 
 
@@ -54,13 +54,15 @@ def evaluate_recovery(
 ) -> RecoveryResult:
     """Compare modality-level recovery toward a common baseline."""
 
-    def modality_score(name: str) -> float:
+    def modality_score(name: str) -> float | None:
         b = baseline.merged_features()
         c = challenged.merged_features()
         t = treated.merged_features()
         keys = {k for k in b | c | t if k.startswith(f"{name}:")}
         if not keys:
-            return 0.0
+            return None
+        if any(not keys <= set(vector) for vector in (b, c, t)):
+            return None
         return max(
             0.0,
             rescue_score(
@@ -73,16 +75,7 @@ def evaluate_recovery(
     structural = modality_score("imaging")
     functional = modality_score("functional")
     molecular = modality_score("omics")
-    modality_presence = (
-        bool(baseline.imaging or challenged.imaging or treated.imaging),
-        bool(baseline.functional or challenged.functional or treated.functional),
-        bool(baseline.omics or challenged.omics or treated.omics),
-    )
-    scores = [
-        score for score, present in zip(
-            (structural, functional, molecular), modality_presence
-        ) if present
-    ]
+    scores = [score for score in (structural, functional, molecular) if score is not None]
     overall = (
         sum(scores) / len(scores)
         if scores

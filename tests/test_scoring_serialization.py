@@ -39,8 +39,8 @@ def test_modalities_and_assessment_score():
 
 def test_serialization_is_valid_json():
     payload = {"assessment": score_assessment(
-        assess_scenario(_scenario(), baseline=from_domain_scores({"inflammatory_activation": 0.0})),
-        baseline=from_domain_scores({"inflammatory_activation": 0.0}),
+        assess_scenario(_scenario(), baseline=from_domain_scores({"inflammatory_activation": 0.0, "contractile_impairment": 0.0})),
+        baseline=from_domain_scores({"inflammatory_activation": 0.0, "contractile_impairment": 0.0}),
     )}
     text = dumps(payload)
     assert '"assessment"' in text

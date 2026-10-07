@@ -57,3 +57,29 @@ Scenario realism is not equivalent to biological validity. Held-out novelty depe
 ## License
 
 GNU Affero General Public License v3.0 or later (AGPL-3.0-or-later). See `LICENSE`.
+
+## CPU validation in 0.4.0
+
+See [the CPU audit](validation/CPU_AUDIT_2026-10-07.md) and
+[fresh empirical results](validation/real_data/) for corrected development-only
+preprocessing, independent numerical checks, and reproducible source hashes.
+No GPU or runtime scientific-library dependency is required.
+
+```bash
+python -m pip install -e '.[test,reference]'
+python -m pytest --cov=cardivex --cov-fail-under=85
+python scripts/download_validation_data.py
+python scripts/run_full_validation.py
+python scripts/run_improved_classification.py
+python scripts/run_next_validation_bundle.py
+python scripts/verify_real_validation.py validation/real_data
+```
+
+Distance and calibration vectors must have matching domains. Missing or incomparable
+modality scores are `null`, not zero measurements. Frozen transforms must carry their
+correct content hash. Single-observation uncertainty covers [0,1]. Delta classification
+requires a subject-specific baseline at test time. Historical reports precede the
+corrected fold preprocessing; use `validation/real_data/` for current results.
+
+The temporal improvement interval includes zero. External n=3 per class and ATAC
+library-depth QC support limited descriptive checks, not clinical validation.

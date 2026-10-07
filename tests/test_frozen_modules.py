@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import pytest
 
-from cardivex.frozen_modules import FrozenModuleTransform, require_complete_frozen_transform
+from dataclasses import replace
+from cardivex.geo_counts import ModuleScoreScaler
+from cardivex.frozen_modules import compute_artifact_id, FrozenModuleTransform, require_complete_frozen_transform
 
 
 def test_incomplete_transform_is_rejected_before_external_scoring():
@@ -37,5 +39,14 @@ def test_complete_transform_applies_without_fitting():
         fit_sample_ids=("S1",),
         artifact_id="x",
     )
+    artifact = _with_valid_id(artifact)
     require_complete_frozen_transform(artifact)
     assert artifact.apply(({"a": 12.0},))[0]["a"] == pytest.approx(0.65)
+
+
+def _with_valid_id(artifact):
+    payload = artifact.payload()
+    centers = payload.pop("centers")
+    scales = payload.pop("scales")
+    ids = payload.pop("fit_sample_ids")
+    return replace(artifact, artifact_id=compute_artifact_id(**payload, scaler=ModuleScoreScaler(centers, scales, tuple(ids))))

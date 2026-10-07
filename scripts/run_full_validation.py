@@ -13,7 +13,8 @@ import statistics
 from collections import defaultdict
 from pathlib import Path
 
-from cardivex.external_validation import validate_external_effect
+from cardivex.external_validation_stats import exact_two_group_permutation
+from dataclasses import asdict
 from cardivex.frozen_modules import FrozenModuleTransform, freeze_module_transform
 from cardivex.geo_counts import (
     ModuleScoreConfig,
@@ -122,13 +123,26 @@ def bootstrap_ci(values: list[float], *, seed: int = 0, n: int = 2000) -> tuple[
     return (lo, hi)
 
 
-def run_loso(groups: tuple[LongitudinalGroup, ...], *, source_sha: str) -> dict:
+def fold_records(matrix, config, held_subject):
+    """Fit preprocessing on development columns before collapsing replicates."""
+    metadata = parse_gse144424_count_metadata(matrix.sample_ids)
+    fit_ids = tuple(meta.sample_id for meta in metadata if meta.subject_id != held_subject)
+    if not fit_ids or len(fit_ids) == len(metadata):
+        raise ValueError("LOSO requires an existing held subject and development samples")
+    scaler = fit_module_scaler(matrix, config, fit_sample_ids=fit_ids)
+    return score_count_modules(matrix, metadata, config, scaler=scaler), scaler
+
+
+def run_loso(groups: tuple[LongitudinalGroup, ...], *, source_sha: str, matrix, config) -> dict:
     folds = []
     paired_improvements: list[float] = []
     model_maes: list[float] = []
     persist_maes: list[float] = []
-    for held in groups:
-        development = tuple(g for g in groups if g.group_id != held.group_id)
+    for original_held in groups:
+        records, scaler = fold_records(matrix, config, original_held.group_id)
+        fold_groups = subject_trajectories(records)
+        held = next(g for g in fold_groups if g.group_id == original_held.group_id)
+        development = tuple(g for g in fold_groups if g.group_id != held.group_id)
         overlap = validate_disjoint_longitudinal_groups(development, (held,))
         if overlap:
             raise RuntimeError(f"LOSO leakage for subject {held.group_id}: {overlap}")
@@ -144,6 +158,9 @@ def run_loso(groups: tuple[LongitudinalGroup, ...], *, source_sha: str) -> dict:
         folds.append(
             {
                 "subject": held.group_id,
+                "preprocessing_fit_sample_ids": list(scaler.fit_sample_ids),
+                "preprocessing_centers": dict(scaler.centers),
+                "preprocessing_scales": dict(scaler.scales),
                 "n_timepoints": len(held.records),
                 "temporal_model_mae": round(bench.model_mean_absolute_error, 12),
                 "carry_forward_mae": round(bench.persistence_mean_absolute_error, 12),
@@ -163,7 +180,7 @@ def run_loso(groups: tuple[LongitudinalGroup, ...], *, source_sha: str) -> dict:
     return {
         "dataset": "GSE144424",
         "benchmark": "leave_one_biological_subject_out_temporal_prediction",
-        "report_version": "0.2.0",
+        "report_version": "0.4.0",
         "source_archive_sha256": source_sha,
         "biological_subject_count": len(groups),
         "collapsed_subject_timepoint_count": sum(len(g.records) for g in groups),
@@ -171,7 +188,7 @@ def run_loso(groups: tuple[LongitudinalGroup, ...], *, source_sha: str) -> dict:
         "model": "multi-output linear next-state predictor (TemporalSurrogateSpec v0.1.0)",
         "feature_contract": "five RNA phenotype modules + normalized time delta; domain scores in [0,1]",
         "replicate_handling": "mean within biological subject x condition x time",
-        "development_rule": "for each fold, one biological subject is held out completely before fitting",
+        "development_rule": "for each fold, one biological subject is held out completely before fitting normalization and the temporal model",
         "aggregate": {
             "temporal_model_mean_mae": mean_model,
             "carry_forward_mean_mae": mean_persist,
@@ -230,6 +247,9 @@ def run_gse234907_external(
     gene_sets: dict[str, tuple[str, ...]],
 ) -> dict:
     digest = _sha256_file(path)
+    expected = "ee2a2cf4279eefe68aa89aed0251eb192f48f97c48000539f848c9b255752e2c"
+    if digest != expected:
+        raise ValueError("GSE234907 archive SHA mismatch")
     matrix = read_gse234907_heart_counts(path)
     domains = set(frozen.domain_gene_sets)
     filtered = {d: g for d, g in gene_sets.items() if d in domains}
@@ -257,6 +277,7 @@ def run_gse234907_external(
     classes = sorted(by_class)
     effect = {}
     transfer_dict = None
+    permutation_tests = {}
     if len(classes) >= 2:
         high = next((c for c in classes if "3D" in c or "3d" in c), classes[-1])
         low = next((c for c in classes if "2D" in c or "2d" in c), classes[0])
@@ -264,14 +285,15 @@ def run_gse234907_external(
             "contrast": f"{high} minus {low}",
             "delta": {d: class_means[high][d] - class_means[low][d] for d in sorted(domains)},
         }
-        ref_effects = {"unit_positive_reference": {d: 0.05 for d in sorted(domains)}}
-        transfer = validate_external_effect(
-            effect["delta"],
-            ref_effects,
-            reference_dataset_id="GSE144424_directional_placeholder",
-            external_dataset_id="GSE234907_3D_minus_2D",
-        )
-        transfer_dict = transfer.to_dict()
+        # No biological gold reference exists for comparing hypoxia against 3D maturation.
+        # An arbitrary all-positive vector is not external direction validation.
+        transfer_dict = None
+        permutation_tests = {
+            domain: asdict(exact_two_group_permutation(
+                [row[domain] for row in by_class[low]],
+                [row[domain] for row in by_class[high]],
+            )) for domain in sorted(domains)
+        }
 
     n_per = {cls: len(rows) for cls, rows in by_class.items()}
     return {
@@ -297,6 +319,8 @@ def run_gse234907_external(
         "class_means": class_means,
         "class_effects": effect,
         "direction_transfer": transfer_dict,
+        "direction_transfer_status": "not_validated_no_biologically_matched_reference",
+        "exact_permutation_tests": permutation_tests,
         "interpretation": {
             "no_refit_guarantee": (
                 "GSE234907 counts transformed only with GSE144424 development-fitted "
@@ -313,7 +337,7 @@ def run_gse234907_external(
 
 def write_json(path: Path, payload: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, sort_keys=True, indent=2) + "\n", encoding="utf-8")
+    path.write_text(json.dumps(payload, sort_keys=True, indent=2, allow_nan=False) + "\n", encoding="utf-8")
     print(f"wrote {path}")
 
 
@@ -323,7 +347,9 @@ def main() -> int:
     parser.add_argument("--gse234907", type=Path, default=DEFAULT_GSE234907)
     parser.add_argument("--modules", type=Path, default=DEFAULT_MODULES)
     parser.add_argument("--skip-external", action="store_true")
+    parser.add_argument("--output-dir", type=Path, default=ROOT / "validation" / "real_data")
     args = parser.parse_args()
+    reports = args.output_dir
 
     if not args.counts.is_file():
         raise SystemExit(f"missing counts matrix: {args.counts}")
@@ -335,11 +361,11 @@ def main() -> int:
         f"collapsed timepoints, {len(groups)} subjects"
     )
 
-    loso = run_loso(groups, source_sha=digest)
-    write_json(REPORTS / "GSE144424_loso_temporal_benchmark_v0.2.json", loso)
+    loso = run_loso(groups, source_sha=digest, matrix=matrix, config=config)
+    write_json(reports / "GSE144424_loso_temporal_benchmark_v0.4.json", loso)
 
     frozen = freeze_development_transform(matrix, config, records, source_sha=digest)
-    write_json(REPORTS / "GSE144424_frozen_module_transform_v0.2_runtime.json", frozen.to_dict())
+    write_json(reports / "GSE144424_frozen_module_transform_v0.2_runtime.json", frozen.to_dict())
     print(f"frozen artifact_id={frozen.artifact_id} fit_samples={len(frozen.fit_sample_ids)}")
 
     if not args.skip_external:
@@ -358,7 +384,7 @@ def main() -> int:
             aligned[domain] = overlap
             print(f"GSE234907 domain {domain}: {len(overlap)}/{len(genes)} Entrez genes present")
         external = run_gse234907_external(frozen, args.gse234907, aligned)
-        write_json(REPORTS / "GSE234907_no_refit_external_validation_v0.5.json", external)
+        write_json(reports / "GSE234907_no_refit_external_validation_v0.5.json", external)
 
     summary = {
         "status": "ok",
@@ -368,8 +394,10 @@ def main() -> int:
         "loso_bootstrap_ci": loso["aggregate"]["bootstrap_95pct_ci_paired_improvement"],
         "frozen_artifact_id": frozen.artifact_id,
         "source_sha256": digest,
+        "external_validation_executed": not args.skip_external,
+        "clinical_validation": False,
     }
-    write_json(REPORTS / "FULL_VALIDATION_SUMMARY_2026-08-30.json", summary)
+    write_json(reports / "summary.json", summary)
     print(json.dumps(summary, indent=2))
     return 0
 

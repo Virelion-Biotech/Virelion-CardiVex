@@ -3,7 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 import csv
 import gzip
-from math import log1p
+from math import log1p, isfinite
+from .geo_counts import GEOCountMatrix, ModuleScoreConfig
 from pathlib import Path
 from typing import Mapping, Sequence
 
@@ -17,6 +18,11 @@ class GSE234907Matrix:
     classes: tuple[str, ...]
     gene_ids: tuple[str, ...]
     counts: tuple[tuple[float, ...], ...]
+
+    def __post_init__(self):
+        GEOCountMatrix(self.gene_ids, self.sample_ids, self.counts)
+        if len(self.classes) != len(self.sample_ids) or any(not value for value in self.classes):
+            raise ValueError("classes must be non-empty and match sample IDs")
 
 
 def _open_text(path: str | Path):
@@ -53,8 +59,7 @@ def read_gse234907_heart_counts(path: str | Path) -> GSE234907Matrix:
             try:
                 values = tuple(float(value) for value in row[1:])
             except ValueError:
-                # Known trailing annotation row in the GEO supplementary file.
-                continue
+                raise ValueError(f"non-numeric count encountered for {row[0]}")
             if any(value < 0 for value in values):
                 raise ValueError(f"negative count encountered for {row[0]}")
             gene_ids.append(row[0])
@@ -67,6 +72,8 @@ def read_gse234907_heart_counts(path: str | Path) -> GSE234907Matrix:
 
 def _log_cpm(matrix: GSE234907Matrix) -> tuple[dict[str, float], ...]:
     totals = [sum(row[index] for row in matrix.counts) for index in range(len(matrix.sample_ids))]
+    if any(not isfinite(total) or total <= 0 for total in totals):
+        raise ValueError("library totals must be finite and positive")
     result = [dict() for _ in matrix.sample_ids]
     for gene, row in zip(matrix.gene_ids, matrix.counts):
         for index, value in enumerate(row):
@@ -84,6 +91,7 @@ def score_gse234907_modules(
     """Create descriptive RNA-derived CardiacState records from the 2D/3D matrix."""
     if not gene_sets:
         raise ValueError("at least one gene set is required")
+    ModuleScoreConfig({d: tuple(g) for d, g in gene_sets.items()}, minimum_genes)
     expression = _log_cpm(matrix)
     records: list[IngestRecord] = []
     for index, sample_id in enumerate(matrix.sample_ids):

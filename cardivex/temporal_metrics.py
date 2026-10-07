@@ -22,11 +22,24 @@ def trajectory_error(
     observed: Mapping[str, Sequence[tuple[float, float]]],
 ) -> TrajectoryError:
     """Compare trajectories at shared timestamps without interpolation."""
+    def checked_points(points):
+        result = {}
+        for t, v in points:
+            t, v = float(t), float(v)
+            if not (isfinite(t) and isfinite(v)):
+                raise ValueError("trajectory timestamps and values must be finite")
+            if t in result:
+                raise ValueError("trajectory timestamps must be unique")
+            result[t] = v
+        return result
+
+    predicted = {d: checked_points(points) for d, points in predicted.items()}
+    observed = {d: checked_points(points) for d, points in observed.items()}
     errors: list[float] = []
     domain_count = 0
     for domain in sorted(set(predicted) & set(observed)):
-        p = {float(t): float(v) for t, v in predicted[domain]}
-        o = {float(t): float(v) for t, v in observed[domain]}
+        p = predicted[domain]
+        o = observed[domain]
         shared = sorted(set(p) & set(o))
         if not shared:
             continue
