@@ -42,8 +42,8 @@ def test_scaler_fit_can_be_development_only(tmp_path: Path):
     assert all(r.available_modalities == ("omics",) for r in records)
 
 
-def test_collapse_subject_replicates():
-    path = Path("/tmp/cardivex-real-test-counts.gz")
+def test_collapse_subject_replicates(tmp_path: Path):
+    path = tmp_path / "cardivex-real-test-counts.gz"
     _write_annotation_counts(path)
     matrix = read_geo_counts(path)
     metadata = parse_gse144424_count_metadata(matrix.sample_ids)
