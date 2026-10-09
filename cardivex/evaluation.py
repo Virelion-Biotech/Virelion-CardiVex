@@ -75,7 +75,9 @@ def best_threshold(results: Sequence[CalibrationResult]) -> CalibrationResult:
     """
     if not results:
         raise ValueError("results cannot be empty")
-    return max(results, key=lambda r: (r.balanced_accuracy, r.sensitivity, -r.threshold))
+    return max(
+        results, key=lambda r: (r.balanced_accuracy, r.sensitivity, -r.threshold)
+    )
 
 
 def ood_evaluate(
@@ -102,12 +104,21 @@ def ood_evaluate(
 
     known_scores: list[float] = []
     for index, state in enumerate(known_states):
-        refs = references if references is not None else list(known_states[:index]) + list(known_states[index + 1:])
+        refs = (
+            references
+            if references is not None
+            else list(known_states[:index]) + list(known_states[index + 1 :])
+        )
         if not refs:
-            raise ValueError("at least two known states are required for leave-one-out OOD evaluation")
+            raise ValueError(
+                "at least two known states are required for leave-one-out OOD evaluation"
+            )
         known_scores.append(nearest_state_distance(state, refs))
 
-    novel_scores = [nearest_state_distance(state, references or list(known_states)) for state in novel_states]
+    novel_scores = [
+        nearest_state_distance(state, references or list(known_states))
+        for state in novel_states
+    ]
     tpr = sum(score >= threshold for score in novel_scores) / len(novel_scores)
     fpr = sum(score >= threshold for score in known_scores) / len(known_scores)
     return OODResult(threshold, tpr, fpr, len(known_states), len(novel_states))
@@ -118,4 +129,43 @@ def state_abnormality_scores(
     states: Iterable[CardiacState],
 ) -> list[float]:
     baseline_features = baseline.merged_features()
-    return [abnormality_score(baseline_features, state.merged_features()) for state in states]
+    return [
+        abnormality_score(baseline_features, state.merged_features())
+        for state in states
+    ]
+
+
+def ood_ranking_metrics(known_scores, novel_scores):
+    """Rank metrics with novelty as positive and larger scores more anomalous.
+
+    Average precision uses threshold groups to handle ties. The prevalence is
+    that of the supplied evaluation sample, not estimated deployment prevalence.
+    """
+    known, novel = list(known_scores), list(novel_scores)
+    _validate_scores(known)
+    _validate_scores(novel)
+    groups = {}
+    for score, label in [(x, 0) for x in known] + [(x, 1) for x in novel]:
+        counts = groups.setdefault(float(score), [0, 0])
+        counts[label] += 1
+    negatives_below = 0
+    concordance = 0.0
+    for _, (neg, pos) in sorted(groups.items()):
+        concordance += pos * (negatives_below + neg / 2)
+        negatives_below += neg
+    tp = fp = 0
+    ap = 0.0
+    for _, (neg, pos) in sorted(groups.items(), reverse=True):
+        tp += pos
+        fp += neg
+        ap += (pos / len(novel)) * tp / (tp + fp)
+    return {
+        "auroc": concordance / (len(known) * len(novel)),
+        "average_precision": ap,
+        "positive_class": "novel",
+        "known_count": len(known),
+        "novel_count": len(novel),
+        "evaluation_novelty_prevalence": len(novel) / (len(known) + len(novel)),
+        "independent_unit_count": None,
+        "scope": "ranking of supplied observations; independence and external validity unestablished",
+    }
