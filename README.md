@@ -2,6 +2,21 @@
 
 CardiVex is a Python evaluation framework for cardiac challenge scenarios. It represents phenotype-level challenge states and evaluates detection, characterization, novelty/OOD behavior, recovery, uncertainty, and reproducibility.
 
+
+<!-- VALIDATION_PRODUCT_STATUS:BEGIN -->
+## Validation and product completion status
+
+**Reviewed 2026-10-14; implementation base `dccfdb4b3f34`.** **Status: Limited empirical/numerical characterization; broader qualification incomplete.** This is an evidence-backed scope assessment, not a percentage-complete estimate or a declaration that the product is finished.
+
+| Area | Current evidence / remaining gate |
+|---|---|
+| Software / operational checks | Automated test sources and CI definitions are present; this documentation audit does not report a new algorithm/data-validation run. |
+| Scientific or domain evidence | Corrected development-only preprocessing and source-hashed real-data reports exist. The 15-subject temporal paired-improvement interval includes zero; the small external cohort supports descriptive checks, not clinical qualification. |
+| Remaining for the declared product scope | Lock a larger independent subject-level external benchmark; establish novelty/OOD labels and threshold calibration; qualify longitudinal recovery endpoints and model-conditional uncertainty; strengthen independently blinded cross-service challenge evaluation. |
+
+Evidence and limits: [repository report](validation/real_data/summary.json). The [organization status index](https://github.com/Virelion-Biotech/Virelion-HeartTwin/blob/main/docs/STACK_VALIDATION_STATUS.md) separates software, numerical, data-readiness and empirical qualification. Code/schema execution or a completed download is not a substitute for endpoint-specific validation.
+<!-- VALIDATION_PRODUCT_STATUS:END -->
+
 ## What it contains
 
 - Typed challenge scenarios with provenance and uncertainty.
