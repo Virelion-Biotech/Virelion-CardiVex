@@ -1,0 +1,15 @@
+COMMAND ["/content/05_CardiVex_GEO_v1/venv/bin/python", "/content/05_CardiVex_GEO_v1/Virelion-CardiVex/scripts/run_next_validation_bundle.py", "--output-dir", "/content/drive/MyDrive/HeartTwinValidation/05_CardiVex_GEO_v1/results/run_next_validation_bundle"]
+RNA: 84 raw, 60 collapsed
+LOSO accuracy=0.6500 macro_f1=0.6422
+ATAC: 56 samples, matched=56
+Frozen: status=ok artifact=6d1f425d9b934d26
+wrote /content/drive/MyDrive/HeartTwinValidation/05_CardiVex_GEO_v1/results/run_next_validation_bundle/GSE144424_next_validation_bundle_v0.4.json
+{
+  "status": "ok",
+  "loso_accuracy": 0.65,
+  "loso_macro_f1": 0.6421892599218181,
+  "atac_matched_pairs": 56,
+  "frozen_artifact_id": "6d1f425d9b934d26",
+  "frozen_status": "ok",
+  "rna_sha256": "cad9ac4c6514550ea9bfb2b491cc2934f6952894d7cbd17338d5054d03da6f7c"
+}

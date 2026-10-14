@@ -1,0 +1,14 @@
+{
+  "clinical_validation": false,
+  "external_validation_executed": true,
+  "frozen_artifact_id": "27a6554942da99ba",
+  "gse144424_subjects": 15,
+  "loso_bootstrap_ci": [
+    -0.005732691111471681,
+    0.021683866689278502
+  ],
+  "loso_fold_count": 15,
+  "loso_mean_paired_improvement": 0.009508107685845552,
+  "source_sha256": "cad9ac4c6514550ea9bfb2b491cc2934f6952894d7cbd17338d5054d03da6f7c",
+  "status": "ok"
+}

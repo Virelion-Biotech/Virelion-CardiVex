@@ -1,0 +1,10 @@
+{
+  "command": [
+    "/content/05_CardiVex_GEO_v1/venv/bin/python",
+    "/content/05_CardiVex_GEO_v1/Virelion-CardiVex/scripts/run_next_validation_bundle.py",
+    "--output-dir",
+    "/content/drive/MyDrive/HeartTwinValidation/05_CardiVex_GEO_v1/results/run_next_validation_bundle"
+  ],
+  "returncode": 0,
+  "seconds": 19.627812181999957
+}

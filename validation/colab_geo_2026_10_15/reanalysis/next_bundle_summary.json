@@ -1,0 +1,9 @@
+{
+  "atac_matched_pairs": 56,
+  "frozen_artifact_id": "6d1f425d9b934d26",
+  "frozen_status": "ok",
+  "loso_accuracy": 0.65,
+  "loso_macro_f1": 0.6421892599218181,
+  "rna_sha256": "cad9ac4c6514550ea9bfb2b491cc2934f6952894d7cbd17338d5054d03da6f7c",
+  "status": "ok"
+}

@@ -1,0 +1,15 @@
+COMMAND ["/content/05_CardiVex_GEO_v1/venv/bin/python", "/content/05_CardiVex_GEO_v1/Virelion-CardiVex/scripts/run_improved_classification.py", "--output-dir", "/content/drive/MyDrive/HeartTwinValidation/05_CardiVex_GEO_v1/results/run_improved_classification"]
+absolute four_class             acc=0.450 f1=0.435
+delta    four_class             acc=0.650 f1=0.642
+absolute hypoxia_vs_normoxia    acc=0.800 f1=0.796
+delta    hypoxia_vs_normoxia    acc=0.900 f1=0.899
+absolute hypoxia_vs_other       acc=0.750 f1=0.722
+delta    hypoxia_vs_other       acc=0.900 f1=0.872
+wrote /content/drive/MyDrive/HeartTwinValidation/05_CardiVex_GEO_v1/results/run_improved_classification/GSE144424_classification_v0.4.json
+{
+  "delta_four_class_accuracy": 0.65,
+  "delta_four_class_macro_f1": 0.6421892599218181,
+  "delta_hypoxia_vs_other_accuracy": 0.9,
+  "delta_hypoxia_vs_other_macro_f1": 0.8721590909090909,
+  "absolute_four_class_accuracy": 0.45
+}

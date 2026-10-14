@@ -1,0 +1,15 @@
+{
+  "artifacts": {
+    "logs/run_full_validation.txt": "df81e65c63150664159778513c11ac90886f1d233318d17c614319d6f863c44a",
+    "results/run_full_validation-execution.json": "4fe69f29adbeb6592ee564e75cba343d86b819026963a8da0a6b74d82dccfe66",
+    "results/run_full_validation/GSE144424_frozen_module_transform_v0.2_runtime.json": "a1b8a9f63bf61c80e94cfa8814b0d1e32caa3a1ed4d41f0d117afcce6c68febf",
+    "results/run_full_validation/GSE144424_loso_temporal_benchmark_v0.4.json": "fcbdb603328005f9fa9c4d751c77ea5a701b5dfadedee8fa45b937aa386ac329",
+    "results/run_full_validation/GSE234907_no_refit_external_validation_v0.5.json": "b194a4228bc69131d7a7d9eedb1063dad393ec22039e33188394ae1f9609bc25",
+    "results/run_full_validation/summary.json": "1c25761024ce9a6d72b377158e1d01785f86467c786367c6cdf5a665c573513d"
+  },
+  "identity": "aad3c9d8a077943122389bc14f84dcd10c110d9b91cf742b59edc18edfdecacb",
+  "result": {
+    "log": "logs/run_full_validation.txt",
+    "returncode": 0
+  }
+}

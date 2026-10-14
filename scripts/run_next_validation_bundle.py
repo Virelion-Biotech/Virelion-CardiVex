@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 from dataclasses import replace
 from run_full_validation import fold_records
+from run_improved_classification import query_metrics
 import hashlib
 import json
 import math
@@ -106,8 +107,9 @@ def subject_loso_classification(collapsed, *, matrix, config) -> dict:
         folds = []
         all_true: list[str] = []
         all_pred: list[str] = []
+        predictions = []
         for hold in subjects:
-            train_states, train_labels, test_states, test_labels = [], [], [], []
+            train_states, train_labels, test_states, test_labels, test_conditions = [], [], [], [], []
             for subject, conds in fold_by_subject[hold].items():
                 if "normoxia" not in conds:
                     continue
@@ -120,6 +122,7 @@ def subject_loso_classification(collapsed, *, matrix, config) -> dict:
                     if subject == hold:
                         test_states.append(vec)
                         test_labels.append(cond)
+                        test_conditions.append(cond)
                     else:
                         train_states.append(vec)
                         train_labels.append(cond)
@@ -131,6 +134,10 @@ def subject_loso_classification(collapsed, *, matrix, config) -> dict:
             folds.append({"held_out_subject": hold, "n_test": len(test_labels), "accuracy": acc})
             all_true.extend(test_labels)
             all_pred.extend(preds)
+            predictions.extend(
+                {"subject_id": hold, "condition": cond, "true_label": truth, "predicted_label": pred}
+                for cond, truth, pred in zip(test_conditions, test_labels, preds)
+            )
         overall = sum(t == p for t, p in zip(all_true, all_pred)) / len(all_true)
         labels = sorted(set(all_true) | set(all_pred))
         f1s = []
@@ -157,6 +164,7 @@ def subject_loso_classification(collapsed, *, matrix, config) -> dict:
             "per_class": per_class,
             "fold_accuracies": [f["accuracy"] for f in folds],
             "folds": folds,
+            "query_only": query_metrics(predictions),
         }
 
     absolute = run("absolute")
@@ -184,6 +192,8 @@ def subject_loso_classification(collapsed, *, matrix, config) -> dict:
             "overall_accuracy": delta["overall_accuracy"],
             "macro_f1": delta["macro_f1"],
         },
+        "query_only": delta["query_only"],
+        "evaluation_scope": "Legacy baseline-inclusive metrics retained; query_only excludes known normoxia references",
     }
 
 
@@ -359,6 +369,9 @@ def build_frozen_suite(records) -> dict:
         "error": error,
         "calibration_artifact_id": cal_id if cal_id else (artifact.artifact_id if artifact else None),
         "held_out_group_ids": sorted(held_ids),
+        "held_out_subject_count": len(held_ids),
+        "validation_comparison_count": len(val_summary),
+        "sampling_unit": "held-out biological subject; repeated scenario comparisons are not independent subjects",
         "development_record_count": len(artifact.development_record_ids) if artifact else 0,
         "excluded_record_count": len(artifact.excluded_record_ids) if artifact else 0,
         "scenario_ids": scenario_ids,

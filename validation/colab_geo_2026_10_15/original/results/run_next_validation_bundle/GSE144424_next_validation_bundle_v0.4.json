@@ -1,0 +1,273 @@
+{
+  "atac_multimodal": {
+    "consistency": {
+      "atac_samples_total": 56,
+      "limitation": "ATAC matrix rows are genomic peaks (chr_start_end), not genes. Raw mean peak count reflects library depth; this is QC alignment, not biological accessibility validation. Peak-to-gene scoring is absent.",
+      "matched_pairs": 56,
+      "pearson_rna_domain_mean_vs_atac": -0.25700860577129625,
+      "pearson_rna_hypoxia_vs_atac": -0.4115614466375974,
+      "rna_samples_unmatched": 4
+    },
+    "dataset_id": "GSE144423",
+    "methylation_note": "GSE144425 EPIC ~1.1GB not downloaded; ATAC 9.9MB used.",
+    "n_samples": 56,
+    "source_file": "GSE144423_Counts_ATAC_MCW_NEB.txt.gz",
+    "source_sha256": "44981dcbf23abcd9bed06dd644ff8cfde282473308c983ceddded9c14ed6b33e",
+    "status": "ok"
+  },
+  "frozen_benchmark": {
+    "calibration_artifact_id": "6d1f425d9b934d26",
+    "development_record_count": 48,
+    "error": null,
+    "excluded_record_count": 12,
+    "frozen_validation": [
+      {
+        "domain_mae": 0.07606165122846956,
+        "scenario_id": "CVX-FROZEN-GSE144424-01",
+        "temporal_similarity": 0.9239383487715305
+      },
+      {
+        "domain_mae": 0.05032996430487604,
+        "scenario_id": "CVX-FROZEN-GSE144424-01",
+        "temporal_similarity": 0.949670035695124
+      },
+      {
+        "domain_mae": 0.30848618337897654,
+        "scenario_id": "CVX-FROZEN-GSE144424-01",
+        "temporal_similarity": 0.6915138166210235
+      },
+      {
+        "domain_mae": 0.07606165122846956,
+        "scenario_id": "CVX-FROZEN-GSE144424-02",
+        "temporal_similarity": 0.9239383487715305
+      },
+      {
+        "domain_mae": 0.05032996430487604,
+        "scenario_id": "CVX-FROZEN-GSE144424-02",
+        "temporal_similarity": 0.949670035695124
+      },
+      {
+        "domain_mae": 0.30848618337897654,
+        "scenario_id": "CVX-FROZEN-GSE144424-02",
+        "temporal_similarity": 0.6915138166210235
+      },
+      {
+        "domain_mae": 0.07606165122846956,
+        "scenario_id": "CVX-FROZEN-GSE144424-03",
+        "temporal_similarity": 0.9239383487715305
+      },
+      {
+        "domain_mae": 0.05032996430487604,
+        "scenario_id": "CVX-FROZEN-GSE144424-03",
+        "temporal_similarity": 0.949670035695124
+      },
+      {
+        "domain_mae": 0.30848618337897654,
+        "scenario_id": "CVX-FROZEN-GSE144424-03",
+        "temporal_similarity": 0.6915138166210235
+      },
+      {
+        "domain_mae": 0.07606165122846956,
+        "scenario_id": "CVX-FROZEN-GSE144424-04",
+        "temporal_similarity": 0.9239383487715305
+      },
+      {
+        "domain_mae": 0.05032996430487604,
+        "scenario_id": "CVX-FROZEN-GSE144424-04",
+        "temporal_similarity": 0.949670035695124
+      },
+      {
+        "domain_mae": 0.30848618337897654,
+        "scenario_id": "CVX-FROZEN-GSE144424-04",
+        "temporal_similarity": 0.6915138166210235
+      },
+      {
+        "domain_mae": 0.07606165122846956,
+        "scenario_id": "CVX-FROZEN-GSE144424-05",
+        "temporal_similarity": 0.9239383487715305
+      },
+      {
+        "domain_mae": 0.05032996430487604,
+        "scenario_id": "CVX-FROZEN-GSE144424-05",
+        "temporal_similarity": 0.949670035695124
+      },
+      {
+        "domain_mae": 0.30848618337897654,
+        "scenario_id": "CVX-FROZEN-GSE144424-05",
+        "temporal_similarity": 0.6915138166210235
+      }
+    ],
+    "held_out_group_ids": [
+      "18855",
+      "18870",
+      "19128"
+    ],
+    "manifest_name": "cardivex-frozen-challenge-suite",
+    "manifest_version": "0.5.0",
+    "scenario_ids": [
+      "CVX-FROZEN-GSE144424-01",
+      "CVX-FROZEN-GSE144424-02",
+      "CVX-FROZEN-GSE144424-03",
+      "CVX-FROZEN-GSE144424-04",
+      "CVX-FROZEN-GSE144424-05"
+    ],
+    "status": "ok"
+  },
+  "interpretation": {
+    "atac": "ATAC library-depth QC aligned to RNA by subject x condition; no functional or causal validation.",
+    "frozen": "Calibration artifact is content-hashed for CI regression.",
+    "loso": "Primary accuracy uses within-subject delta features under subject LOSO."
+  },
+  "preprocessing_held_out_subjects": [
+    "18855",
+    "18870",
+    "19128"
+  ],
+  "report_version": "0.4.0",
+  "rna_source_sha256": "cad9ac4c6514550ea9bfb2b491cc2934f6952894d7cbd17338d5054d03da6f7c",
+  "status": "next_validation_bundle_complete",
+  "subject_loso_classification": {
+    "absolute_baseline": {
+      "macro_f1": 0.43493025493025494,
+      "overall_accuracy": 0.45
+    },
+    "delta_primary": {
+      "macro_f1": 0.6421892599218181,
+      "overall_accuracy": 0.65
+    },
+    "feature_contract": "Primary metrics use within-subject delta (condition - own normoxia). Absolute scores retained for comparison only.",
+    "features": [
+      "contractile_maturation",
+      "extracellular_matrix_remodeling",
+      "hypoxia_response",
+      "inflammatory_response",
+      "stress_response"
+    ],
+    "fold_accuracies": [
+      0.5,
+      0.75,
+      1.0,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      1.0,
+      0.75,
+      0.75,
+      0.75,
+      0.75,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "folds": [
+      {
+        "accuracy": 0.5,
+        "held_out_subject": "18499",
+        "n_test": 4
+      },
+      {
+        "accuracy": 0.75,
+        "held_out_subject": "18505",
+        "n_test": 4
+      },
+      {
+        "accuracy": 1.0,
+        "held_out_subject": "18511",
+        "n_test": 4
+      },
+      {
+        "accuracy": 0.5,
+        "held_out_subject": "18520",
+        "n_test": 4
+      },
+      {
+        "accuracy": 0.5,
+        "held_out_subject": "18852",
+        "n_test": 4
+      },
+      {
+        "accuracy": 0.5,
+        "held_out_subject": "18855",
+        "n_test": 4
+      },
+      {
+        "accuracy": 0.5,
+        "held_out_subject": "18858",
+        "n_test": 4
+      },
+      {
+        "accuracy": 1.0,
+        "held_out_subject": "18870",
+        "n_test": 4
+      },
+      {
+        "accuracy": 0.75,
+        "held_out_subject": "18912",
+        "n_test": 4
+      },
+      {
+        "accuracy": 0.75,
+        "held_out_subject": "19098",
+        "n_test": 4
+      },
+      {
+        "accuracy": 0.75,
+        "held_out_subject": "19101",
+        "n_test": 4
+      },
+      {
+        "accuracy": 0.75,
+        "held_out_subject": "19108",
+        "n_test": 4
+      },
+      {
+        "accuracy": 0.5,
+        "held_out_subject": "19116",
+        "n_test": 4
+      },
+      {
+        "accuracy": 0.5,
+        "held_out_subject": "19128",
+        "n_test": 4
+      },
+      {
+        "accuracy": 0.5,
+        "held_out_subject": "19160",
+        "n_test": 4
+      }
+    ],
+    "macro_f1": 0.6421892599218181,
+    "mean_fold_accuracy": 0.65,
+    "method": "leave_one_subject_out_centroid",
+    "n_samples": 60,
+    "n_subjects": 15,
+    "overall_accuracy": 0.65,
+    "per_class": {
+      "hypoxia": {
+        "f1": 0.7692307692307692,
+        "precision": 0.9090909090909091,
+        "recall": 0.6666666666666666,
+        "support": 15
+      },
+      "normoxia": {
+        "f1": 0.6976744186046512,
+        "precision": 0.5357142857142857,
+        "recall": 1.0,
+        "support": 15
+      },
+      "reoxygenation_1": {
+        "f1": 0.5185185185185186,
+        "precision": 0.5833333333333334,
+        "recall": 0.4666666666666667,
+        "support": 15
+      },
+      "reoxygenation_2": {
+        "f1": 0.5833333333333334,
+        "precision": 0.7777777777777778,
+        "recall": 0.4666666666666667,
+        "support": 15
+      }
+    }
+  }
+}

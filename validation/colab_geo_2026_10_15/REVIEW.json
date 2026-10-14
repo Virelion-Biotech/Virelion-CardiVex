@@ -1,0 +1,32 @@
+{
+  "status": "COMPLETE",
+  "runtime_seconds": 61.09721121299992,
+  "original_archive_sha256": "80dc13e043050f25ed338828bab21937f15171d89f7e9e7a81b36f90d1e6b702",
+  "unique_archive_members": 29,
+  "artifact_hashes_verified": 28,
+  "canonical_protocol_and_launcher_hashes_verified": true,
+  "pinned_source_snapshot_files_verified": 237,
+  "base_implementation_files_match_run": 80,
+  "independently_downloaded_input_hashes": {
+    "GSE144423_Counts_ATAC_MCW_NEB.txt.gz": "44981dcbf23abcd9bed06dd644ff8cfde282473308c983ceddded9c14ed6b33e",
+    "GSE144424_Counts_RNA_MCW_NEB.txt.gz": "cad9ac4c6514550ea9bfb2b491cc2934f6952894d7cbd17338d5054d03da6f7c",
+    "GSE234907_Heart_counts.txt.gz": "ee2a2cf4279eefe68aa89aed0251eb192f48f97c48000539f848c9b255752e2c"
+  },
+  "original_report_fields_reproduced": [
+    "GSE234907_no_refit_external_validation_v0.5.json",
+    "GSE144424_frozen_module_transform_v0.2_runtime.json",
+    "GSE144424_loso_temporal_benchmark_v0.4.json",
+    "summary.json",
+    "GSE144424_classification_v0.4.json",
+    "next_bundle_summary.json",
+    "GSE144424_next_validation_bundle_v0.4.json"
+  ],
+  "changes": "Query-only classification scores and prediction ledger; explicit biological subject count for repeated frozen comparisons. No model, feature, split or parameter changes.",
+  "scientific_limits": [
+    "15-subject temporal improvement interval includes zero",
+    "Paired-baseline classification is retrospective; query scores do not establish diagnosis from an isolated unknown sample",
+    "GSE234907 six samples are a different design and support descriptive no-refit transfer only",
+    "ATAC output is library-depth QC without peak-to-gene functional validation",
+    "Independent external hypoxia, novelty/OOD and recovery validation remain unavailable in this run"
+  ]
+}
