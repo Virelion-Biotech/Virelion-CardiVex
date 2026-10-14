@@ -1,0 +1,52 @@
+{
+  "environment_sha256": "e522f0002388706f4900e06e995bac17ebd62ced5e31bb575500878f938a7b5e",
+  "fitness": "FIT for retrospective expression/condition evaluation.",
+  "handler": "vex",
+  "launcher_sha256": {
+    "runtime.py": "42099bbb908333a480c11eca9f0586759d57162a1c11b977067a9696c45d0985",
+    "training.py": "c63aee5893f194932f786c5054bd5ff5938bde40a69328d43fd39fb8b0faf112",
+    "worker.py": "76a8b3ddbe6411bea07d353948f7bed3a708ddd3dd46624e6569c377b3eb88b3"
+  },
+  "limits": "GSE144424: 15 donors, matched normoxia/hypoxia/reoxygenation, technical replicates. GSE234907 is a different organoid design, not proof of out-of-domain hypoxia accuracy. Reusing audited cohorts is not a new independent cohort.",
+  "name": "05_CardiVex_GEO",
+  "repo_paths": {
+    "Virelion-CardiVex": "/content/05_CardiVex_GEO_v1/Virelion-CardiVex"
+  },
+  "repos": {
+    "Virelion-CardiVex": "dccfdb4b3f34223d59f5ccd822e4f975c3dc2cd5"
+  },
+  "requirements": [
+    "numba==0.61.2",
+    "llvmlite==0.44.0",
+    "numpy==2.2.6",
+    "scipy==1.15.3",
+    "pandas==2.2.3",
+    "scikit-learn==1.6.1",
+    "pydantic==2.11.7",
+    "pyyaml==6.0.2",
+    "requests==2.32.4",
+    "matplotlib==3.10.1",
+    "seaborn==0.13.2",
+    "click==8.1.8",
+    "jinja2==3.1.6",
+    "opencv-python-headless==4.12.0.88",
+    "tifffile==2025.6.11",
+    "pillow==11.3.0",
+    "defusedxml==0.7.1",
+    "openpyxl==3.1.5",
+    "meshio==5.3.5",
+    "nibabel==5.3.2",
+    "pydicom==3.0.1",
+    "arviz==0.21.0",
+    "xarray==2025.3.1",
+    "wfdb==4.2.0",
+    "jsonschema==4.24.0"
+  ],
+  "run_root": "/content/drive/MyDrive/HeartTwinValidation/05_CardiVex_GEO_v1",
+  "scope": "Run all three audited external-data runners with hash-verified RNA, ATAC and cardiac organoid matrices; donor-grouped evaluation.",
+  "session_seconds": 8100,
+  "source_archive_sha256": {
+    "Virelion-CardiVex": "c80ce14168561d7038fb85344c4af411a1c87fa3157138c5ece24688510b2832"
+  },
+  "title": "Matched hypoxia/reoxygenation transcriptional evaluation"
+}

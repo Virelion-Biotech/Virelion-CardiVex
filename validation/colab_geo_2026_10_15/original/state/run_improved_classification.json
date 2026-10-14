@@ -1,0 +1,12 @@
+{
+  "artifacts": {
+    "logs/run_improved_classification.txt": "79a910e482b89084333d7d9fa2e29ff41b020bdc9a1fd19e0207e1ec9de5fcf4",
+    "results/run_improved_classification-execution.json": "c51d499a2128cfe6e1a1fc2802b972ad566298715c639c3faefb639e4b67eebf",
+    "results/run_improved_classification/GSE144424_classification_v0.4.json": "eb94c4dd05539f54e6a17b11cc8c48e45a1a5a7ab55151201e4206cd1abaa3da"
+  },
+  "identity": "aad3c9d8a077943122389bc14f84dcd10c110d9b91cf742b59edc18edfdecacb",
+  "result": {
+    "log": "logs/run_improved_classification.txt",
+    "returncode": 0
+  }
+}

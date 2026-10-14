@@ -1,0 +1,10 @@
+{
+  "command": [
+    "/content/05_CardiVex_GEO_v1/venv/bin/python",
+    "/content/05_CardiVex_GEO_v1/Virelion-CardiVex/scripts/run_improved_classification.py",
+    "--output-dir",
+    "/content/drive/MyDrive/HeartTwinValidation/05_CardiVex_GEO_v1/results/run_improved_classification"
+  ],
+  "returncode": 0,
+  "seconds": 15.229206336000061
+}

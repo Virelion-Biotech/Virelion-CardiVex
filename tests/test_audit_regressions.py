@@ -184,3 +184,6 @@ def test_frozen_suite_uses_the_preprocessing_holdout_policy(monkeypatch):
     assert result['status'] == 'ok', result['error']
     assert result['held_out_group_ids'] == sorted(runner.HELD_OUT)
     assert result['development_record_count'] == 48
+    assert result['held_out_subject_count'] == 3
+    assert result['validation_comparison_count'] == 15
+    assert 'not independent' in result['sampling_unit']

@@ -27,10 +27,19 @@ def verify(directory):
     classifier = read('GSE144424_classification_v0.4.json')
     assert classifier['primary_metrics']['delta_hypoxia_vs_other_accuracy'] >= 0.85
     assert all(result['n_subjects'] == 15 for result in classifier['results'])
+    four_class = next(result for result in classifier['results']
+                      if result['feature_mode'] == 'delta' and result['label_mode'] == 'four_class')
+    queries = [row for row in four_class['predictions'] if row['condition'] != 'normoxia']
+    assert len(queries) == 45 and four_class['query_only']['excluded_reference_count'] == 15
+    expected = sum(row['true_label'] == row['predicted_label'] for row in queries) / len(queries)
+    assert four_class['query_only']['overall_accuracy'] == expected
     bundle = read('next_bundle_summary.json')
     assert bundle['status'] == 'ok' and bundle['frozen_status'] == 'ok'
     full_bundle = read('GSE144424_next_validation_bundle_v0.4.json')
     assert full_bundle['frozen_benchmark']['held_out_group_ids'] == full_bundle['preprocessing_held_out_subjects']
+    assert full_bundle['frozen_benchmark']['held_out_subject_count'] == 3
+    assert full_bundle['frozen_benchmark']['validation_comparison_count'] == 15
+    assert full_bundle['subject_loso_classification']['query_only'] == four_class['query_only']
     assert bundle['atac_matched_pairs'] == 56
     assert bundle['loso_accuracy'] >= 0.55
     print('All fresh empirical output contracts verified; biological and clinical validation remain limited.')

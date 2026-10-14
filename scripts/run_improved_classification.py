@@ -94,6 +94,29 @@ def per_class(y_true: list[str], y_pred: list[str]) -> dict:
     return out
 
 
+def query_metrics(predictions: list[dict]) -> dict:
+    """Score queries separately from the normoxia reference supplied at inference.
+
+    Exclusion follows acquisition condition, not the collapsed binary label.
+    Models and their training data remain unchanged.
+    """
+    queries = [p for p in predictions if p["condition"] != "normoxia"]
+    truth = [p["true_label"] for p in queries]
+    predicted = [p["predicted_label"] for p in queries]
+    return {
+        "scope": "Non-normoxia queries only; paired normoxia still required at inference for delta features",
+        "excluded_reference_count": len(predictions) - len(queries),
+        "n_samples": len(queries),
+        "n_subjects": len({p["subject_id"] for p in queries}),
+        "observed_labels": sorted(set(truth)),
+        "overall_accuracy": sum(t == p for t, p in zip(truth, predicted)) / len(truth) if truth else None,
+        "macro_f1": macro_f1(truth, predicted) if truth else None,
+        "per_class": per_class(truth, predicted),
+        "macro_f1_label_policy": "union of observed and predicted labels",
+        "interpretation": "A one-label query subset measures recall only, not binary discrimination",
+    }
+
+
 def loso_centroid(
     by_subj: dict[str, dict[str, dict[str, float]]],
     *,
@@ -106,6 +129,7 @@ def loso_centroid(
     all_true: list[str] = []
     all_pred: list[str] = []
     folds = []
+    predictions = []
 
     def label_of(cond: str) -> str | None:
         if label_mode == "four_class":
@@ -130,7 +154,7 @@ def loso_centroid(
 
     for hold in subjects:
         fold_data = by_subj if fold_by_subject is None else fold_by_subject[hold]
-        tr_x, tr_y, te_x, te_y = [], [], [], []
+        tr_x, tr_y, te_x, te_y, te_conditions = [], [], [], [], []
         for sid, conds in fold_data.items():
             if "normoxia" not in conds and feature_mode == "delta":
                 continue
@@ -142,6 +166,7 @@ def loso_centroid(
                 if sid == hold:
                     te_x.append(feat)
                     te_y.append(lab)
+                    te_conditions.append(cond)
                 else:
                     tr_x.append(feat)
                     tr_y.append(lab)
@@ -153,6 +178,10 @@ def loso_centroid(
         folds.append({"held_out_subject": hold, "n_test": len(te_y), "accuracy": acc})
         all_true.extend(te_y)
         all_pred.extend(preds)
+        predictions.extend(
+            {"subject_id": hold, "condition": cond, "true_label": truth, "predicted_label": pred}
+            for cond, truth, pred in zip(te_conditions, te_y, preds)
+        )
 
     overall = sum(t == p for t, p in zip(all_true, all_pred)) / len(all_true) if all_true else 0.0
     return {
@@ -165,6 +194,9 @@ def loso_centroid(
         "mean_fold_accuracy": statistics.fmean(f["accuracy"] for f in folds) if folds else 0.0,
         "per_class": per_class(all_true, all_pred),
         "folds": folds,
+        "evaluation_scope": "Baseline-inclusive retrospective condition classification",
+        "predictions": predictions,
+        "query_only": query_metrics(predictions),
     }
 
 
@@ -245,6 +277,7 @@ def main() -> int:
 
     report = {
         "report_version": "0.4.0",
+        "reporting_revision": "query_scope_2026-10-15",
         "status": "improved_classification_complete",
         "dataset_id": "GSE144424",
         "source_sha256": digest,
@@ -268,6 +301,11 @@ def main() -> int:
                 r["overall_accuracy"] for r in results if r["feature_mode"] == "absolute" and r["label_mode"] == "four_class"
             ),
         },
+        "primary_metrics_scope": "Legacy baseline-inclusive scores; use query_primary_metrics for non-reference queries",
+        "query_primary_metrics": {
+            "delta_four_class": primary_4["query_only"],
+            "delta_hypoxia_vs_other": primary["query_only"],
+        },
         "interpretation": {
             "absolute_four_class_was_low_because": diag["diagnosis"],
             "delta_is_not_cheating": (
@@ -278,6 +316,8 @@ def main() -> int:
                 "Four-class still confuses reoxygenation states (biology overlaps).",
                 "Five RNA modules only; not multi-modal.",
                 "n=15 subjects; point estimates are noisy.",
+                "Legacy primary metrics include the supplied normoxia references; query_only excludes them from scoring.",
+                "Delta normoxia vectors equal zero by construction; normoxia recall is not independent diagnostic accuracy.",
             ],
         },
     }

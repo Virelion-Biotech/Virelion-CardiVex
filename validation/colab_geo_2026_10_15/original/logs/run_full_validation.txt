@@ -1,0 +1,26 @@
+COMMAND ["/content/05_CardiVex_GEO_v1/venv/bin/python", "/content/05_CardiVex_GEO_v1/Virelion-CardiVex/scripts/run_full_validation.py", "--output-dir", "/content/drive/MyDrive/HeartTwinValidation/05_CardiVex_GEO_v1/results/run_full_validation"]
+GSE144424: 84 raw -> 60 collapsed timepoints, 15 subjects
+wrote /content/drive/MyDrive/HeartTwinValidation/05_CardiVex_GEO_v1/results/run_full_validation/GSE144424_loso_temporal_benchmark_v0.4.json
+wrote /content/drive/MyDrive/HeartTwinValidation/05_CardiVex_GEO_v1/results/run_full_validation/GSE144424_frozen_module_transform_v0.2_runtime.json
+frozen artifact_id=27a6554942da99ba fit_samples=64
+GSE234907 domain hypoxia_response: 7/7 Entrez genes present
+GSE234907 domain inflammatory_response: 7/7 Entrez genes present
+GSE234907 domain stress_response: 6/6 Entrez genes present
+GSE234907 domain contractile_maturation: 7/7 Entrez genes present
+GSE234907 domain extracellular_matrix_remodeling: 7/7 Entrez genes present
+wrote /content/drive/MyDrive/HeartTwinValidation/05_CardiVex_GEO_v1/results/run_full_validation/GSE234907_no_refit_external_validation_v0.5.json
+wrote /content/drive/MyDrive/HeartTwinValidation/05_CardiVex_GEO_v1/results/run_full_validation/summary.json
+{
+  "status": "ok",
+  "gse144424_subjects": 15,
+  "loso_fold_count": 15,
+  "loso_mean_paired_improvement": 0.009508107685845552,
+  "loso_bootstrap_ci": [
+    -0.005732691111471681,
+    0.021683866689278502
+  ],
+  "frozen_artifact_id": "27a6554942da99ba",
+  "source_sha256": "cad9ac4c6514550ea9bfb2b491cc2934f6952894d7cbd17338d5054d03da6f7c",
+  "external_validation_executed": true,
+  "clinical_validation": false
+}

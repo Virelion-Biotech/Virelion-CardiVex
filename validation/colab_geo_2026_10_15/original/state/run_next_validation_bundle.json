@@ -1,0 +1,13 @@
+{
+  "artifacts": {
+    "logs/run_next_validation_bundle.txt": "5045b003a1f4b57add08dd6f273750dd4b04881b1c8fd7c68db3761c1452e2da",
+    "results/run_next_validation_bundle-execution.json": "8c20afd3a844f3a0373670290ccdf451e6fc98c8332407941630c6aef10ed4fe",
+    "results/run_next_validation_bundle/GSE144424_next_validation_bundle_v0.4.json": "8e2175e81aeacb8af902bf066dfef95c9a221f08a8977f09b3420504afe71622",
+    "results/run_next_validation_bundle/next_bundle_summary.json": "ab83b2e032e60728c6d9011b9becc93c2da23f67fda41274ca4ac01bac7d7bb4"
+  },
+  "identity": "aad3c9d8a077943122389bc14f84dcd10c110d9b91cf742b59edc18edfdecacb",
+  "result": {
+    "log": "logs/run_next_validation_bundle.txt",
+    "returncode": 0
+  }
+}

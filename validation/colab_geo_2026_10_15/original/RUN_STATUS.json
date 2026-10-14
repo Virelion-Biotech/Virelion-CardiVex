@@ -1,0 +1,34 @@
+{
+  "error": null,
+  "input_receipts": {
+    "data/GSE144423_Counts_ATAC_MCW_NEB.txt.gz.receipt.json": {
+      "producer_algorithm": "sha256",
+      "producer_checksum": "44981dcbf23abcd9bed06dd644ff8cfde282473308c983ceddded9c14ed6b33e",
+      "sha256": "44981dcbf23abcd9bed06dd644ff8cfde282473308c983ceddded9c14ed6b33e",
+      "size": 10389690,
+      "url": "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE144nnn/GSE144423/suppl/GSE144423_Counts_ATAC_MCW_NEB.txt.gz"
+    },
+    "data/GSE144424_Counts_RNA_MCW_NEB.txt.gz.receipt.json": {
+      "producer_algorithm": "sha256",
+      "producer_checksum": "cad9ac4c6514550ea9bfb2b491cc2934f6952894d7cbd17338d5054d03da6f7c",
+      "sha256": "cad9ac4c6514550ea9bfb2b491cc2934f6952894d7cbd17338d5054d03da6f7c",
+      "size": 2660472,
+      "url": "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE144nnn/GSE144424/suppl/GSE144424_Counts_RNA_MCW_NEB.txt.gz"
+    },
+    "data/GSE234907_Heart_counts.txt.gz.receipt.json": {
+      "producer_algorithm": "sha256",
+      "producer_checksum": "ee2a2cf4279eefe68aa89aed0251eb192f48f97c48000539f848c9b255752e2c",
+      "sha256": "ee2a2cf4279eefe68aa89aed0251eb192f48f97c48000539f848c9b255752e2c",
+      "size": 275444,
+      "url": "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE234nnn/GSE234907/suppl/GSE234907_Heart_counts.txt.gz"
+    }
+  },
+  "protocol_sha256": "aad3c9d8a077943122389bc14f84dcd10c110d9b91cf742b59edc18edfdecacb",
+  "scientific_validation": "NOT_ESTABLISHED_BY_EXECUTION",
+  "scope": "Run all three audited external-data runners with hash-verified RNA, ATAC and cardiac organoid matrices; donor-grouped evaluation.",
+  "seconds_this_session": 61.09721121299992,
+  "source_pins": {
+    "Virelion-CardiVex": "dccfdb4b3f34223d59f5ccd822e4f975c3dc2cd5"
+  },
+  "status": "COMPLETE"
+}
